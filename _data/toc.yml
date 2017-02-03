@@ -1,0 +1,23 @@
+- folder: Using this theme
+  contents:
+   - url: /usingtheme/setting_nav_defaults.html
+   - url: /usingtheme/navmenu.html
+   - url: /usingtheme/table_of_contents.html
+   - url: /usingtheme/breadcrumbs.html
+   - url: /usingtheme/how_is_nav_implemented.html
+
+
+
+- folder: Sections
+  contents:
+   - url: /test_collection/collection_test1_1.html
+     name: Collection
+
+   - url: /test_section/section_test1_1.html
+     name: Section (folder)
+
+
+   - folder: Tests
+     contents:
+      - url: /test_functions/array_functions.html
+

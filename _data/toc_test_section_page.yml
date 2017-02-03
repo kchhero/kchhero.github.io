@@ -1,0 +1,8 @@
+- folder: TOC SECTION PAGE
+  contents:
+   - url: /test_section/section_test1_1.html
+   - url: /test_section/section_test1_2.html
+
+- url: /test_collection/collection_test1_1.html
+  name: Collection
+  
