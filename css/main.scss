@@ -1,88 +1,69 @@
 ---
 # Only the main Sass file needs front matter (the dashes are enough)
 ---
-
-/* test 1 */
 @charset "utf-8";
 
 
 
-/* @import "testnav";  check if we keep this or not */
-
-
-
-//Breadcrumb styles (actually just the pane and positioning)
-.breadcrumb-pane { 
-  font-size: 13px;
-}
-
-
-.breadcrumb {
-  float: left;
-  padding: 20px 0px 0px 0px;
-  margin: 0 0 10px;
-}
-
-.breadcrumb-pane .edit-link {
-  margin-top: 21px;
-  float: right;
-}
-
-$breadcrumb-bg:#FFF;
-
-
-
-/* test 2 */
-
-
-
-@import "bootstrap";
-
-/* test 3 */
-
-//Navtree
-
-
 // Our variables
-$navtree-bg: $navbar-default-bg;
-$navtree-active-bg: azure;
-$navtree-element-listclosed-bg: $navbar-default-bg;
-$navtree-element-listopen-bg: $gray-lighter;
-$navtree-element-border-top-color: $gray-lighter;
-$navtree-folder-text-color:black;
-$navtree-link-text-color: $navbar-default-link-color;
+$base-font-family:  Helvetica, "Helvetica Neue", Arial, sans-serif;
+$base-font-size:   16px;
+$base-font-weight: 400;
+$small-font-size:  $base-font-size * 0.875;
+$base-line-height: 1.5;
+$font-weight-light: 100;
+$font-weight-normal: 400;
+$font-weight-bold: 600;
 
-$navtree-icon-minus: url('{{ site.baseurl }}/images/minus.gif?embed=true'); /* dark version of icon */
-$navtree-icon-plus: url('{{ site.baseurl }}/images/plus.gif?embed=true'); /* dark version of icon */
+$spacing-unit:     30px;
 
-/* test 4 */
+$text-color:       #111;
+$background-color: #fdfdfd;
+$brand-color:      #2a7ae2;
 
-/* import navtree */
-@import "navtree";
+$grey-color:       #828282;
+$grey-color-light: #b1b1b1;
+$grey-color-dark:  darken($grey-color, 25%);
 
-/* test 5 */
+// Width of the content area
+$content-width:    800px;
+
+$on-palm:          550px;
+$on-laptop:        780px;
 
 
-// Sidebar styling
-#sidebar-header {
-  background-color:$gray-lighter;
-  position: relative;
-    top: -20px;
+
+// Use media queries like this:
+// @include media-query($on-palm) {
+//     .wrapper {
+//         padding-right: $spacing-unit / 2;
+//         padding-left: $spacing-unit / 2;
+//     }
+// }
+@mixin media-query($device) {
+    @media screen and (max-width: $device) {
+        @content;
+    }
 }
 
-#sidebar-header p {
-  display:inline;
-    float: left;
-    padding: 15px;
-    font-size: 18px;
-    line-height: 20px;
-    height: 50px;
+.dont-break-out {
+
+  /* Careful, this breaks the word wherever it is without a hyphen */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  /* Adds a hyphen where the word breaks */
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  hyphens: auto;
+
 }
 
-
-.nopadding {
-   padding: 0 !important;
-   margin: 0 !important;
-}
-
-/* test 6 */
+@import
+        "normalize",
+        "base",
+        "layout",
+        "color",
+        "syntax-highlighting"
+;
