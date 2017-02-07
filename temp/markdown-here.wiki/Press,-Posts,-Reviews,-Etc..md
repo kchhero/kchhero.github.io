@@ -1,3 +1,7 @@
+---
+layout: page
+title: Press,Posts,Reviews,Etc.
+---
 This is a collection of reviews and (non-trivial) blog posts about *Markdown Here*. Mostly pretty positive so far!
 
 (Okay, this is primarily a vanity page. I'm happy to see people enjoy the thing I made.)

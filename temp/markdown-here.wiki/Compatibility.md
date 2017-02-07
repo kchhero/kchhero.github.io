@@ -1,3 +1,7 @@
+---
+layout: page
+title: Compatibility
+---
 Info about the places where *Markdown Here* works, including limitations and workarounds.
 
 If you find a new problem (or improvement!), or if you find a site that (almost) works, or if you have workflow suggestions, please edit this wiki page, or create a [Github issue](https://github.com/adam-p/markdown-here/issues), or post to the [MDH Google Group](https://groups.google.com/forum/#!forum/markdown-here).

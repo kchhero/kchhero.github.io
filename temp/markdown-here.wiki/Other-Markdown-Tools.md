@@ -1,3 +1,7 @@
+---
+layout: page
+title: Other-Markdown-Tools
+---
 If you would like a tool added to this list [email me](mailto:pritchard.adam@gmail.com).
 
 A bigger list of tools (that probably negates the need for this page) can be found at [github.com/writekit/awesome-markdown](https://github.com/writekit/awesome-markdown).

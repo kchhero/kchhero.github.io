@@ -1,3 +1,7 @@
+---
+layout: page
+title: Development-Notes
+---
 # Notes
 
 > This file is a catch-all for ideas, problems, plans, and other miscellaneous notes. If something should instead be an issue, it should be made an [issue](https://github.com/adam-p/markdown-here/issues).  

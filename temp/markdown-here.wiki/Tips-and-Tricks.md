@@ -1,3 +1,7 @@
+---
+layout: page
+title: Tips and Tricks
+---
 Please add any tips and tricks that you come up with. For now it'll be a flat list and we'll add structure as needed.
 
 ##### Table of Contents  
