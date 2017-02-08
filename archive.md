@@ -13,7 +13,7 @@ active: archive
 
 <h2 class="category-key" id="{{ t | downcase }}">{{ t | capitalize }}</h2>
 
-<ul class="year">
+<ul class="_normal">
   {% for post in posts %}
     {% if post.tags contains t %}
       <li>
