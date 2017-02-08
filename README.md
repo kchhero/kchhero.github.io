@@ -1,16 +1,59 @@
-# jekyll-simple
+## Voyager
 
-## simple
-simple is a theme designed for blogger using static site generator like jekyll, Hexo etc.
+Just another jekyll theme. Demo: <http://redvi.github.io/voyager>
 
-Especially for those who writes in both Chinese and English. The font-type setting looks really good when writers use Chinese mixed with English.
+### Feathures:
 
-Supposedly, this could work with Japanese as well but never had a chance to try.
+All HTML files are compressed (see `_layouts/compress.html`).
 
-## Story behind this theme
+**Post**
 
-It has been long that using font with Chinese in web was a tedious and time-consuming work. It would be almost impossible to make different OS or devices to look the same.
+All post settings can be changed. Example:
 
-iOS 9 has pulished some new fonts in Chinese and I decided to make one theme that looks good on iOS devices, at the same time, making it acceptable on computers using other fonts.
+```
+---
+layout: post
+bg: '2016/background.jpg'
+title: "Post Heading"
+crawlertitle: "page title"
+summary: "post description"
+date: 2016-06-29
+tags : ['front-end']
+slug: post-url
+author: "Author"
+categories: posts
+---
+```
 
-So mobile goes first, then the macOS.
+`bg` is a path to background of your article. By default backgrounds are placed in the `assets/images` directory.
+
+**Page**
+
+If page contains `active` tag, it will be show on site menu.
+
+```
+---
+layout: page
+title: "About"
+permalink: /about/
+active: about
+---
+```
+
+**Archive**
+
+Archive page is sorting posts by tags. No more than one tag in one post.
+
+Good:
+
+```
+tags : ['front-end']
+```
+
+Bad:
+
+```
+tags : ['front-end', 'jekyll']
+```
+
+Don't forget to change `_config.yml`.
