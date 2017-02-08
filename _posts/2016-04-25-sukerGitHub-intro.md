@@ -1,10 +1,9 @@
 ---
-bg: development.png
 layout: post
 title:  Suker GitHub repositories
 category: private
 description: suker github.com 에 구성한 repository list up
-tags: 'Development'
+tags: development
 ---
 
 <img src="/assets/images/github_icon.png" width="48" align="right"/>

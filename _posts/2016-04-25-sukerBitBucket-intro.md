@@ -1,10 +1,9 @@
 ---
-bg: development.png
 layout: post
 title:  Suker Bitbucket repositories
 category: private
 description: suker bitbucket.com 에 구성한 repository list up
-tags: 'Development'
+tags: development
 ---
 
 <img src="/assets/images/bitbucket.png" width="48" align="right">

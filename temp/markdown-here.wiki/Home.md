@@ -1,8 +1,7 @@
 ---
-bg: reference.jpg
+tags: reference
 layout: page
 title: Markdown reference
-tags: 'Reference'
 ---
 Welcome to the *Markdown Here* wiki!
 

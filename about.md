@@ -1,5 +1,5 @@
 ---
-bg: about.jpg
+tags: about
 layout: page
 title: "About"
 crawlertitle: "Why and how this blog was created"
