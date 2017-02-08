@@ -1,10 +1,10 @@
 ---
-bg: "owl.jpg"
+bg: about.jpg
 layout: page
 title: "About"
 crawlertitle: "Why and how this blog was created"
 permalink: /about/
-summary: "About this blog"
+summary: "About SUKER"
 active: about
 ---
 

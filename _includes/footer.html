@@ -1,4 +1,14 @@
 <footer class="blog-footer content-wrapper">
+  <style>
+  .ca {text-transform: capitalize;}
+  .up {text-transform: uppercase;}
+  .lo {text-transform: lowercase;}
+  .va {font-variant: small-caps;}
+  </style>
   <p>&copy; <span class="full-year"></span> {{ site.title }}</p>
+  <body>
+    <p class="lo"><a href="mailto:{{ site.email }}">{{ site.email }}</a></p>    
+  </body>
 </footer>
+ <br>
 <script src="{{ site.baseurl }}/assets/js/scripts.js"></script>
