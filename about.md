@@ -8,12 +8,8 @@ summary: "About SUKER"
 active: about
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
-
-You can find the source code for the Jekyll new theme at:
-{{site.twitter_username}} /
-[jekyll-new](https://github.com/jglovier/jekyll-new)
-
-You can find the source code for Jekyll at
-{{site.github_username}} /
-[jekyll](https://github.com/jekyll/jekyll)
+Country : Korea
+Currently : Nexell Co. senior engineer
+Email : kchhero@gmail.com or suker@nexell.co.kr
+Address Home : 경기도 수원시 장안구 정자동
+Address Office : 결기도 성남시 분당구 수내동
