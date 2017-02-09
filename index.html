@@ -7,9 +7,10 @@ summary: "SUKER BLOG MAIN"
 ---
 
 <h2 align="right"><a style="color:brown">Recently Article</a></h2>
-{% for post in site.posts limit: 7 %}
+{% for post in site.posts limit: 5 %}
   <article class="index-page">
-    <h3><a href="{{ post.url }}" style="color:blue">{{ post.title }}</a></h3>
-    &nbsp;&nbsp;&nbsp; {{ post.description }}
+    <h4><a href="{{ post.url }}" style="color:blue">{{ post.title }}</a></h4>
+    <span class="date">{{ post.date | date: "%Y-%m-%d"  }}</span>
+    <a style="color:black">{{ post.description }}</a>
   </article>
 {% endfor %}

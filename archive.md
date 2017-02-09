@@ -25,9 +25,8 @@ active: archive
           <span class="date">{{ post.date | date: "%d-%m-%Y"  }}</span>
         {% endif %}
       </li>
-    {% endif %}
+    {% endif %}   
   {% endfor %}
 </ul>
-
 
 {% endfor %}

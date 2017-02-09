@@ -8,7 +8,7 @@ tags: category
 <div class="tags-expo">
   <div class="tags-expo-list">
     {% for tag in site.categories %}
-    <a href="#{{ tag[0] | slugify }}" class="post-tag" style="color:blue">{{ tag[0] }}</a>
+    <a href="#{{ tag[0] | slugify }}" class="post-tag" style="color:blue">&nbsp;{{ tag[0] }}&nbsp; </a>
     {% endfor %}
   </div>
   <hr/>
@@ -19,7 +19,7 @@ tags: category
       {% for post in tag[1] %}
       <a class="post-title" href="{{ site.baseurl }}{{ post.url }}" style="color:blue">
         <li>
-          {{ post.title }}
+          {{ post.title }} &nbsp;&nbsp;
           <small class="post-date">{{ post.date | date_to_string }}</small>
         </li>
       </a>
