@@ -11,7 +11,7 @@ active: archive
   {% assign t = tag | first %}
   {% assign posts = tag | last %}
 
-<h2 class="category-key" id="{{ t | downcase }}">{{ t | capitalize }}</h2>
+<font size="5"><i><p class="category-key" id="{{ t | downcase }}">{{ t | none }}</p></i></font>
 
 <ul class="_normal">
   {% for post in posts %}
