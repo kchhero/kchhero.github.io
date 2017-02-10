@@ -1,15 +1,14 @@
 ---
-title: 'ubuntu Tips'
 layout: post
 tags:
   - linux
+title: 'ubuntu Tips'
 category: linux
 ---
 ##### sudo passwd 묻지 않기
 ```shell?line_number=false
-    $ sudo nano /etc/sudoers.d/sukersudo
-       ==> suker ALL=NOPASSWD:POWEROFF,SHUTDOWN,HALT,/usr/bin/update-manager,/usr/bin/apt-
-            get,/bin/mount,/bin/cp,/bin/mv,/bin/umount
+$ sudo nano /etc/sudoers.d/sukersudo
+==> suker ALL=NOPASSWD:POWEROFF,SHUTDOWN,HALT,/usr/bin/update-manager,/usr/bin/apt-get,/bin/mount,/bin/cp,/bin/mv,/bin/umount
 ```
 
 ##### display /dev/fb size 알아내기
