@@ -87,7 +87,6 @@ or
 ---
 
 ##### 참고자료
-AGL-Kickstart-on-Renesas-Porter-board.pdf
-https://www.google.co.kr/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwitwNLf-4TSAhWHoJQKHW0JC1cQFggYMAA&url=http%3A%2F%2Fiot.bzh%2Fdownload%2Fpublic%2F2016%2Fsdk%2FAGL-Kickstart-on-Renesas-Porter-board.pdf&usg=AFQjCNEp10zyPt0_lG5gWa5yuWEM9yPTcg&sig2=ktdL0c2z26UYEGIdFLSgVw
+[AGL-Kickstart-on-Renesas-Porter-board.pdf](https://www.google.co.kr/url?sa=t&rct=j&q=&esrc=s&source=web&cd=1&cad=rja&uact=8&ved=0ahUKEwitwNLf-4TSAhWHoJQKHW0JC1cQFggYMAA&url=http%3A%2F%2Fiot.bzh%2Fdownload%2Fpublic%2F2016%2Fsdk%2FAGL-Kickstart-on-Renesas-Porter-board.pdf&usg=AFQjCNEp10zyPt0_lG5gWa5yuWEM9yPTcg&sig2=ktdL0c2z26UYEGIdFLSgVw "AGL-Kick")
 
 ---
