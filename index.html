@@ -10,7 +10,6 @@ summary: "SUKER BLOG MAIN"
 {% for post in site.posts limit: 6 %}
   <article class="index-page">
     <p><a href="{{ post.url }}" style="color:blue">{{ post.title }}</a></p>
-    <br>
     <span class="date">{{ post.date | date: "%Y-%m-%d"  }}</span>
     &nbsp; &nbsp; &nbsp;<a style="color:black">{{ post.description }}</a>
   </article>
