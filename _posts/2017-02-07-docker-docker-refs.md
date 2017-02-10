@@ -1,9 +1,9 @@
 ---
-tags: working
+tags: docker
 title: 'Docker 정리'
 layout: post
 published: true
-category: Working
+category: docker
 description: docker 관련 명령어 및 정리 내용
 ---
 #### pull 
