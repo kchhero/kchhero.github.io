@@ -6,11 +6,12 @@ title: "Suker"
 summary: "SUKER BLOG MAIN"
 ---
 
-<h2 align="right"><a style="color:brown">Recently Article</a></h2>
-{% for post in site.posts limit: 5 %}
+<p align="right"><a style="color:brown"><font size="5">Recently Article</font></a></p>
+{% for post in site.posts limit: 6 %}
   <article class="index-page">
-    <h4><a href="{{ post.url }}" style="color:blue">{{ post.title }}</a></h4>
+    <p><a href="{{ post.url }}" style="color:blue">{{ post.title }}</a></p>
+    <br>
     <span class="date">{{ post.date | date: "%Y-%m-%d"  }}</span>
-    <a style="color:black">{{ post.description }}</a>
+    &nbsp; &nbsp; &nbsp;<a style="color:black">{{ post.description }}</a>
   </article>
 {% endfor %}
