@@ -27,7 +27,7 @@ active: about
 
 <p fontsize="4"><b>Available : C/C++, python, java</b></p>
 
-<p style="color:blue" fontsize="4">Email : <a href="mailto:{{ site.email }}">{{ site.email }}   |   <a href="mailto:suker@nexell.co.kr">suker@nexell.co.kr</a></p>
+<a style="color:blue" fontsize="3">Email : </a><a fontsize="2" href="mailto:{{ site.email }}">{{ site.email }} , <a href="mailto:suker@nexell.co.kr">suker@nexell.co.kr</a>
 
 <p fontsize="4">Address Home : Suwon-si, Gyeonggi-do, Korea</p>
 
