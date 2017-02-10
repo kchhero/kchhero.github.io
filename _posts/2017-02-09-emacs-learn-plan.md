@@ -1,6 +1,6 @@
 ---
 layout: post
-tags: tools
+tags: emacs
 title: 'emacs learn'
 category: Tools
 description: emacs learnning scrap
