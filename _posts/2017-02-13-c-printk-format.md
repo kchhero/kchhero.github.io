@@ -18,4 +18,5 @@ category: language
 
 
 더 자세하고 많은 내용은 아래 link 참고.
-https://www.kernel.org/doc/Documentation/printk-formats.txt
+
+[https://www.kernel.org/doc/Documentation/printk-formats.txt](https://www.kernel.org/doc/Documentation/printk-formats.txt)
