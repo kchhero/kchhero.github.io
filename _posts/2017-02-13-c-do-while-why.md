@@ -1,9 +1,9 @@
 ---
+category: language
 layout: post
 tags:
   - c
 title: 'Kernel code : do-while(0)'
-category: language
 ---
 출처 : [http://kernelnewbies.org/FAQ/DoWhile0](http://kernelnewbies.org/FAQ/DoWhile0)
 
@@ -12,6 +12,7 @@ category: language
 
 
 Why do a lot of #defines in the kernel use do { ... } while(0)?
+
 There are a couple of reasons:
 
 - (from Dave Miller) Empty statements give a warning from the compiler so this is why you see #define FOO do { } while(0).
