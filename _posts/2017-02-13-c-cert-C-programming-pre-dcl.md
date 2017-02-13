@@ -1,14 +1,15 @@
 ---
-title: 'CERT C 프로그래밍 정리 (PRE, DCL)'
+category: language
 layout: post
 tags:
   - c
-category: language
+title: 'CERT C 프로그래밍 정리 (PRE, DCL)'
 ---
 #### 에이콘, CERT C 프로그래밍, 로버트 C. 시코드.. 공부하면서 중요부분을 정리함.
 
+---
 
-[========]
+---
 
 
 ##### PRE00-C. 함수형의 매크로보다 인라인이나 정적함수를 사용하라
