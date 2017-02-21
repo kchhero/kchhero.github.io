@@ -27,7 +27,7 @@ category: language
 인자 리스트에 &를 사용하면 가변 인자를 받는 함수를 만들 수 있다.
 매개변수에 일대일로 바인딩되지 못한, 나머지 인자들의 시퀀스가 & 뒤의 매개변수에 바인딩된다.
 
-```lisp?line_number=false
+```clojure?line_number=false
 user> (defn date [p1 p2 & others]
              (println p1 "and" p2 "gogo with" (count others) "zzz"))
 #'user/date
@@ -38,7 +38,7 @@ user> (date "Jim" "Me" "Any")
 ---
 
 #### 익명함수
-```lisp?line_number=false
+```clojure?line_number=false
 user> (defn make-greeter [greeting-prefix]
                (fn [username] (str greeting-prefix ", " username)))
 #'user/make-greeter
