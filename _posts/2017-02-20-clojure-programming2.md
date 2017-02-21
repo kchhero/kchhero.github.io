@@ -33,3 +33,23 @@ user> (defn date [p1 p2 & others]
 user> (date "Jim" "Me" "Any")
    Jim and Me gogo with 1 zzz
 ```
+
+---
+
+#### 익명함수
+```lisp?line_number=false
+user> (defn make-greeter [greeting-prefix]
+               (fn [username] (str greeting-prefix ", " username)))
+#'user/make-greeter
+user> (defn hello-greeter (make-greeter "hello"))
+IllegalArgumentException Parameter declaration "make-greeter" should be a vector  clojure.core/assert-valid-fdecl (core.clj:7196)
+user> (def hello-greeter (make-greeter "hello"))
+#'user/hello-greeter
+user> (hello-greeter "world")
+"hello, world"
+user>
+user>
+user> ((make-greeter "Aloha") "world")
+   "Aloha, world"
+user>
+```
