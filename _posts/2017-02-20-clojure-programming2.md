@@ -1,11 +1,12 @@
 ---
-title: programming-clojure2
 layout: post
 tags:
   - clojure
+title: programming-clojure2
 category: language
 ---
 #### reader macro
+
 |리더 매크로|예|
 |---|---|
 |익명 함수|#(.toUpperCase %)
