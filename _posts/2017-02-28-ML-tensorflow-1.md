@@ -15,9 +15,11 @@ $ docker pull tensorflow/tensorflow
 2. extension FROM tensorflow/tensorflow
 ```shell
 ==> Dockerfile
-FROM tensorflow/tensorflow:latest
-MAINTAINER suker <suker@nexell.co.kr>
-COPY run_tensorboard.sh /         # run_tensorboard.sh 의 내용 =>  tensorboard --logdir=/notebooks/board
+		FROM tensorflow/tensorflow:latest
+		MAINTAINER suker <suker@nexell.co.kr>
+		COPY run_tensorboard.sh /         # run_tensorboard.sh 의 내용 =>  tensorboard --logdir=/notebooks/board
+==> build
+		$ docker build -t suker/tensorflow .
 ```
 
 3.  실행
