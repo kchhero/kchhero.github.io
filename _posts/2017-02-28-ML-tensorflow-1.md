@@ -1,26 +1,28 @@
 ---
-title: tensorflow-install
 layout: post
 tags:
   - ML
+title: tensorflow-install
 category: MachineLearning
 ---
 ##### Docker + tensorflow
 
-1. Base image tensorflow/tensorflow 
-==> docker pull tensorflow/tensorflow
-==> extension suker/tensorflow
+1. Base image tensorflow/tensorflow
+```shell
+$ docker pull tensorflow/tensorflow
+```
 
-2. extension
+2. extension FROM tensorflow/tensorflow
 ```shell
 ==> Dockerfile
 FROM tensorflow/tensorflow:latest
 MAINTAINER suker <suker@nexell.co.kr>
-COPY run_tensorboard.sh /          ==>  tensorboard --logdir=/notebooks/board
+COPY run_tensorboard.sh /         # run_tensorboard.sh 의 내용 =>  tensorboard --logdir=/notebooks/board
 ```
 
 3.  실행
 ```shell
+==> run.sh
 #!/bin/bash
 docker run -d --name tenf -p 8888:8888 -p 6006:6006 -v ~/MachineLearning/shared:/notebooks -e PASSWORD=nexell suker/tensorflow
 sleep 3
