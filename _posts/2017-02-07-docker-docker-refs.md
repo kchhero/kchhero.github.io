@@ -127,26 +127,27 @@ $ docker rm $(docker ps --filter 'status=exited' -a -q)
 ---
 
 #### Refernce
-https://github.com/jenkinsci/docker.git 
-https://github.com/ubuntu-core/jenkins-ubuntu/blob/master/Dockerfile
+- https://github.com/jenkinsci/docker.git 
+- https://github.com/ubuntu-core/jenkins-ubuntu/blob/master/Dockerfile
 
 ---
 
 #### Trouble shooting
 
->jenkins login 안될때
-JENKINS_HOME folder and edit here the file config.xml:
-<useSecurity>true</useSecurity>  ==>  <useSecurity>false</useSecurity>
-remove <authorizationStrategy …> until </authorizationStrategy>
-<securityRealm..> until </securityRealm>
+- jenkins login 안될때
+```
+	JENKINS_HOME folder and edit here the file config.xml:
+	<useSecurity>true</useSecurity>  ==>  <useSecurity>false</useSecurity>
+	remove <authorizationStrategy …> until </authorizationStrategy>
+	<securityRealm..> until </securityRealm>
+```
 
----
-
->docker build 문제
+- docker build 문제
+```
 """
 W: Failed to fetch http://deb.debian.org/debian/dists/jessie-backports/main/binary-amd64/Packages  Hash Sum mismatch
 E: Some index files failed to download. They have been ignored, or old ones used instead.
 """
 original jenkins에서 openjdk:8-jdk 를 openjdk:9-jdk 로 수정해서 생성함
-
+```
 
