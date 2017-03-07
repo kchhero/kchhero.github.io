@@ -1,9 +1,10 @@
 ---
-tags: docker
-title: 'Docker 정리'
-layout: post
+categories: Uncategoried
 category: docker
 description: 'docker 관련 명령어 및 정리 내용'
+layout: post
+tags: docker
+title: 'Docker 정리'
 ---
 ##### pull
 ```
@@ -97,6 +98,11 @@ $ docker run --name db -d mongo   -->  db라는 이름으로 mongo DB를 실행
 ##### --link -->  container간의 연결
 ```
 $ docker run --name web -d -p 80:80 --link db:db nginx
+```
+
+##### docker login
+```
+docker login --username=suker --email=kchhero@gmail.com
 ```
 
 ##### socat을 이용하여 다른 서버의 container에 연결
