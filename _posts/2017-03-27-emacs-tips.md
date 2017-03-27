@@ -5,8 +5,11 @@ tags:
   - emacs
 category: Tools
 ---
+#### elpy
+
 reference : https://github.com/jorgenschaefer/elpy
-```
+
+```lisp
 One-line install: pip install jedi flake8 importmagic autopep8
 
 Evaluate this in your *scratch* buffer:
