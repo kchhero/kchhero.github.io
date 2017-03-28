@@ -1,5 +1,4 @@
 ---
-categories: Uncategoried
 category: docker
 description: 'docker 관련 명령어 및 정리 내용'
 layout: post

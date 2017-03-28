@@ -46,3 +46,24 @@ description으로 바꿔줌
   ---
       
 ```
+
+$ jekyll serve
+/usr/local/lib/site_ruby/2.3.0/rubygems/core_ext/kernel_require.rb:55:in `require': cannot load such file -- bundler (LoadError)
+                                                                         from /usr/local/lib/site_ruby/2.3.0/rubygems/core_ext/kernel_require.rb:55:in `require'
+                                                                              from /var/lib/gems/2.3.0/gems/jekyll-3.4.1/lib/jekyll/plugin_manager.rb:34:in `require_from_bundler'
+                                                                                   from /var/lib/gems/2.3.0/gems/jekyll-3.4.1/exe/jekyll:9:in `<top (required)>'
+                                                                                        from /usr/local/bin/jekyll:22:in `load'
+                                                                                             from /usr/local/bin/jekyll:22:in `<main>'
+
+
+==> sudo gem install bundler
+
+
+
+
+
+/var/lib/gems/2.3.0/gems/bundler-1.14.6/lib/bundler/resolver.rb:386:in `block in verify_gemfile_dependencies_are_found!': Could not find gem 'jekyll-paginate' in any of the gem sources listed in your Gemfile. (Bundler::GemNotFound)
+
+==> sudo gem install jekyll-sitemap
+
+

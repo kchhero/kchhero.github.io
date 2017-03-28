@@ -1,59 +1,37 @@
-## Voyager
+dbyll
+=====
 
-Just another jekyll theme. Demo: <http://redvi.github.io/voyager>
+Open source stylish, minimalistic theme for jekyll.  
+Demo: http://dbtek.github.io/dbyll/
 
-### Feathures:
+## New
+- Dbyll for Ghost is now available. Get it [here](https://github.com/dbtek/dbyll-ghost) now.
+- :new: Check out [Paper](https://github.com/dbtek/paper), new Material Design Jekyll theme.
 
-All HTML files are compressed (see `_layouts/compress.html`).
+### Features
+- Responsive layout.
+- Supports tags and categories.
+- Social profile and bio of author.
+- Bootstrap based.
+- Glyphicon and Font-Awesome Icons.
+- Pagination.
+- Syntax highlighting with pygments.
+- Disqus comments.
+- :new: Custom sidebar background image.
 
-**Post**
 
-All post settings can be changed. Example:
+### Download
+* [Download dbyll](https://github.com/dbtek/dbyll/archive/master.zip)
 
-```
----
-layout: post
-bg: '2016/background.jpg'
-title: "Post Heading"
-crawlertitle: "page title"
-summary: "post description"
-date: 2016-06-29
-tags : ['front-end']
-slug: post-url
-author: "Author"
-categories: posts
----
-```
+### Install
+- You need to have [ruby](https://www.ruby-lang.org/en/documentation/installation/) installed in your system.
+- Install bundler which helps in specifying and installing dependencies of any Ruby project. ```gem install bundler```
+- Go to the root of the repo and run this - ```bundle install```
+- Then - ```bundle exec jekyll serve```
 
-`bg` is a path to background of your article. By default backgrounds are placed in the `assets/images` directory.
+### Screenshots
+![dbyll-screenshot](assets/media/dbyll-ss.png)
 
-**Page**
+### License
+- [MIT](http://opensource.org/licenses/MIT)
 
-If page contains `active` tag, it will be show on site menu.
-
-```
----
-layout: page
-title: "About"
-permalink: /about/
-active: about
----
-```
-
-**Archive**
-
-Archive page is sorting posts by tags. No more than one tag in one post.
-
-Good:
-
-```
-tags : ['front-end']
-```
-
-Bad:
-
-```
-tags : ['front-end', 'jekyll']
-```
-
-Don't forget to change `_config.yml`.
