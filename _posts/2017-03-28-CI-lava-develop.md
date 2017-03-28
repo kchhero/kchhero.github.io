@@ -18,7 +18,7 @@ lava-dispatcher의 deploy method에는 lxc, fastboot 등등이 있는데, 그대
 
 https://hub.docker.com/r/suker/lava-docker/
 
-```
+```shell
 FROM forcedinductionz/lava-docker
 
 RUN apt-get update && apt-get install -y emacs24
@@ -54,7 +54,7 @@ RUN mkdir -p /var/lib/nexell
 ---
 
 #### Run Docker image
-```
+```shell
 docker run -it --name con_lava -v /boot:/boot -v /lib/modules:/lib/modules -v /home/suker/LAVA/docker/fileshare:/opt/fileshare \
 -v /dev/bus/usb:/dev/bus/usb -v ~/.ssh/id_rsa_lava.pub:/home/lava/.ssh/authorized_keys:ro --device=/dev/ttyUSB0 -p 8000:80 -p 2022:22 \
 -h lava-slave --privileged -v /sys/fs/cgroup:/sys/fs/cgroup suker/lava-docker
@@ -63,7 +63,7 @@ docker run -it --name con_lava -v /boot:/boot -v /lib/modules:/lib/modules -v /h
 
 #### /etc
 /etc/ser2net.conf 에 아래 코드를 추가한다. 물리 device의 usb 연결 node 정보에 대한 config 이다.
-```
+```shell
 4001:telnet:600:/dev/ttyUSB0:115200 8DATABITS NONE 1STOPBIT banner
 ```
 
@@ -72,7 +72,7 @@ device-dictionary에 추가할 device 정보 및 device-type이다.
 /home/suker/LAVA/docker/home/lava/lava-server/lava_scheduler_app/tests/devices/s5p4418-01.jinja2
 /home/suker/LAVA/docker/home/lava/lava-server/lava_scheduler_app/tests/device-types/s5p4418.jinja2
 
-```
+```shell
 {% extends 's5p4418.jinja2' %}
 {% set nexell_command = 'true' %}
 {% set connection_command = 'telnet localhost 4001' %}
@@ -86,7 +86,7 @@ device-dictionary에 추가할 device 정보 및 device-type이다.
 lava-dispatcher extension source는 아래와 같다.
  [==> git patch](https://github.com/kchhero/kchhero.github.io/blob/master/_posts_data/0001-suker-lava-dispatcher-nexell-extension.patch "patch")
 
-```
+```shell
 [suker@suker-nexell] ~/LAVA/lava-dispatcher
 $ git status
 On branch master
@@ -117,7 +117,7 @@ $
 ---
 
 #### 작업 완료후 container에서 backup할 파일은 다음과 같다.
-```
+```shell
 #!/bin/bash
 
 declare -a backuplist=(
