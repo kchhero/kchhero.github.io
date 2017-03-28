@@ -1,9 +1,9 @@
 ---
-layout: post
-title:  Suker Bitbucket repositories
 category: private
-description: suker bitbucket.com 에 구성한 repository list up
+description: 'suker bitbucket.com 에 구성한 repository list up'
+layout: post
 tags: development
+title: 'Suker Bitbucket repositories'
 ---
 
 <img src="/assets/images/bitbucket.png" width="48" align="right">
@@ -28,7 +28,12 @@ tags: development
 
 ---
 
-#### [docker-fileserver](https://github.com/kchhero/suker_clojure_project)
+#### [docker-fileserver](https://bitbucket.org/kchhero/docker-fileserver)
 - apache snapshot/release server docker images, based linaro
+
+---
+
+#### [others](https://bitbucket.org/kchhero/others)
+- Machine Learning data, LAVA-docker data, Private Documents
 
 ---
