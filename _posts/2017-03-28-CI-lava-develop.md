@@ -1,5 +1,5 @@
 ---
-title: 'LAVA 구축 정리'
+title: 'LAVA develop'
 layout: post
 tags:
   - CI
