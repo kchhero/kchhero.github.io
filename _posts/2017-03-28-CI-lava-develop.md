@@ -72,12 +72,6 @@ device-dictionary에 추가할 device 정보 및 device-type이다.
 /home/suker/LAVA/docker/home/lava/lava-server/lava_scheduler_app/tests/devices/s5p4418-01.jinja2
 /home/suker/LAVA/docker/home/lava/lava-server/lava_scheduler_app/tests/device-types/s5p4418.jinja2
 
-    {% extends 's5p4418.jinja2' %}
-    {% set nexell_command = 'true' %}
-    {% set connection_command = 'telnet localhost 4001' %}
-    {% set adb_serial_number = 's5p4418-navi-ref' %}
-    {% set fastboot_serial_number = 's5p4418-navi-ref' %}
-    {% set device_path = ['/dev/ttyUSB0'] %}
 
 #### /usr
 lava-dispatcher extension source는 아래와 같다.
