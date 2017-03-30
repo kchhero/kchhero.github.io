@@ -24,7 +24,8 @@ author:
   linkedin: kchhero
   bio: If you do not act, there is no change.
   gravatar: https://s.gravatar.com/avatar/fdd3f88092f0e74ee242029c870349ed?s=80
-  
+  email_md5: fdd3f88092f0e74ee242029c870349ed
+
 rss_path: feed.xml
 about_path: about.html
 tags_path: tags.html
