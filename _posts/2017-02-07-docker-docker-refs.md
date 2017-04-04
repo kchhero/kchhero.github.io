@@ -79,7 +79,7 @@ $ docker diff suker-test
 ```
 
 ##### git show
-````
+```
 $ docker inspect suker-test
 ```
 
