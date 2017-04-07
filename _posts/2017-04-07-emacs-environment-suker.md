@@ -1,8 +1,8 @@
 ---
-title: 'emacs environment for SUKER'
 layout: post
 tags:
   - emacs
+title: 'emacs environment for SUKER'
 category: Tools
 ---
 #### emacs 환경 구성에 대한 정리
@@ -14,6 +14,7 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 ---
 
 ##### 0. sudo apt-get update && sudo apt-get install -y emacs24
+<br>
 ##### 1. melpa for package install
 ```lisp
 --- .emacs ---
@@ -24,7 +25,7 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
         (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 ```
-
+<br>
 ##### 2. package 설치
 	M-x package-list-packages
 	
@@ -36,7 +37,7 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 	【r】 (package-menu-refresh) → refresh the list from server.
 
 * 설치 list : cider, clojure-cheatsheet, clojure-mode-ex... ,clojure-quick-r... ,clojure-snippets, color-theme-sanityinc-tomorrow, elpy, gmail-message-mode, python, python-environment, python-mode
-
+<br>
 
 ##### 3. theme 설정
 ( 참고 : https://github.com/purcell/color-theme-sanityinc-tomorrow )
@@ -97,7 +98,7 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
  ;; If there is more than one, they won't work right.
  )
 ```
-
+<br>
 ##### 4. customizing, .emacs &&  .emacs.d
 .emacs에 아래 처럼 code를 추가하고, .emacs.d 에도 필요한 .el 파일들을 copy 해준다.
  https://github.com/kchhero/suker_enviroment/emacs_old/.emacs.d/
