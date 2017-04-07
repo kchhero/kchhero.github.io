@@ -37,8 +37,8 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 	【r】 (package-menu-refresh) → refresh the list from server.
 
 * 설치 list : cider, clojure-cheatsheet, clojure-mode-ex... ,clojure-quick-r... ,clojure-snippets, color-theme-sanityinc-tomorrow, elpy, gmail-message-mode, python, python-environment, python-mode
-<br>
 
+<br>
 ##### 3. theme 설정
 ( 참고 : https://github.com/purcell/color-theme-sanityinc-tomorrow )
 
