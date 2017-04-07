@@ -37,7 +37,7 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 	【x】 (package-menu-execute) → for “execute” (start install/uninstall of marked items).
 	【r】 (package-menu-refresh) → refresh the list from server.
 
-* 설치 list : cider, clojure-cheatsheet, clojure-mode-ex... ,clojure-quick-r... ,clojure-snippets, color-theme-sanityinc-tomorrow, elpy, gmail-message-mode, python, python-environment, python-mode
+* 설치 list : cider, clojure-cheatsheet, clojure-mode-ex... ,clojure-quick-r... ,clojure-snippets, color-theme-sanityinc-tomorrow, elpy, gmail-message-mode, python, python-environment, python-mode, Flycheck, web-mode, function-args
 
 <br>
 ##### 3. theme 설정
@@ -104,12 +104,9 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 .emacs에 아래 처럼 code를 추가하고, .emacs.d 에도 필요한 .el 파일들을 copy 해준다.
  https://github.com/kchhero/suker_enviroment/emacs_old/.emacs.d/
 ```lisp
-;;----------------------------- suker customize ---------------------------
-;; elpy enable
-(elpy-enable)
-
+;------------------------- suker customize start ---------------------------
 ;; buffer move, window move
-(add-to-list 'load-path "~/.emacs.d/")
+;;(add-to-list 'load-path "~/.emacs.d/")
 (load-file "~/.emacs.d/buffer-move.el")
 (require 'buffer-move)
 (global-set-key (kbd "C-c <up>")     'buf-move-up)
@@ -127,7 +124,24 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 (setq auto-mode-alist (cons '("\\Dockerfile$" . bb-mode) auto-mode-alist))
 
 ;; navi menu on/off
+;; https://github.com/ancane/emacs-nav/blob/master/nav.el
+(add-to-list 'load-path "~/.emacs.d/emacs-nav-49/")
+(require 'nav)
 (nav-disable-overeager-window-splitting)
-(global-set-key [f8] 'nav-toggle)
+(global-set-key (kbd "<f8>") 'nav-toggle)
 
+;; python setting
+(load-file "~/.emacs.d/python-init.el")
+(require 'elpy)
+(elpy-enable)
+
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
+
+(require 'function-args)
+(fa-config-default)
+
+(require 'web-mode)
+(add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
+;;------------------------ suker customize End ---------------------------
 ```
