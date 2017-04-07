@@ -9,7 +9,8 @@ category: Tools
 
 emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는 걸레(?)가 되었다.
 모든것을 정리하고 설치부터 새롭게 정리하려고 한다.
-#####( 참고: http://ergoemacs.org/emacs/emacs_package_system.html )
+<br>
+##### ( 참고: http://ergoemacs.org/emacs/emacs_package_system.html )
 
 ---
 
