@@ -13,19 +13,10 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 
 ---
 
-######0. sudo apt-get update && sudo apt-get install -y emacs24
-######1. melpa for package install
-```
---- .emacs ---
-(when (>= emacs-major-version 24)
-    (require 'package)
-        (add-to-list
-            'package-archives
-            '("melpa-stable" . "https://stable.melpa.org/packages/")
-            t)
-    (package-initialize))
-```
+##### 0. sudo apt-get update && sudo apt-get install -y emacs24
+##### 1. melpa for package install
 ```lisp
+--- .emacs ---
 (require 'package) ;; You might already have this line
 (add-to-list 'package-archives
         '("melpa" . "https://stable.melpa.org/packages/"))
@@ -34,7 +25,7 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 (package-initialize) ;; You might already have this line
 ```
 
-######2. package 설치
+##### 2. package 설치
 	M-x package-list-packages
 	
 	【Enter ↵】 (package-menu-describe-package) → Describe the package under cursor.
@@ -43,18 +34,16 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 	【d】 (package-menu-mark-delete) → mark for deletion (removal of a installed package).
 	【x】 (package-menu-execute) → for “execute” (start install/uninstall of marked items).
 	【r】 (package-menu-refresh) → refresh the list from server.
-	
+
 * 설치 list : cider, clojure-cheatsheet, clojure-mode-ex... ,clojure-quick-r... ,clojure-snippets, color-theme-sanityinc-tomorrow, elpy, gmail-message-mode, python, python-environment, python-mode
 
-######3. theme 설정
-(참고 : https://github.com/purcell/color-theme-sanityinc-tomorrow)
-```
-M-x package-install RET color-theme-sanityinc-tomorrow RET
-위에서 이미 설치했으므로 pass 
-M-x color-theme-sanityinc-tomorrow-blue
-```
 
----
+##### 3. theme 설정
+( 참고 : https://github.com/purcell/color-theme-sanityinc-tomorrow )
+
+	M-x package-install RET color-theme-sanityinc-tomorrow RET
+	위에서 이미 설치했으므로 pass 
+	M-x color-theme-sanityinc-tomorrow-blue
 
 3번까지 진행 후 .emacs 를 보면 아래와 같이 변경 되어있을거다.
 ```lisp
@@ -109,6 +98,34 @@ M-x color-theme-sanityinc-tomorrow-blue
  )
 ```
 
-######4. customizing, .emacs &&  .emacs.d
+##### 4. customizing, .emacs &&  .emacs.d
 .emacs에 아래 처럼 code를 추가하고, .emacs.d 에도 필요한 .el 파일들을 copy 해준다.
  https://github.com/kchhero/suker_enviroment/emacs_old/.emacs.d/
+```lisp
+;;----------------------------- suker customize ---------------------------
+;; elpy enable
+(elpy-enable)
+
+;; buffer move, window move
+(add-to-list 'load-path "~/.emacs.d/")
+(load-file "~/.emacs.d/buffer-move.el")
+(require 'buffer-move)
+(global-set-key (kbd "C-c <up>")     'buf-move-up)
+(global-set-key (kbd "C-c <down>")   'buf-move-down)
+(global-set-key (kbd "C-c <left>")   'buf-move-left)
+(global-set-key (kbd "C-c <right>")  'buf-move-right)
+
+;; for yocto recipe edit mode 
+(load-file "~/.emacs.d/bb-mode.el")
+(setq auto-mode-alist (cons '("\\.bb$" . bb-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.inc$" . bb-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.bbappend$" . bb-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.bbclass$" . bb-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\.conf$" . bb-mode) auto-mode-alist))
+(setq auto-mode-alist (cons '("\\Dockerfile$" . bb-mode) auto-mode-alist))
+
+;; navi menu on/off
+(nav-disable-overeager-window-splitting)
+(global-set-key [f8] 'nav-toggle)
+
+```
