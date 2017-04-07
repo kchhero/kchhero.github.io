@@ -1,11 +1,11 @@
 ---
-title: 'linux command - tree'
+title: 'linux command - tree / abc'
 layout: post
 tags:
   - linux
 category: linux
 ---
-##### tree
+##### tree 가지고 놀기
 
 tree 만으로도 하루 종일 가지고 놀 수 있을 것 같다. 상당히 많은 기능이 있다.
 
