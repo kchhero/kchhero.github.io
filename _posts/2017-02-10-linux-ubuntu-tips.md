@@ -1,4 +1,5 @@
 ---
+categories: Uncategoried
 category: linux
 layout: post
 tags:
@@ -39,7 +40,7 @@ $ cat /dev/urandom > /dev/fb0
 
 <br>
 
-##### chrome app shortcut 실행
+##### chrome app shortcut 실행 & Error
 shotcut binding 에 chrome의 jekyll app 실행을 추가한다. F9
 [https://kchhero.github.io/programming/2017/04/10/python-shortcut-script.html](https://kchhero.github.io/programming/2017/04/10/python-shortcut-script.html)
 
@@ -65,8 +66,9 @@ Exec=/opt/google/chrome/google-chrome --profile-directory=Default --app-id=dfdkg
 ```shell
 [11019:11019:0411/113710.197538:ERROR:browser_main_loop.cc(250)] GTK theme error: Unable to locate theme engine in module_path: "pixmap",
 [11019:11019:0411/113710.198030:ERROR:browser_main_loop.cc(250)] GTK theme error: Unable to locate theme engine in module_path: "pixmap",
-[11019:11019:0411/113710.266728:ERROR:edid_parser.cc(181)] invalid EDID: human unreadable char in name
-[11019:11019:0411/113710.266923:ERROR:edid_parser.cc(181)] invalid EDID: human unreadable char in name
 ```
 6. 아래 package를 설치해보자.
-    sudo apt-get install  gtk2-engines-pixbuf:i386
+```
+64bit machine : sudo apt-get install  gtk2-engines-pixbuf:amd64
+32bit machine : sudo apt-get install  gtk2-engines-pixbuf:i386
+```
