@@ -1,22 +1,15 @@
 ---
-layout: post
-title:  Suker GitHub repositories
 category: private
-description: suker github.com 에 구성한 repository list up
+description: 'suker github.com 에 구성한 repository list up'
+layout: post
 tags: development
+title: 'Suker GitHub repositories'
 ---
 
 <img src="/assets/images/github_icon.png" width="48" align="right"/>
 <br>
 
 ### Repositories
-
----
-
-#### [kchhero/docFile](https://github.com/kchhero/docFiles)
-- krogoth_nexell_guide
-- yocto_Jethro_general.md
-- yocto_KrogothWithArtik7.md
 
 ---
 
