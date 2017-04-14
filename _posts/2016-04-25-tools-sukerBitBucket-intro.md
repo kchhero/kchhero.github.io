@@ -18,22 +18,17 @@ title: 'Suker Bitbucket repositories'
 
 ---
 
-#### [docker-opengrok](https://bitbucket.org/kchhero/docker-opengrok)
-- opengrok docker image
+#### [suker-docker](https://bitbucket.org/kchhero/suker-dockers)
+- My dockerfile and data
 
 ---
 
-#### [docker-jenkins](https://bitbucket.org/kchhero/docker-jenkins)
-- jenkins docker image
+#### [MachineLearning](https://bitbucket.org/kchhero/machinelearning)
+- Machine Learning Data and Sources
 
 ---
 
-#### [docker-fileserver](https://bitbucket.org/kchhero/docker-fileserver)
-- apache snapshot/release server docker images, based linaro
-
----
-
-#### [others](https://bitbucket.org/kchhero/others)
-- Machine Learning data, LAVA-docker data, Private Documents
+#### [Documents](https://bitbucket.org/kchhero/documents)
+- Private Documents
 
 ---
