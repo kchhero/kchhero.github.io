@@ -12,7 +12,9 @@ category: private
 <br>
 
 한창 c coding을 왕성하게 할때 헝가리안 표기법을 많이 사용했었다.
-g_nCnt, m_pMyMy 
+
+g_nCnt, m_pMyMy <br>
+
 사실 지금 생각해보건데, 누군가에게 어디에선가 이 표기법을 보고 배운것은 아니었다.
 다만 이전 선배들이 짜놓은 코드를 보면서 resue 하고 debugging 하다보니 저절로 손에 익혔던것같다.
 
