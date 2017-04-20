@@ -54,9 +54,15 @@ $ docker rm hello
 $ docker rmi ubuntu:latest
 ```
 
-##### image 생성
+##### image 생성1
 ```
 $ docker build --tag suker:0.3 ./
+```
+
+##### image 생성2
+Dockerfile 을 명시적으로 지정하여 build
+```
+$ docker build ${CACHE_OPTION} -t suker/tensorflow:GPU -f docker/Dockerfile.GPU ./docker/.
 ```
 
 ##### image 실행
