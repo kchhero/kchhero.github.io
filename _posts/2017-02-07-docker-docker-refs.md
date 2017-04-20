@@ -5,6 +5,21 @@ layout: post
 tags: docker
 title: 'Docker 정리'
 ---
+##### docker 설치
+ubuntu 16.04 기준으로 설치 방법은 아래와 같다.
+```
+$ sudo apt update
+$ sudo apt-get install docker.io
+$ sudo usermod -aG docker $(USER)
+```
+
+##### docker sudo 권한
+```
+$ sudo groupadd docker
+$ sudo gpasswd -a ${USER} docker
+$ sudo service docker restart
+```
+
 ##### pull
 ```
 $ sudo docker pull suker/mydesktoptest
@@ -27,13 +42,6 @@ $ docker run -i -t --name suker0.4 suker:0.4 /bin/bash
 
 $ docker restart hello
 $ docker attach hello      -->   정지: exit Ctrl+D, 그냥나오기: Ctrl+P, Ctrl+Q
-```
-
-##### docker sudo 권한
-```
-$ sudo groupadd docker
-$ sudo gpasswd -a ${USER} docker
-$ sudo service docker restart
 ```
 
 ##### container 삭제
