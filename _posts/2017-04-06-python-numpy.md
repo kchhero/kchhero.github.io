@@ -53,3 +53,45 @@ np.random.randn(2,3)
 [[ 1.90126345  0.23773306 -2.06282222]
  [-0.83982942 -2.15618793  2.49362771]]
  ```
+
+---
+
+##### numpy.amax
+numpy.amax(a, axis=None, out=None, keepdims=<class numpy._globals._NoValue at 0x40b6a26c>)[source]
+Return the maximum of an array or maximum along an axis.
+```
+>>> a = np.arange(4).reshape((2,2))
+>>> a
+array([[0, 1],
+       [2, 3]])
+>>> np.amax(a)           # Maximum of the flattened array
+3
+>>> np.amax(a, axis=0)   # Maxima along the first axis
+array([2, 3])
+>>> np.amax(a, axis=1)   # Maxima along the second axis
+array([1, 3])
+```
+
+---
+
+##### numpy.nonzero
+Return the indices of the elements that are non-zero.
+
+A common use for nonzero is to find the indices of an array, where a condition is True. Given an array a, the condition a > 3 is a boolean array and since False is interpreted as 0, np.nonzero(a > 3) yields the indices of the a where the condition is true.
+```
+>>> x = np.eye(3)
+>>> x
+array([[ 1.,  0.,  0.],
+       [ 0.,  1.,  0.],
+       [ 0.,  0.,  1.]])
+>>> np.nonzero(x)
+(array([0, 1, 2]), array([0, 1, 2]))
+
+>>> a = np.array([[1,2,3],[4,5,6],[7,8,9]])
+>>> a > 3
+array([[False, False, False],
+       [ True,  True,  True],
+       [ True,  True,  True]], dtype=bool)
+>>> np.nonzero(a > 3)
+(array([1, 1, 1, 2, 2, 2]), array([0, 1, 2, 0, 1, 2]))
+```
