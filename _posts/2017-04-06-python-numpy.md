@@ -95,3 +95,16 @@ array([[False, False, False],
 >>> np.nonzero(a > 3)
 (array([1, 1, 1, 2, 2, 2]), array([0, 1, 2, 0, 1, 2]))
 ```
+
+---
+
+##### numpy.identity
+Return the identity array.
+
+The identity array is a square array with ones on the main diagonal.
+```
+>>> np.identity(3)
+array([[ 1.,  0.,  0.],
+           [ 0.,  1.,  0.],
+           [ 0.,  0.,  1.]])
+```
