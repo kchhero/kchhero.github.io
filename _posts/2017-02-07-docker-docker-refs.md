@@ -70,6 +70,12 @@ $ docker build ${CACHE_OPTION} -t suker/tensorflow:GPU -f docker/Dockerfile.GPU 
 $ docker run --name hello-nginx -d -p 80:80 -v /root/data:/data hello:0.1
 ```
 
+##### image 를 local host에 저장/로드
+```
+docker save -o <save image to path> <image name>
+docker load -i <path to image tar file>
+```
+
 ##### history 확인
 ```
 $ docker history suker:0.3
