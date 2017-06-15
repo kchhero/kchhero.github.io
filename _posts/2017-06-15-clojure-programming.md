@@ -5,7 +5,7 @@ tags:
   - clojure
 category: language
 ---
-##### BASIC
+#### BASIC
 user==> (defn hello [name] (str "Hello, " name))
 * defn : 함수를 정의
 * hello : 함수 이름, name이라는 인자를 받는다.
@@ -39,7 +39,7 @@ user> (str \a \b \c \space \d \e \f)
 
 ---
 
-##### 특수변수
+#### 특수변수
 
 - REPL은 최근에 입력된 표현식의 결과 값 세 개를 각각 \*1, \*2, \*3 이라는 특수 변수에  저장하고 있다.
 - \*e 는 바로 직전의 예외를 저장하고 있다.
@@ -50,7 +50,7 @@ user ==> (.printStackTrace *e)
 
 ---
 
-##### file load
+#### file load
 ```lisp
 ;  abc.clj
 user ==> (load-file "abc.clj")
@@ -58,7 +58,7 @@ user ==> (load-file "abc.clj")
 
 ---
 
-##### 병행성 예제 - preview
+#### 병행성 예제 - preview
 ```lisp
 (def visitors (ref #{}))
 
@@ -85,7 +85,7 @@ user> (hello "ASDF")
 
 ---
 
-##### 라이브러리
+#### 라이브러리
 
 * require : clojure library를 load 한다.
 ```
@@ -106,7 +106,7 @@ use quoted-namespace-symbol)
 
 ---
 
-##### 문서 찾아보기
+#### 문서 찾아보기
 
 * doc
 ```
