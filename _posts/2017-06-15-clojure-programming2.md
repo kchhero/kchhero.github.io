@@ -20,7 +20,7 @@ category: language
 #### 문자, 문자열
 
 clojure는 자바의 문자열 메서드를 대부분 추상화하지 않는다. 그냥 바로 호출한다.
-```lisp
+```clojure?line_number=false
 (.toUpperCase "hello")
 =>   "HELLO"
 #점(.)은 toUpperCase를 clojure 함수가 아니라 자바 메서드로 다루라는 뜻이다.
@@ -28,7 +28,7 @@ clojure는 자바의 문자열 메서드를 대부분 추상화하지 않는다.
 <br>
 str은 여러 인자를 받는 함수이다. 아래의 경우 하나의 리스트를 넘겨받는다. 
 apply를 사용하면?
-```lisp
+```clojure?line_number=false
 형식 : (apply f args* argseq)
 
 user> (apply str (interleave "Attack at midnight"
@@ -56,7 +56,7 @@ user> (apply str (take-nth 2 "ATthtea cpku raptl em iedlneipghhatn"))
 #### map, keyword, structure
 
 map은 그 자체가 곧 함수다.
-```lisp
+```clojure?line_number=false
 user> (def inventors {"Lisp" "McCarthy" "Clojure" "Hickey"})
 #'user/inventors
 user> (inventors "Lisp")
@@ -66,7 +66,7 @@ nil
 ```
 <br>
 get 함수를 사용할 수도 있다.
-```lisp
+```clojure?line_number=false
 user> (get inventors "Lisp" "Not found!!!")
 "McCarthy"
 user> (get inventors "foo" "Not found!!!")
@@ -75,7 +75,7 @@ user>
 ```
 <br>
 key로 가장 많이 쓰이는 것은 keyword 타입이다. 콜론(:) 으로 시작한다.
-```lisp
+```clojure?line_number=false
 user> (def inventors {:Lisp "McCarthy" :Clojure "Hickey"})
 #'user/inventors
 user> (inventors :Lisp)
@@ -87,7 +87,7 @@ user>
 ```
 <br>
 defstruct 를 구조체를 선언하기 위해 사용한다.
-```lisp
+```clojure?line_number=false
 user> (defstruct book :title :author)  ;defstruct를 이용해 book 구조체를 선언한다
 #'user/book
 user> (def b (struct book "Anathem" "Neal Stephenson")) ;struct를 이용해 book 구조체의 instance를 만든다.
@@ -127,8 +127,25 @@ user> (struct-map book :copyright 2008 :title "Babo")
 ---
 
 #### 함수
+
+이름이 같고 인자 개수가 다른 경우의 함수 정의는 다음과 같이 만들 수 있다.
+```clojure?line_number=false
+user> (defn greeting
+        "clojure function study"
+        ([] (greeting "world" ))
+        ([username] (str "Hello, " username)))
+#'user/greeting
+user> (greeting)
+"Hello, world"
+user> (greeting "babo")
+"Hello, babo"
+```
+
+<br>
+
 인자 리스트에 &를 사용하면 가변 인자를 받는 함수를 만들 수 있다.
 매개변수에 일대일로 바인딩되지 못한, 나머지 인자들의 시퀀스가 & 뒤의 매개변수에 바인딩된다.
+가변인자는 재귀 함수를 작성하는 데 매우 유용하다.
 
 ```clojure?line_number=false
 user> (defn date [p1 p2 & others]
@@ -141,6 +158,11 @@ user> (date "Jim" "Me" "Any")
 ---
 
 #### 익명함수
+
+* 함수가 너무 간단한 경우  ==>  필터 함수
+* 함수의 내부에서만 쓰이는 경우
+* 함수 내부에서 데이터를 이용해 동적으로 함수를 만들어 내는 경우
+
 ```clojure?line_number=false
 user> (defn make-greeter [greeting-prefix]
                (fn [username] (str greeting-prefix ", " username)))
