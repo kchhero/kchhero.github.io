@@ -50,7 +50,7 @@ user> #{:the :quick :brown :fox}
 ==> sorted-set, sorted-map 을 사용하면 정렬된 형태로 가능.
 ==> 물론 추가한 순서대로는 아니다.
 user> (sorted-map :c 3 :b 4 :a 1)
-{:a 1, :b 4, :c 3}
+=>{:a 1, :b 4, :c 3}
 user> (sorted-set :the :quick :brown :fox)
 #{:brown :fox :quick :the}
 ```
