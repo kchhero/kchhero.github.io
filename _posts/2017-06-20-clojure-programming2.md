@@ -10,6 +10,7 @@ category: language
 <br>
 
 #### 구문
+
 | 구문 | 예 |
 | ------------- |
 | 키워드 | :tag, :doc|
@@ -104,7 +105,7 @@ user> (:title b)
 "Anathem"
 user> (struct-map book :copyright 2008 :title "Babo")
 {:title "Babo", :author nil, :copyright 2008}
-;struct-map 함수를 이용하면, 속성 값 중 일부를 빼거나 속성에 없는 key/value 를 추가할 수도 있다.
+==>struct-map 함수를 이용하면, 속성 값 중 일부를 빼거나 속성에 없는 key/value 를 추가할 수도 있다.
 ```
 
 ---
