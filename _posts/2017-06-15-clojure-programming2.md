@@ -162,7 +162,6 @@ user> (date "Jim" "Me" "Any")
 * 함수가 너무 간단한 경우  ==>  필터 함수
 * 함수의 내부에서만 쓰이는 경우
 * 함수 내부에서 데이터를 이용해 동적으로 함수를 만들어 내는 경우
-
 ```clojure?line_number=false
 user> (defn make-greeter [greeting-prefix]
                (fn [username] (str greeting-prefix ", " username)))
@@ -179,3 +178,189 @@ user> ((make-greeter "Aloha") "world")
    "Aloha, world"
 user>
 ```
+
+---
+
+#### var, 바인딩, namespace
+
+<b>var의 초기값을 var의 '루트 바인딩'이라고 한다.</b>
+```clojure?line_number=false
+user>  (def foo 10)
+#'user/foo
+user> foo
+10
+```
+리더 매크로를 이용하여 var를 직접 참조
+```clojure?line_number=false
+user> #'foo
+#'user/foo
+```
+
+<br>
+
+(let [bindings] exprs)
+binding은 exprs 안에서만 효과가 있고, exprs의 마지막 표현식의 값이 let 구문 전체의 값으로 반환된다.
+af
+<br>
+
+```clojure?line_number=false
+user> (defn greet-author-1 [author]
+        (println "Hello, " (:first-name author)))
+#'user/greet-author-1
+user> (greet-author-1 {:last-name "babo" :first-name "foofoo"})
+Hello,  foofoo
+nil
+```
+위  코드는 author 전체를 바인딩하고 있다.
+==> 
+
+<b>디스트럭처링</b>
+
+```clojure?line_number=false
+user> (defn greet-author-2 [{fname :first-name}]
+        (println "Hello, " fname))
+#'user/greet-author-2
+user> (greet-author-2 {:last-name "babo" :first-name "foofoo"})
+Hello,  foofoo
+nil
+```
+```clojure?line_number=false
+user> (let [[x y] [1 2 3]]
+        x y)
+2
+user> (let [[x y] [1 2 3]]
+        [x y])
+[1 2]
+user> (let [[_ _ z] [1 2 3]]
+        z)
+3 ; _는 바인딩을 무시한다.
+user> (let [[_ _ z] [1 2 3]]
+        _)
+2 ; 하지만 _ 는 사실 두 번 바인딩된다. 두번째 바인딩된 2가 찍힌다.
+```
+
+:as는 컬렉션 전체를 바인딩 한다.
+```clojure?line_number=false
+user> (let [[x y :as coords] [1 2 3 4 5 6]]
+        coords)
+[1 2 3 4 5 6]
+user> (let [[x y :as coords] [11 21 31 41 51 61]]
+        coords)
+[11 21 31 41 51 61]
+user> (let [[x y :as coords] [11 21 31 41 51 61]]
+        (count coords))
+6
+user> (let [[x y coords] [11 21 31 41 51 61]]
+        coords)
+31
+```
+
+<b>namespace</b>
+
+* 루트 바인딩은 namespace 안에 존재한다.
+```clojure?line_number=false
+;이름 공간의 확인, resolve
+user> (let [x (resolve 'foo)]
+        (println "barobaro: " x))
+barobaro:  #'user/foo
+;이름 공간 만들기
+user> (in-ns 'myapp)
+#namespace[myapp]
+myapp>
+```
+* 새로운 이름 공간으로 이동했을 때, 클로저의 기본적인 함수를 사용하기 위해서
+```clojure?line_number=false
+abcd> (clojure.core/use 'clojure.core)
+```
+* java.lang 외의 클래스 이름은 풀네임으로 기술해야한다. 또는 import 해버린다.
+```clojure?line_number=false
+abcd> (java.io.File/separator)
+"/"
+abcd> (import '(java.io InputStream File))
+java.io.File
+abcd> File/separator
+"/"
+```
+
+* 다른 이름 공간에 있는 클로저 var를 사용하기 원한다면...
+```clojure?line_number=false
+abcd> (require 'clojure.contrib.math)
+abcd> (clojure.contrib.math/round 1.7)
+2
+abcd> (round 1.7)
+java.lang.Exception:
+           ; round를 현재 ns 로 가져오려면..
+abcd> (use 'clojure.contrib.math)
+nil
+           ; 위 코드는 clojure.contrib.math 안에 있는 '모든' public var를 참조한다. round 만 가져오려면..
+		   ; ':only'를 사용한다.
+abcd> (use '[clojure.contrib.math :only (round)])
+nil
+abcd> (round 1.2)
+2
+```
+
+* library 수정 후 사용 프로그램에 변경 내용을 반영하도록 하려면...
+```clojure?line_number=false
+abcd> (use :reload '[clojure.contrib.math :only (round)])
+nil
+abcd> (use :reload-all 'examples.exploring)    ; 참조하는 다른 이름 공간까지 모두 리로드 할때.
+```
+
+#### 흐름 제어
+
+<b>if 사용 </b>
+```clojure?line_number=false
+abcd> (defn is-small? [number]
+        (if (< number 100) "yes" "no"))
+#'abcd/is-small?
+abcd> (is-small? 30)
+"yes"
+abcd> (is-small? 200)
+"no"
+```
+<b>do 부수효과</b>
+if는 분기마다 하나의 구문만 오도록 허용한다. 하나 이상의 일을 하고 싶을때 do를 사용하면 여러 구문을 받아 eval 한다.
+```clojure?line_number=false
+abcd> (defn is-small? [number]
+        (if (< number 100)
+          "yes"
+          (do
+            (println "Saw a big number" number)
+            "no")))
+#'abcd/is-small?
+abcd> (is-small? 20)
+"yes"
+abcd> (is-small? 200)
+Saw a big number 200
+"no"
+abcd>
+```
+<b>loop/recur 반복</b>
+loop는 let과 유사하게, bindings를 설정한 상태에서 exprs를 평가한다. recur을 이용해 반복 가능하게 한다.
+```clojure?line_number=false
+abcd> (loop [result [] w 5]
+        (if (zero? w)
+          result
+          (recur (conj result w) (dec w))))
+[5 4 3 2 1]
+abcd>
+abcd> (defn countdown [result w]
+        (if (zero? w)
+          result
+          (recur (conj result w) (dec w))))
+#'abcd/countdown
+abcd> (countdown [] 9)
+[9 8 7 6 5 4 3 2 1]
+abcd>
+    ; 아래는 위와 같은 일을 하는 간단한 방법
+abcd> (into [] (take 5 (iterate dec 5)))
+[5 4 3 2 1]
+abcd> (into [] (drop-last (reverse (range 6))))
+[5 4 3 2 1]
+abcd> (vec (reverse (rest (range 6))))
+[5 4 3 2 1]
+```
+
+
+
