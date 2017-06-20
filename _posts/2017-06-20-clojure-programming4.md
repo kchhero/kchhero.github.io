@@ -40,7 +40,7 @@ user> (first {:name "babo" :alias "foo"})
 [:name "babo"]
 ```
 * 집합 역시 가능
-```clojure?line_number=false
+```
 user> (first #{:the :quick :brown :fox})
 :fox
 user> #{:the :quick :brown :fox}
@@ -62,7 +62,7 @@ user> (sorted-set :the :quick :brown :fox)
 * 플로저의 시퀀스 라이브러리는 규모가 큰 시퀀스를 다룰때 적합하다. 대부분의 클로저 시퀀스가 꼭 필요해질 때까지 연산을
 미루기 때문에 가용 메모리 용량보다 훨씬 큰 시퀀스도 처리할 수 있다.
 * 클로저의 시퀀스는 immutable 하다. --> 시퀀스에 병행적으로 접근하는 것이 안전해진다.
-```clojure?line_number=false
+```
 user> (conj '(1 2 3) :a)
 (:a 1 2 3)
 user> (into '(1 2 3) '(a b c))
