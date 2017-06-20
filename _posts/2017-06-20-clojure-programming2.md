@@ -94,20 +94,16 @@ user>
 <br>
 
 * defstruct 를 구조체를 선언하기 위해 사용한다.
-```lisp
- user> (defstruct book :title :author)
- ==> defstruct를 이용해 book 구조체를 선언한다
- #'user/book
- user> (def b (struct book "Anathem" "Neal Stephenson")) 
- ==> struct를 이용해 book 구조체의 instance를 만든다.
- #'user/b
- user> b
- {:title "Anathem", :author "Neal Stephenson"}
- user> (:title b)
- "Anathem"
- user> (struct-map book :copyright 2008 :title "Babo")
- {:title "Babo", :author nil, :copyright 2008}
- ==> struct-map 함수를 이용하면, 속성 값 중 일부를 빼거나 속성에 없는 key/value 를 추가할 수도 있다.
+```clojure?line_number=false
+user> (defstruct book :title :author)
+==> defstruct를 이용해 book 구조체를 선언한다
+#'user/book
+user> (def b (struct book "Anathem" "Neal Stephenson")) 
+==> struct를 이용해 book 구조체의 instance를 만든다.
+#'user/b
+user> (:title b)
+"Anathem"
+==> struct-map 함수를 이용하면, 속성 값 중 일부를 빼거나 속성에 없는 key/value 를 추가할 수도 있다.
 ```
 
 ---
