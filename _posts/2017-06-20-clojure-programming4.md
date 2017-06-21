@@ -80,7 +80,60 @@ user>
 
 #### Sequence library
 
-d
+##### 시퀀스 생성
+```
+user> (range 1 25 2)
+(1 3 5 7 9 11 13 15 17 19 21 23)
+user>
+user> (repeat 7 2)
+(2 2 2 2 2 2 2)
+user> (repeat 10 "w")
+("w" "w" "w" "w" "w" "w" "w" "w" "w" "w")
+user> (repeat 10 'w')
+(w' w' w' w' w' w' w' w' w' w')
+```
+(iterate f x)
+iterate로 만들어지는 시퀀스는 x에서 시작, 함수 f를 적용해 다음 값을 만들어 나가는 일을 무한 반복한다.
+(take n sequence)
+인자로 받은 sequence의 처음 n개만 반환한다.
+```
+user> (take 10 (iterate inc 2))
+(2 3 4 5 6 7 8 9 10 11)
+user>
+user> (defn whole-numbers [] (iterate inc 1))
+=>#'user/whole-numbers
+user> (take 5 (whole-numbers))
+(1 2 3 4 5)
+```
+repeat 은 인자 x를 받아 무한개의 시퀀스를 만든다.
+```
+user> (take 10 (repeat "x"))
+("x" "x" "x" "x" "x" "x" "x" "x" "x" "x")
+```
+cycle은 컬렉션을 받아 무한히 반복한다.
+```
+user> (take 4 (cycle '(1 2 3)))
+(1 2 3 1)
+user> (take 10 (cycle '(1 2 3)))
+(1 2 3 1 2 3 1 2 3 1)
+```
+interleave는 여러 컬렉션을 받아서, 어느 컬렉션의 끝에 도달할 때까지 각 컬렉션의 값이 차례로 교차되는
+새로운 컬렉션을 만든다.
+```
+user> (interleave (whole-numbers) ["aa" "bb" "cc" "dd"])
+(1 "aa" 2 "bb" 3 "cc" 4 "dd")
+```
+interpose는 각 원소 사이에 구분자를 삽입해 새 시퀀스를 만든다.
+```
+user> (apply str (interpose \. ["aaaa" "bbbb" "ccc"]))
+"aaaa.bbbb.ccc"
+```
 
+<br>
 
-
+##### 시퀀스 필터링
+filter는 서술식과 컬렉션을 인자로 받아서 컬렉션 가운데 서술식을 만족하는 원소만으로 된 시퀀스를 반환한다.
+```
+user> (take 10 (filter even? (whole-numbers)))
+(2 4 6 8 10 12 14 16 18 20)
+```
