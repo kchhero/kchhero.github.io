@@ -1,9 +1,9 @@
 ---
-title: programming-clojure-ch2
+category: language
 layout: post
 tags:
   - clojure
-category: language
+title: programming-clojure-ch2
 ---
 ### clojure overview
 
@@ -162,6 +162,11 @@ user> (date "Jim" "Me" "Any")
 
 #### 익명함수
 
+* 익명함수의 문법 
+```
+(fn [params*] body)
+#(body)
+```
 * 함수가 너무 간단한 경우  ==>  필터 함수
 * 함수의 내부에서만 쓰이는 경우
 * 함수 내부에서 데이터를 이용해 동적으로 함수를 만들어 내는 경우
