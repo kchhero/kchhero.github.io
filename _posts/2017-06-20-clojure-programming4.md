@@ -137,3 +137,24 @@ filter는 서술식과 컬렉션을 인자로 받아서 컬렉션 가운데 서�
 user> (take 10 (filter even? (whole-numbers)))
 (2 4 6 8 10 12 14 16 18 20)
 ```
+take-while 은 서술식을 컬렉션의 각 원소에 적용해서 거짓이 나타나기 전까지의 원소로만 이루어진 시퀀스를 반환한다.
+이후의 컬렉션은 버려진다. 
+drop-while 은 take-while의 반대로 동작한다.
+```
+user> (take-while (complement #{\a\e\i\o\u}) "the-quick-brown-fox")
+(\t \h)
+user> (drop-while (complement #{\a\e\i\o\u}) "the-quick-brown-fox")
+(\e \- \q \u \i \c \k \- \b \r \o \w \n \- \f \o \x)
+user>
+```
+split-at 과 split-with 는 컬렉션을 분할한다.
+```
+user> (split-at 4 (range 10))
+[(0 1 2 3) (4 5 6 7 8 9)]
+user> (split-with #(<= % 10) (range 0 20 2))
+[(0 2 4 6 8 10) (12 14 16 18)]
+```
+
+
+
+```
