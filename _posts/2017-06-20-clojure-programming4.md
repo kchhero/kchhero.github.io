@@ -155,6 +155,200 @@ user> (split-with #(<= % 10) (range 0 20 2))
 [(0 2 4 6 8 10) (12 14 16 18)]
 ```
 
+<br>
 
-
+##### 시퀀스 서술식
+필터링 함수는 서술식을 받아 시퀀스를 반환한다.
+시퀀스 서술식은 다른 서술식을 받아 그 서술식을 시퀀스에 어떤 식으로 적용할지를 결정한다.
+예를 들어 every?라는 서술식은 인자로 받은 서술식을 시퀀스의 각 원소에 적용한 결과가 모두 참일 때만 참을 반환한다.
 ```
+user> (every? odd? [1 2 3])
+false
+user> (every? odd? [1 9 3])
+true
+```
+some은 약간 느슨하게 적용한다. 모두 거짓일때만 nil을 반환한다.
+```
+user> (some even? [11 2 3])
+true
+user> (some even? [11 5 3])
+nil
+user> (some identity [nil false 2 nil 5])
+2
+```
+
+<br>
+
+##### 시퀀스 변환
+map은 컬렉션 coll과 함수 f를 받아 coll의 각 원소에 f를 적용한 결과로 만들어진 시퀀스를 반환한다.
+(map f coll)
+```
+user> (map #(format "<p>%s</p>" %) ["the" "quick" "brown" "fox"])
+("<p>the</p>" "<p>quick</p>" "<p>brown</p>" "<p>fox</p>")
+user> (map #(format "<%s>%s</%s>" %1 %2 %1)
+           ["h1" "h2" "h3" "h1"] ["the" "quick" "brown" "fox"])
+("<h1>the</h1>" "<h2>quick</h2>" "<h3>brown</h3>" "<h1>fox</h1>")
+```
+reduce는 coll의 첫 두 원소에 f를 적용한 후, 그 결과와 coll의 세 번째 원소에 다시 f를 적용하고, 이것을 반복한다.
+(reduce f coll)
+```
+user> (reduce + (range 1 11))
+55
+user> (reduce * (range 1 11))
+3628800
+```
+sort나 sort-by를 이용하면 컬렉션을 정렬할 수 있다.
+sort는 원소를 순서대로 정렬
+sort-by는 컬렉션의 모든 원소에 a-fn을 적용한 결과를 가지고 정렬
+(sort comp? coll)
+(soft-by a-fn comp? coll)
+```
+user> (sort [42 1 7 11])
+(1 7 11 42)
+```
+
+<br>
+
+리스트 해석(list comprehension)은 조건 제시법을 이용해서 기존 리스트에서 새로운 리스트를 만들어 내는 방법이다.
+클로저는 리스트 해석의 개념을 '시퀀스' 해석으로 일반화한다.
+클로저의 시퀀스 해석은 매크로를 이용해 이루어진다.
+```
+(for [binding-form coll-expr filter-expr? ...] expr)
+```
+for는 binding-form, coll-expr, filter-expr로 이루어진 벡터를 받아 expr에 해당하는 시퀀스를 만들어낸다.
+위의 map 의 예제 코드를 리스트 해석을 이용한 코드로 바꾸면...
+```
+user> (for [word ["the" "quick" "brown" "fox"]]
+        (format "<p>%s</p>" word))
+("<p>the</p>" "<p>quick</p>" "<p>brown</p>" "<p>fox</p>")
+==> 시퀀스에 있는 단어(word)마다(for) 다음 형식(format)을 적용하라.
+```
+:while은 뒤에 오는 표현이 참으로 유지되는 동안에만 for를 평가한다.
+```
+user> (for [n (whole-numbers) :while (odd? n)] n)
+(1)
+```
+
+for의 진정한 강력함은 하나 이상의 binding-form을 사용할때이다.
+```
+user> (for [file "ABCDEFGH" rank (range 1 9)] (format "%c%d" file rank))
+("A1" "A2" "A3" "A4" "A5" "A6" "A7" "A8" "B1" "B2" "B3" "B4" "B5" "B6" "B7" "B8" "C1" "C2" "C3" "C4" "C5" "C6" "C7" "C8" "D1" "D2" "D3" "D4" "D5" "D6" "D\
+7" "D8" "E1" "E2" "E3" "E4" "E5" "E6" "E7" "E8" "F1" "F2" "F3" "F4" "F5" "F6" "F7" "F8" "G1" "G2" "G3" "G4" "G5" "G6" "G7" "G8" "H1" "H2" "H3" "H4" "H5" \
+"H6" "H7" "H8")
+==>바인딩 표현의 오른쪽에 있는 시퀀스의 원소부터 차례로 바인딩된다.
+````
+
+<br>
+
+<b>다른 언어들과는 다르게 클로저에서는 대부분의 시퀀스 함수는 그것을 실제로 사용하기전까지는 자신의 일을 
+최대한 뒤로 미룬다.</b>
+
+---
+
+#### 지연 시퀀스와 무한한 시퀀스
+
+대부분의 클로저 시퀀스는 연산을 '지연'한다. lazy sequence
+* 메모리 용량을 초과하는 거대한 데이터 집합을 다룰 수 있다.
+* I/O 역시 필요할 때까지 미뤄 둘 수 있다.
+* iterate, primes, map은 지연 시퀀스를 반환한다.
+
+##### 지연된 연산을 실행
+x가 실제로 원소를 사용하는 부분이 없기 때문에, 클로저는 원소를 굳이 얻어내려고 하지 않는다.
+doall을 사용하여 x를 강제로 평가하도록 할 수 있다.
+dorun은 지연 시퀀스의 각 원소를 차례로 방문하되, 이전에 방문한 원소는 메모리에 보존하지 않는다.
+```
+user> (def x (for [i (range 1 3)] (do (println i) i)))
+#'user/x
+user> (doall x)
+1
+2
+(1 2)
+user> (dorun x)
+nil
+user> (def x (for [i (range 1 3)] (do (println i) i)))
+#'user/x
+user> (dorun x)
+1
+2
+nil
+user> (doall x)
+(1 2)
+user> (dorun x)
+nil
+```
+
+---
+
+#### 자바 객체
+
+클로저는 아래의 자바 API들을 추상화하여, 시퀀스로 다룰 수 있게 해준다.
+* 컬렉션 API, 정규식, 파일 시스템, XML, 관계형 데이터베이스
+
+##### 자바 컬렉션을 시퀀스로 다루기
+```
+user> (first (.getBytes "hello"))
+104
+user> (rest (.getBytes "hello"))
+(101 108 108 111)
+user> (cons (int \h) (.getBytes "ello"))
+(104 101 108 108 111)
+```
+클로저는 컬렉션을 시퀀스처럼 다루게 해주지만, 자동으로 원래 타입으로 되돌려 주지는 않는다.
+```
+user> (reverse "hello")
+(\o \l \l \e \h)
+user> (apply str (reverse "hello"))
+"olleh"
+```
+##### 정규식을 시퀀스로...
+```
+user> (re-seq #"\w+" "the quick brown fox")
+("the" "quick" "brown" "fox")
+user> (sort (re-seq #"\w+" "the quick brown fox"))
+("brown" "fox" "quick" "the")
+user> (drop 2 (re-seq #"\w+" "the quick brown fox"))
+("brown" "fox")
+user> (map #(.toUpperCase %) (re-seq #"\w+" "the quick brown fox"))
+("THE" "QUICK" "BROWN" "FOX")
+```
+##### 파일 시스템을 시퀀스로...
+```
+user> (.listFiles (File. "."))
+#object["[Ljava.io.File;" 0x571189fb "[Ljava.io.File;@571189fb"]
+user> (seq (.listFiles (File. ".")))
+(#object[java.io.File 0x5fdbec0c "./demo"] #object[java.io.File 0x1cd93933 "./cider"] #object[java.io.File 0x4cca0613 "./clojure-contrib-1.1.0.zip"] #obj\
+ect[java.io.File 0x6f6c852c "./myapp1"] #object[java.io.File 0x6f57af41 "./serpent-talk"] #object[java.io.File 0x3a121339 "./study_start"] #object[java.i\
+o.File 0x267470f6 "./hello-world"] #object[java.io.File 0x2dbac4f1 "./emacs-for-clojure-book1"] #object[java.io.File 0x7f454ba0 "./.git"] #object[java.io\
+.File 0x556404aa "./lein"] #object[java.io.File 0x50923d30 "./README"] #object[java.io.File 0x2bf4e69f "./emacs-for-clojure-book1.zip"] #object[java.io.F\
+ile 0x7e39a00a "./cider-nrepl"])
+user>
+user> (map #(.getName %) (seq (.listFiles (File. "."))))
+("demo" "cider" "clojure-contrib-1.1.0.zip" "myapp1" "serpent-talk" "study_start" "hello-world" "emacs-for-clojure-book1" ".git" "lein" "README" "emacs-f\
+or-clojure-book1.zip" "cider-nrepl")
+user> (map #(.getName %) (.listFiles (File. ".")))
+("demo" "cider" "clojure-contrib-1.1.0.zip" "myapp1" "serpent-talk" "study_start" "hello-world" "emacs-for-clojure-book1" ".git" "lein" "README" "emac\
+s-for-clojure-book1.zip" "cider-nrepl")
+user> (map #(.getName %) (.listFiles (File. ".")))
+("demo" "cider" "clojure-contrib-1.1.0.zip" "myapp1" "serpent-talk" "study_start" "hello-world" "emacs-for-clojure-book1" ".git" "lein" "README" "emacs\
+-for-clojure-book1.zip" "cider-nrepl")
+; 깊이
+user> (count (file-seq (File. ".")))
+309
+```
+최근 변경된 파일만 보고 싶을때
+```
+user> (defn minutes-to-millis [mins] (* mins 1000 60))
+#'user/minutes-to-millis
+user> (defn recently-modified? [file]
+        (> (.lastModified file)
+           (- (System/currentTimeMillis) (minutes-to-millis 30))))
+#'user/recently-modified?
+user> (filter recently-modified? (file-seq (File. ".")))
+```
+
+
+
+
+
+
+
