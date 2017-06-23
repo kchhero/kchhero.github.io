@@ -346,6 +346,8 @@ user> (defn recently-modified? [file]
 user> (filter recently-modified? (file-seq (File. ".")))
 ```
 
+##### 스트림을 시퀀스로...
+line-seq를 이용하면 자바 Reader가 읽어들인 라인들을 시퀀스로 다룰 수 있다.
 
 
 
