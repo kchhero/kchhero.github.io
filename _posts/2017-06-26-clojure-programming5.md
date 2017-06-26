@@ -11,10 +11,14 @@ category: language
 
 #### 함수형 프로그래밍의 개념
 
+---
+
 ##### 순수함수
 * 함수형  프로그램은 '순수 함수'로 이루어져 있다. '부수효과'가 전혀 없는 함수를 말한다.
 * 오로지 인자에만 의존해서 결과가 만들어지고, 반환 값으로만 외부 세계에 영향을 준다.
-![](![](/assets/ext_images/clojure/clojure_ch5_pure_function.png)
+![](/assets/ext_images/clojure/clojure_ch5_pure_function.png)
+
+---
 
 ##### 영속적 자료구조
 * '변경 불가능 데이터(immutable data)'는 클로저의 함수형 프로그래밍과 병행 프로그래밍 방식에 매우 중요한 요소다.
@@ -26,6 +30,15 @@ category: language
 '공유하는' 효율적인 접근 방식을 취한다.
 * example
 ```
+user> (def a '(1 2 3))
+user> (def b (cons 0 a))
 ```
-asdf
-* a
+--> b는 a 전체를 복사하는 대신 다음과 같이 a를 그대로 사용한다.
+![](/assets/ext_images/clojure/clojure_ch5_persistent.png)
+
+* 클로저의 모든 자료구조는 가능한 한 자료구조를 공유하는 방식을 택한다.
+
+---
+
+##### 지연 평가와 재귀
+* 함수형 프로그래밍은 '재귀'와 '지연 평가'를 매우 많이 사용한다.
