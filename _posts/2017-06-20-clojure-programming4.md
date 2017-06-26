@@ -349,8 +349,152 @@ user> (filter recently-modified? (file-seq (File. ".")))
 ##### 스트림을 시퀀스로...
 line-seq를 이용하면 자바 Reader가 읽어들인 라인들을 시퀀스로 다룰 수 있다.
 
+<br>
 
+##### XML을 시퀀스로...
+```
+user> (use '[clojure.xml :only (parse)])
+user> (parse (java.io.File. "colors.xml"))
+{:tag :resources, :attrs nil, :content [{:tag :color, :attrs {:name "control_background"}, :content ["#cc4285f4"]}]}
+user> (for [x (xml-seq
+               (parse (java.io.File. "colors.xml")))
+            :when (= :color (:tag x))]
+        (:composer (:attrs x)))
+(nil)
+```
+많은 양의 XML 데이터를 처리해야 한다면, clojure-contrib에 포함된 lazy-xml과 zip-filter/xml 라이브러리를 이용해보자.
 
+---
 
+<br>
 
+#### 특정 자료구조용 함수
+클로저의 시퀀스 함수는 매우 범용적인 코드를 작성하도록 해주지만 때로는 특정 자료구조에 특화된 함수를 이용하는 것이
+좋을 수도 있다.
 
+##### 리스트에 대한 함수
+peek은 first와 똑같지만 pop은 rest와 다르다.
+```
+==> (peek coll)
+==> (pop coll)
+user> (peek '(1 2 3))
+1
+user> (rest '(1 2 3))
+(2 3)
+user> (pop '(1 2 3))
+(2 3)
+user> (rest ())
+()
+user> (pop ())
+IllegalStateException Can't pop empty list  clojure.lang.PersistentList$EmptyList.pop (PersistentList.java:209)
+```
+
+##### 벡터에 대한 함수
+```
+==> 역시 peek, pop을 지원하지만 벡터의 끝이 기준이 된다는 점이 다르다.
+user> (peek [1 2 3])
+3
+user> (first [1 2 3])
+1
+user> (pop [1 2 3])
+[1 2]
+user> (rest [1 2 3])
+(2 3)
+==> get은 인덱스에 해당하는 값을 반환한다. out of index인 경우는 nil을 반환
+user> (get [:a :b :c] 1)
+:b
+user> (get [:a :b :c] 4)
+nil
+user> ([:a :b :c] 2)
+:c
+user> ([:a :b :c] 5)
+IndexOutOfBoundsException   clojure.lang.PersistentVector.arrayFor (PersistentVector.java:158)
+==> assoc는 특정 인덱스에 새 값을 집어넣는다.
+user> (assoc [:a :b :c :d :e] 1 4)
+[:a 4 :c :d :e]
+==> subvec은 기존 벡터의 일부를 반환한다. end가 명시되지 않으면 벡터의 끝이 end가 된다.
+user> (subvec [1 2 3 4 5] 3)
+[4 5]
+user> (subvec [1 2 3 4 5] 3 4)
+[4]
+user> (subvec [1 2 3 4 5] 1 3)
+[2 3]
+==> take와 drop을 사용해도 흉내 낼 수 있다.
+user> (take 2 (drop 1 [1 2 3 4 5]))
+(2 3)
+user>
+```
+subvec은 벡터에만 사용할 수 있는 대신 실행 속도가 '훨씬' 빠르다.
+
+##### 맵에 대한 함수
+keys, vals : key, value 반환
+```
+user> (keys {:aaa "aaa", :bbb "bbb"})
+(:aaa :bbb)
+user> (vals {:aaa "aaa", :bbb "bbb"})
+("aaa" "bbb")
+user>
+```
+get : key에 대한 값 또는 nil 반환
+```
+user> (get {:aaa "aaa", :bbb "bbb"} :aaa)
+"aaa"
+user> (get {:aaa "aaa", :bbb "bbb"} :ccc)
+nil
+==> get을 굳이 안써도 됨.
+user> ({:aaa "aaa", :bbb "bbb"} :bbb)
+"bbb"
+user> ({:aaa "aaa", :bbb "bbb"} :ddd)
+nil
+```
+key에 해당하는 값을 찾았는데, 값이 nil인지 key가 없는지를 확인하려면..
+contains
+```
+user> (def score {:stu nil :joey 100})
+#'user/score
+user> (:stu score)
+nil
+user> (:abc score)
+nil
+user> (contains? score :abc)
+false
+user> (contains? score :stu)
+true
+==> 다른 방법 : get의 세번째 인자로 값이 없을 경우의 value를 넘긴다.
+user> (get score :stu :score-not-found)
+nil
+user> (get score :abc :score-not-found)
+:score-not-found
+```
+
+<br>
+
+merge는 맵들을 합친다. 여러 맵이 같은 키를 가질 경우, 가장 오른쪽 맵의 키/값이 살아남는다.
+merge-with는 merge와 비슷하지만 둘 이상의 맵이 같은 키를 가질 경우, 어떻게 조합해서 키에 대한
+값을 만들어 낼지 함수로 지정할 수 있다.
+
+<br>
+
+##### 집합에 대한 함수
+clojure.set
+* union : 합집합
+* intersection : 교집합
+* differnce : 차집합
+* select : 서술식을 만족시키는 모든 원소의 집합
+```
+user> (def languages #{"java" "c" "d" "clojure"})
+user> (def letters #{"a" "b" "c" "d" "e"})
+user> (def beverages #{"java" "chai" "pop"})
+user> (use '[clojure.set])
+nil
+user> (union languages beverages)
+#{"d" "clojure" "pop" "java" "chai" "c"}
+user> (difference languages beverages)
+#{"d" "clojure" "c"}
+user> (intersection languages beverages)
+#{"java"}
+user> (select #(= 1 (.length %)) languages)
+#{"d" "c"}
+```
+
+관계대수...
