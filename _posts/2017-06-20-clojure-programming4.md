@@ -1,15 +1,15 @@
 ---
-title: programming-clojure-ch4
+category: language
 layout: post
 tags:
   - clojure
-category: language
+title: programming-clojure-ch4
 ---
-### data를 sequence로 다루기
+## data를 sequence로 다루기
 
 <br>
 
-#### clojure 에서는 자료구조를 시퀀스(seq)라는 하나의 추상(abstraction)으로 다룰 수 있다.
+### clojure 에서는 자료구조를 시퀀스(seq)라는 하나의 추상(abstraction)으로 다룰 수 있다.
 
 * 시퀀스란? : 논리적 리스트
 * 시퀀스는 리스트에 한정되지 않고 어디에서나 사용될 수 있는 추상이다.
@@ -78,9 +78,9 @@ user>
 
 ---
 
-#### Sequence library
+### Sequence library
 
-##### 시퀀스 생성
+#### 시퀀스 생성
 ```
 user> (range 1 25 2)
 (1 3 5 7 9 11 13 15 17 19 21 23)
@@ -131,7 +131,7 @@ user> (apply str (interpose \. ["aaaa" "bbbb" "ccc"]))
 
 <br>
 
-##### 시퀀스 필터링
+#### 시퀀스 필터링
 filter는 서술식과 컬렉션을 인자로 받아서 컬렉션 가운데 서술식을 만족하는 원소만으로 된 시퀀스를 반환한다.
 ```
 user> (take 10 (filter even? (whole-numbers)))
@@ -157,7 +157,7 @@ user> (split-with #(<= % 10) (range 0 20 2))
 
 <br>
 
-##### 시퀀스 서술식
+#### 시퀀스 서술식
 필터링 함수는 서술식을 받아 시퀀스를 반환한다.
 시퀀스 서술식은 다른 서술식을 받아 그 서술식을 시퀀스에 어떤 식으로 적용할지를 결정한다.
 예를 들어 every?라는 서술식은 인자로 받은 서술식을 시퀀스의 각 원소에 적용한 결과가 모두 참일 때만 참을 반환한다.
@@ -179,7 +179,7 @@ user> (some identity [nil false 2 nil 5])
 
 <br>
 
-##### 시퀀스 변환
+#### 시퀀스 변환
 map은 컬렉션 coll과 함수 f를 받아 coll의 각 원소에 f를 적용한 결과로 만들어진 시퀀스를 반환한다.
 (map f coll)
 ```
@@ -245,14 +245,14 @@ user> (for [file "ABCDEFGH" rank (range 1 9)] (format "%c%d" file rank))
 
 ---
 
-#### 지연 시퀀스와 무한한 시퀀스
+### 지연 시퀀스와 무한한 시퀀스
 
 대부분의 클로저 시퀀스는 연산을 '지연'한다. lazy sequence
 * 메모리 용량을 초과하는 거대한 데이터 집합을 다룰 수 있다.
 * I/O 역시 필요할 때까지 미뤄 둘 수 있다.
 * iterate, primes, map은 지연 시퀀스를 반환한다.
 
-##### 지연된 연산을 실행
+#### 지연된 연산을 실행
 x가 실제로 원소를 사용하는 부분이 없기 때문에, 클로저는 원소를 굳이 얻어내려고 하지 않는다.
 doall을 사용하여 x를 강제로 평가하도록 할 수 있다.
 dorun은 지연 시퀀스의 각 원소를 차례로 방문하되, 이전에 방문한 원소는 메모리에 보존하지 않는다.
@@ -279,12 +279,12 @@ nil
 
 ---
 
-#### 자바 객체
+### 자바 객체
 
 클로저는 아래의 자바 API들을 추상화하여, 시퀀스로 다룰 수 있게 해준다.
 * 컬렉션 API, 정규식, 파일 시스템, XML, 관계형 데이터베이스
 
-##### 자바 컬렉션을 시퀀스로 다루기
+#### 자바 컬렉션을 시퀀스로 다루기
 ```
 user> (first (.getBytes "hello"))
 104
@@ -300,7 +300,7 @@ user> (reverse "hello")
 user> (apply str (reverse "hello"))
 "olleh"
 ```
-##### 정규식을 시퀀스로...
+#### 정규식을 시퀀스로...
 ```
 user> (re-seq #"\w+" "the quick brown fox")
 ("the" "quick" "brown" "fox")
@@ -311,7 +311,7 @@ user> (drop 2 (re-seq #"\w+" "the quick brown fox"))
 user> (map #(.toUpperCase %) (re-seq #"\w+" "the quick brown fox"))
 ("THE" "QUICK" "BROWN" "FOX")
 ```
-##### 파일 시스템을 시퀀스로...
+#### 파일 시스템을 시퀀스로...
 ```
 user> (.listFiles (File. "."))
 #object["[Ljava.io.File;" 0x571189fb "[Ljava.io.File;@571189fb"]
@@ -346,12 +346,12 @@ user> (defn recently-modified? [file]
 user> (filter recently-modified? (file-seq (File. ".")))
 ```
 
-##### 스트림을 시퀀스로...
+#### 스트림을 시퀀스로...
 line-seq를 이용하면 자바 Reader가 읽어들인 라인들을 시퀀스로 다룰 수 있다.
 
 <br>
 
-##### XML을 시퀀스로...
+#### XML을 시퀀스로...
 ```
 user> (use '[clojure.xml :only (parse)])
 user> (parse (java.io.File. "colors.xml"))
@@ -368,11 +368,11 @@ user> (for [x (xml-seq
 
 <br>
 
-#### 특정 자료구조용 함수
+### 특정 자료구조용 함수
 클로저의 시퀀스 함수는 매우 범용적인 코드를 작성하도록 해주지만 때로는 특정 자료구조에 특화된 함수를 이용하는 것이
 좋을 수도 있다.
 
-##### 리스트에 대한 함수
+#### 리스트에 대한 함수
 peek은 first와 똑같지만 pop은 rest와 다르다.
 ```
 ==> (peek coll)
@@ -389,7 +389,7 @@ user> (pop ())
 IllegalStateException Can't pop empty list  clojure.lang.PersistentList$EmptyList.pop (PersistentList.java:209)
 ```
 
-##### 벡터에 대한 함수
+#### 벡터에 대한 함수
 ```
 ==> 역시 peek, pop을 지원하지만 벡터의 끝이 기준이 된다는 점이 다르다.
 user> (peek [1 2 3])
@@ -426,7 +426,7 @@ user>
 ```
 subvec은 벡터에만 사용할 수 있는 대신 실행 속도가 '훨씬' 빠르다.
 
-##### 맵에 대한 함수
+#### 맵에 대한 함수
 keys, vals : key, value 반환
 ```
 user> (keys {:aaa "aaa", :bbb "bbb"})
@@ -475,7 +475,7 @@ merge-with는 merge와 비슷하지만 둘 이상의 맵이 같은 키를 가질
 
 <br>
 
-##### 집합에 대한 함수
+#### 집합에 대한 함수
 clojure.set
 * union : 합집합
 * intersection : 교집합
