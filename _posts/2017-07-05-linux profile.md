@@ -1,11 +1,11 @@
 ---
-title: 'profile 관련'
+category: linux
 layout: post
 tags:
   - linux
-category: linux
+title: 'profile 관련'
 ---
-####/etc/profile
+#### /etc/profile
 
 이전까지는 부팅시 실행하는 script나 환경 변수 설정을 굳이 systemd 의 service 에 추가하였는데, 
 이렇게 하면 복잡하기만 할 뿐, 단순 script 실행은 profile.d 를 이용하면 된다.
@@ -29,4 +29,3 @@ category: linux
 
 ---
 
-aaa
