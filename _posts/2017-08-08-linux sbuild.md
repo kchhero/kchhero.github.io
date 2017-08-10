@@ -67,5 +67,7 @@ sudo /etc/init.d/apt-cacher-ng restart
 <br>
 
 ##### Could not connect to 127.0.0.1
-1. ps -aux | grep bind  로 찾아서 pid kill
+ ps -aux | grep bind  로 찾아서 pid kill  (--> 안됨. XXX)
+ /etc/apt/apt.conf.d/01acng 의 command line을 '#' 주석처리하고 sudo apt-get update 시도 (O)
+ 
 
