@@ -22,3 +22,13 @@ $ sudo apt install oracle-java8-installer
 
 #### E: Unable to fetch some archives, maybe run apt-get update or try with --fix-missing? 
 ==> sudo apt-get upgrade --fix-missing
+
+<br>
+
+#### 특정포트를 사용하는 PID 확인 방법
+```
+netstat -anp | grep LISTEN | grep :포트번호
+실행예시
+[root@zetawiki ~]# netstat -anp | grep LISTEN | grep :80
+tcp        0      0 :::80                       :::*                        LISTEN      19055/httpd
+```
