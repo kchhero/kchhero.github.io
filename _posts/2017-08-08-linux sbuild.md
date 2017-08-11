@@ -17,12 +17,14 @@ $ sbuild-update --keygen
 
 <br>
 
-#### 참고
+#### 아래 wiki 순서대로 settings 필요
 #### **https://wiki.ubuntu.com/SimpleSbuild**
+
+<br>
 
 chroot name parameter로 사용되는 부분
 **/etc/schroot/chroot.d/sbuild-xenial-amd64-armhf**
-
+**$ cp mk-sbuild.rc ~/ **
 **$ sudo mk-sbuild --target armhf xenial**
 --> 아래에 chroot 가 생성된다.
 **/var/lib/schroot/chroots/xenial-amd64-armhf/**
@@ -51,18 +53,8 @@ $ locate libbluetooth3_5.42-0ubuntu1.1_armhf.deb
 /var/cache/apt-cacher-ng/localhost/debs/libbluetooth3_5.42-0ubuntu1.1_armhf.deb.head
 ```
 
-E: Failed to fetch http://download.tizen.org/tools/latest-release/Ubuntu_16.04/Packages  404  Not Found
-E: Failed to fetch http://dl.google.com/linux/chrome/deb/dists/stable/main/binary-amd64/Packages  404  Not Found
-E: Failed to fetch http://kr.archive.ubuntu.com/ubuntu/dists/xenial-backports/restricted/binary-amd64/Packages  503  Cache storage error - No such file or directory
-E: Failed to fetch http://www.scootersoftware.com/dists/bcompare4/non-free/binary-amd64/Packages  404  Not Found
-E: Failed to fetch http://kr.archive.ubuntu.com/ubuntu/dists/xenial/main/binary-amd64/Packages  503  Cache storage error - No such file or directory
-E: Failed to fetch http://security.ubuntu.com/ubuntu/dists/xenial-security/main/binary-amd64/Packages  503  Cache storage error - No such file or directory
-E: Failed to fetch http://ppa.launchpad.net/umang/indicator-stickynotes/ubuntu/dists/xenial/main/binary-amd64/Packages  503  Cache storage error - No such file or directory
-E: Failed to fetch http://ppa.launchpad.net/webupd8team/java/ubuntu/dists/xenial/main/binary-amd64/Packages  503  Cache storage error - No such file or directory
-E: Failed to fetch http://kr.archive.ubuntu.com/ubuntu/dists/xenial-updates/main/binary-amd64/Packages  503  Cache storage error - No such file or directory
-E: Some index files failed to download. They have been ignored, or old ones used instead.
-
-sudo /etc/init.d/apt-cacher-ng restart
+/var/cache/apt-cacher-ng/ports.ubuntu.com/ubuntu-ports/pool/main/w/wayland/libwayland-client0_1.9.0-1_armhf.deb.head
+/var/cache/apt-cacher-ng/localhost/libbluetooth3...
 
 <br>
 
