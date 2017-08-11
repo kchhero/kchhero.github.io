@@ -31,4 +31,6 @@ netstat -anp | grep LISTEN | grep :포트번호
 실행예시
 [root@zetawiki ~]# netstat -anp | grep LISTEN | grep :80
 tcp        0      0 :::80                       :::*                        LISTEN      19055/httpd
+
+sudo 로 실행하지 않는 경우 PID가 안보일 수 있다.
 ```
