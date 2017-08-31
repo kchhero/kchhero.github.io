@@ -26,3 +26,8 @@ do_fetch  >  do_unpack   >  do_qa_unpack  >  do_kernel_checkout  >  do_validate_
 
 #### get task sequence
  bitbake -c listtasks <recipe_name>
+
+---
+
+#### Image generation
+![](http://www.yoctoproject.org/docs/latest/ref-manual/figures/image-generation.png?raw=true)
