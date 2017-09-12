@@ -39,9 +39,9 @@ $ sudo debootstrap --arch=armhf --foreign --include=ubuntu-keyring,apt-transport
 $ sudo cp /usr/bin/qemu-arm-static ubuntu-rootfs/usr/bin/
 $ sudo chroot ubuntu-rootfs /bin/bash /debootstrap/debootstrap --second-stage
 
-$ echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty main restricted universe multiverse" >> /etc/apt/sources.list
-$ echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-updates main restricted universe multiverse" >> /etc/apt/sources.list
-$ echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-security main restricted universe multiverse" >> /etc/apt/sources.list
+$ sudo echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty main restricted universe multiverse" >> ubuntu-rootfs/etc/apt/sources.list
+$ sudo echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-updates main restricted universe multiverse" >> ubuntu-rootfs/etc/apt/sources.list
+$ sudo echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-security main restricted universe multiverse" >> ubuntu-rootfs/etc/apt/sources.list
 
 $ sudo chroot ubuntu-rootfs
 $ sudo locale-gen "en_US.UTF-8"
