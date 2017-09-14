@@ -128,3 +128,17 @@ sync
 sudo umount $TARGET_DIR/rootfs 
 e2fsck -y -f $TARGET_DIR/${OUTPUT_NAME}
 ```
+
+
+##### try 4
+Desktop 마무리
+unity 버전이 아닌 lxde 를 install 하여 부팅 확인함.
+```
+apt-get install lubuntu-desktop fbset lshw systemd
+apt-add-repository ppa:canonical-x/x-staging
+apt-get update
+apt-get install xserver-xorg-video-armsoc
+apt-get install xserver-xorg-video-fbdev
+```
+unity desktop 의 경우 login 화면까지는 잘 나오나 실제로 login 은 되지 않았다. 2일 정도 삽질함.
+LXDE는 별도의 설정없이 바로 login 에 성공하였다.
