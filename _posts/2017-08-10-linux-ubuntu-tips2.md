@@ -1,9 +1,9 @@
 ---
-title: 'ubuntu Tips2'
+category: Uncategoried
 layout: post
 tags:
   - linux
-category: Uncategoried
+title: 'ubuntu Tips2'
 ---
 #### oracle-java8-installer 설치 문제
 Errors were encountered while processing:  oracle-java8-installer
@@ -33,4 +33,12 @@ netstat -anp | grep LISTEN | grep :포트번호
 tcp        0      0 :::80                       :::*                        LISTEN      19055/httpd
 
 sudo 로 실행하지 않는 경우 PID가 안보일 수 있다.
+```
+
+<br>
+
+#### ubuntu에서 CD 구울때
+```
+$ sudo apt-get install wodim
+$ cdrecord -v {path_to_isoFile}
 ```
