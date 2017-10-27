@@ -3,7 +3,12 @@ category: Tools
 layout: post
 tags:
   - emacs
+<<<<<<< HEAD
+category: Tools
+last_updated: July 3, 2016
+=======
 title: 'emacs Command 정리'
+>>>>>>> 614a969ae67f220954f44b84741b37dfa7641197
 ---
 Emacs Command 정리
 

@@ -15,7 +15,15 @@
 	     {% else %}{{ d }}th,
 	   {% endcase %}
 	   {{ page.date | date: "%Y" }}
-	 </span>
+	 </span> - CREATED
+         <br>
+         {% if page.last_updated %}
+         <span class="post-date">
+         </span>
+         {{page.last_updated}} - last UPDATED
+         {% endif %}
+         
+         
 	  <div class="article_body">
 	  {{ content }}
 	  </div>
