@@ -3,10 +3,9 @@ category: Tools
 layout: post
 tags:
   - emacs
-category: Tools
 title: 'emacs Command 정리'
 ---
-Emacs Command 정리
+#### 자주 사용하는(까먹는) Emacs Command 정리 요약
 
 #### tab indent
 	M-x tabify: Change spaces to tabs where appropriate.
@@ -14,7 +13,6 @@ Emacs Command 정리
 
 #### All select
 	M-x : dired-toggle-marks
-
 
 #### Quick calculate
 ```
