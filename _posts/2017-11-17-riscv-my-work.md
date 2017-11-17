@@ -1,9 +1,10 @@
 ---
-title: 'RISC-V BOOM core my Work history'
+categories: Uncategoried
+category: Uncategoried
 layout: post
 tags:
   - RISC-V
-category: Uncategoried
+title: 'RISC-V BOOM core my Work history'
 ---
 ## RISC-V BOOM My work history
 
@@ -24,6 +25,7 @@ sifive source 를 기반으로 porting 및 customize 하는 부분은 생략. Ne
 ```
 $ cd riscv-boom-ref
 $ tar xvzf buildroot.tar.gz
+$ tar xvzf linux-4.6.2.tar.gz
 $ tar xvzf riscv-gnu-toolchain.tar.gz
 $ make -j12
 ```
@@ -61,6 +63,10 @@ of
 $ rm -rf work/buildroot
 $ rm -rf sysroot
 $ cd buildroot
+---(optional)---
+$ make riscv64_defconfig
+$ make menuconfig
+---(optional)---
 $ make clean
 $ cd ../
 $ make -j12
