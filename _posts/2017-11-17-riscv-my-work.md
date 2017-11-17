@@ -6,7 +6,7 @@ tags:
   - RISC-V
 title: 'RISC-V BOOM core my Work history'
 ---
-## RISC-V BOOM My work history
+#### RISC-V BOOM core + linux + bbl porting : my work history in Nexell
 
 <br>
 
