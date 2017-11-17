@@ -15,10 +15,12 @@ $ repo init -u git://git.nexell.co.kr/nexell/riscv/manifest
 $ repo sync
 ```
 
+<br>
+
 ### 2. build guide
 sifive source 를 기반으로 porting 및 customize 하는 부분은 생략. Nexell repository를 사용하는 방법에 대한 설명이다.
 
-<Full build or first build>
+[ Full build or first build ]
 ```
 $ cd riscv-boom-ref
 $ tar xvzf buildroot.tar.gz
@@ -28,7 +30,7 @@ $ make -j12
 
 <br>
 
-<개별 build 및 설명>
+[ 개별 build 및 설명 ]
 
 - linux build
 ```
@@ -68,114 +70,27 @@ $ make -j12
 <br>
 
 ### 3. running on target board
-target board (FPGA board)에서 bbl.bin, BOOMConfig.cfg 을 load 하고 BOOM core 를 reset 할 수 있는 환경이 있어야한다.
-target board를 는 ssh 로 연결하여 사용하는 것으로 가정한다.
-target board setup(bit file burning) 참고 : RISC-V FPGA Test guide
+target board (FPGA board)에서 bbl.bin, BOOMConfig.cfg 을 load 하고 BOOM core 를 reset 할 수 있는 환경이 있어야한다.<br>
+target board를 는 ssh 로 연결하여 사용하는 것으로 가정한다.<br>
+target board setup(bit file burning) 참고 : RISC-V FPGA Test guide <br>
+```
 (local) $ scp -r tools/target-tools/* {myServer}@192.168.1.xxx:/home/abc/anywhere/
 (remote) $ cd /home/abc/anywhere/
 (remote) $ ./run.sh
+```
 ID : root
 PW : nexell
 
->>
-NEXELL, INC.
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-x xxxxxx xx xx xxxxxxxxx xx xx xxxxxxx xxxxxxx
-x xxxxx xx xx xxxxxxx xxx xx xxxxxxx xxxxxxx
-x xxxx xx xxxxxxxx xxxxx xxxx xxxxxxx xxxxxxx xxxxxxx
-x xxx xx xxxxxxxxx xxx xxxxx xxxxxxx xxxxxxx xxxxxxx
-x xx xx xxxxxx x xxxxxx xxx xxxxxxx xxxxxxx
-x x x xx xxxxxxx xxxxxxx xxx xxxxxxx xxxxxxx
-x xx xx xxxxxxxxxx x xxxxxx xxxxxxx xxxxxxx xxxxxxx
-x xxx xx xxxxxxxxx xxx xxxxx xxxxxxx xxxxxxx xxxxxxx
-x xxxx xx xxx xxxxx xxxx xx xx x
-x xxxxx xx xx xxxxxxx xxx xx xx x
-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-Nexell RISC-V
-[ 0.000000] Linux version 4.6.2-g1bbe570-dirty (suker@swlab-server) (gcc version 6.1.0 (GCC) ) #8 Thu Nov 16 18:16:34 KST 2017
-[ 0.000000] bootconsole [early0] enabled
-[ 0.000000] Available physical memory: 246MB
-[ 0.000000] Initial ramdisk at: 0xffffffff800199e8 (4100056 bytes)
-[ 0.000000] Zone ranges:
-[ 0.000000] Normal [mem 0x0000000080a00000-0x000000008fffffff]
-[ 0.000000] Movable zone start for each node
-[ 0.000000] Early memory node ranges
-[ 0.000000] node 0: [mem 0x0000000080a00000-0x000000008fffffff]
-[ 0.000000] Initmem setup node 0 [mem 0x0000000080a00000-0x000000008fffffff]
-[ 0.000000] Built 1 zonelists in Zone order, mobility grouping on. Total pages: 62115
-[ 0.000000] Kernel command line: earlyprintk 
-[ 0.000000] PID hash table entries: 1024 (order: 1, 8192 bytes)
-[ 0.000000] Dentry cache hash table entries: 32768 (order: 6, 262144 bytes)
-[ 0.000000] Inode-cache hash table entries: 16384 (order: 5, 131072 bytes)
-[ 0.000000] Sorting __ex_table...
-[ 0.000000] Memory: 239760K/251904K available (3069K kernel code, 161K rwdata, 636K rodata, 4112K init, 231K bss, 12144K reserved, 0K cma-reserved)
-[ 0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
-[ 0.000000] NR_IRQS:0 nr_irqs:0 0
-[ 0.000000] clocksource: riscv_clocksource: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 1911260446275 ns
-[ 0.000000] Calibrating delay loop (skipped), value calculated using timer frequency.. 2.00 BogoMIPS (lpj=10000)
-[ 0.000000] pid_max: default: 32768 minimum: 301
-[ 0.000000] Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
-[ 0.010000] Mountpoint-cache hash table entries: 512 (order: 0, 4096 bytes)
-[ 0.020000] devtmpfs: initialized
-[ 0.030000] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
-[ 0.040000] NET: Registered protocol family 16
-[ 0.050000] plic plic: enabling 2 IRQs
-[ 0.090000] vgaarb: loaded
-[ 0.090000] SCSI subsystem initialized
-[ 0.090000] usbcore: registered new interface driver usbfs
-[ 0.100000] usbcore: registered new interface driver hub
-[ 0.100000] usbcore: registered new device driver usb
-[ 0.100000] pps_core: LinuxPPS API ver. 1 registered
-[ 0.110000] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
-[ 0.110000] PTP clock support registered
-[ 0.120000] clocksource: Switched to clocksource riscv_clocksource
-[ 0.130000] NET: Registered protocol family 2
-[ 0.140000] TCP established hash table entries: 2048 (order: 2, 16384 bytes)
-[ 0.140000] TCP bind hash table entries: 2048 (order: 2, 16384 bytes)
-[ 0.150000] TCP: Hash tables configured (established 2048 bind 2048)
-[ 0.150000] UDP hash table entries: 256 (order: 1, 8192 bytes)
-[ 0.150000] UDP-Lite hash table entries: 256 (order: 1, 8192 bytes)
-[ 0.160000] NET: Registered protocol family 1
-[ 2.870000] Unpacking initramfs...
-[ 5.640000] console [sbi_console0] enabled
-[ 5.640000] console [sbi_console0] enabled
-[ 5.650000] bootconsole [early0] disabled
-[ 5.650000] bootconsole [early0] disabled
-[ 5.660000] futex hash table entries: 256 (order: 0, 6144 bytes)
-[ 5.660000] workingset: timestamp_bits=61 max_order=16 bucket_order=0
-[ 5.760000] io scheduler noop registered
-[ 5.760000] io scheduler cfq registered (default)
-[ 6.270000] e1000e: Intel(R) PRO/1000 Network Driver - 3.2.6-k
-[ 6.270000] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
-[ 6.270000] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-[ 6.280000] ehci-pci: EHCI PCI platform driver
-[ 6.280000] usbcore: registered new interface driver usb-storage
-[ 6.280000] usbcore: registered new interface driver usbhid
-[ 6.290000] usbhid: USB HID core driver
-[ 6.290000] NET: Registered protocol family 17
-[ 6.340000] Freeing unused kernel memory: 4112K (ffffffff80000000 - ffffffff80404000)
-[ 6.350000] This architecture does not have kernel memory protection.
-[ 6.350000] [NEXELL] run_init_process = /init
-Starting logging: OK
-Starting mdev...
-modprobe: can't change directory to '/lib/modules': No such file or directory
-Initializing random number generator... [ 12.500000] random: dd urandom read with 0 bits of entropy available
-done.
-Starting network...
-Waiting for interface eth0 to appear............... timeout!
-run-parts: /etc/network/if-pre-up.d/wait_iface: exit status 1
-Starting dropbear sshd: OK
-Welcome to Buildroot
-buildroot login: root
-Password: 
-#
+![](/assets/ext_images/riscv/boot_logo_img.png)
 
 <br>
 
 ### 4. buildroot customize
 buildroot 를 customize 하고 싶을 때 두 가지 방법이 있다.
-첫번째 방법은 work/sysroot 를 수정한뒤 linux build(위의 3. build guide참고) 를 실행하는 것이다. build time시 root filesyste을 다시 생성하여 vmlinux에 묶어준다.
-두번째 방법은 buildroot 를 menu config을 사용하여 re-build 하는 것이다.
+첫번째 방법은 work/sysroot 를 수정한뒤 linux build(위의 3. build guide참고) 를 실행하는 것이다.<br>
+build time시 root filesyste을 다시 생성하여 vmlinux에 묶어준다.<br>
+두번째 방법은 buildroot 를 menu config을 사용하여 re-build 하는것이다.<br>
+
 ```
 $ rm -rf work/buildroot
 $ rm -rf work/sysroot
@@ -190,10 +105,15 @@ $ make -j12
 <br>
 
 ### 5. working history
-http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=29196612
-http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=29982966
-http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=29984053
-http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=30310684
+http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=29196612<br>
+
+http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=29982966<br>
+
+http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=29984053<br>
+
+http://swjira.nexell.co.kr:8091/pages/viewpage.action?pageId=30310684<br>
+
+
 * a. BOOM spec 확인. 
 * b. riscv-tools.git 소스를 이용하여 qemu 동작 확인
 ```
