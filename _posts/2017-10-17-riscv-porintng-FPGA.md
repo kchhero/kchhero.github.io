@@ -1,11 +1,11 @@
 ---
-title: 'RISC-V porting on FPGA'
+category: Uncategoried
 layout: post
 tags:
   - RISC-V
-category: Uncategoried
+title: 'RISC-V porting on FPGA'
 ---
-### Source Download
+#### BOOM FPGA board : bbl + kernel porting memo
 
 * boom spec
 file:///home/suker/Downloads/boom-spec.pdf
