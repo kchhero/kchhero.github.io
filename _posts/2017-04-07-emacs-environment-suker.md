@@ -1,9 +1,9 @@
 ---
+category: Tools
 layout: post
 tags:
   - emacs
 title: 'emacs environment for SUKER'
-category: Tools
 ---
 #### emacs 환경 구성에 대한 정리
 
@@ -99,7 +99,9 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
  ;; If there is more than one, they won't work right.
  )
 ```
+
 <br>
+
 ##### 4. customizing, .emacs &&  .emacs.d
 .emacs에 아래 처럼 code를 추가하고, .emacs.d 에도 필요한 .el 파일들을 copy 해준다.
  https://github.com/kchhero/suker_enviroment/emacs_old/.emacs.d/
@@ -144,4 +146,15 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
 ;;------------------------ suker customize End ---------------------------
+```
+
+<br>
+
+##### 5. customize 
+status bar 에 file name 을 비롯하여 path 까지 표시해줄 때 .emacs 에 아래와 같이 code를 추가해주면 된다.
+```
+(setq-default mode-line-buffer-identification
+              (let ((orig  (car mode-line-buffer-identification)))
+                `(:eval (cons (concat ,orig (abbreviate-file-name default-directory))
+                              (cdr mode-line-buffer-identification)))))
 ```
