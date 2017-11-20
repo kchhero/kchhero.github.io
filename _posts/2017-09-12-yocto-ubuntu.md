@@ -1,25 +1,25 @@
 ---
-title: 'ubuntu rootfs porting'
+category: yocto
 layout: post
 tags:
   - yocto
-category: yocto
+title: 'ubuntu rootfs porting'
 ---
-#### Yocto - Ubuntu rootfs porting
+#### Yocto - Ubuntu rootfs porting work diary
 
 yocto의 기본 OS system이 되는 oe 를 걷어내고 그 자리에 ubuntu 14.04 armhf binary로 대체하는 작업을 진행하였다.
 작업 기간 2주 걸렸음.
 
 ---
 
-##### try 1
+### try 1
 처음에는 meta-nexell의 sub layer에 meta-debian 을 이용하여 package를 build 하고, nexell 자체 library 는 .deb 로 packaging 하려고 하였다. 
 지난 7월부터 meta-nexell 을 krogoth에서 morty를 건너뛰고, pyro 버전으로 upgrade 하였는데, meta-debian 은 morty 까지 stable 인듯하다. build 자체에 문제가 많다.
 하나씩 잡다가는 1년은 걸릴듯하여 skip 
 
 ---
 
-##### try 2
+### try 2
 
 ubuntu armhf tarball을 download 한 뒤, .deb 로 build 한 package 들을 dpkg -i 로 install 해 보았다.
 일부 library 의 dependency 문제.. 특히 libc6 의 버전 문제가 상당히 어렵다. nx library 기준에 맞추어 libc6 를 dpkg 시키면
@@ -29,7 +29,7 @@ adduser 와 같은 간단해보이는 package도 몇 가지 dependency 문제로
 
 ---
 
-##### try 3 
+### try 3 
 chroot + apt-get 로 성공함.
 아래와 같은 step 으로 console mode 부팅 및 adbd 동작 까지 확인 되었다.
 
@@ -130,7 +130,7 @@ e2fsck -y -f $TARGET_DIR/${OUTPUT_NAME}
 ```
 
 
-##### try 4
+### try 4
 Desktop 마무리
 unity 버전이 아닌 lxde 를 install 하여 부팅 확인함.
 ```
