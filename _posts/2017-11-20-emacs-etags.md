@@ -23,6 +23,8 @@ M-x visit-tags-table
 
 ### ETAGS-KEY-BINDINGS
 ```
+| | |
+| ------------ | ------------ |
 | M-! | etags *.[ch] index .c and .h files in current directory |
 | C-u M-x | `visit-tags-table'	set index file for current buffer |
 | M-x | `visit-tags-table'	globally set index file |
