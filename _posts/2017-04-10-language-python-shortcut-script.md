@@ -1,5 +1,5 @@
 ---
-title: Python-shortcut-Script
+title: python Python-shortcut-Script
 layout: post
 tags:
   - Language

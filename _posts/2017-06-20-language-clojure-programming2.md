@@ -2,8 +2,8 @@
 category: language
 layout: post
 tags:
-  - clojure
-title: programming-clojure-ch2
+  - Language
+title: clojure programming-clojure-ch2
 ---
 ### clojure overview
 

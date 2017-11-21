@@ -2,7 +2,7 @@
 layout: post
 tags:
   - Language
-title: 'printk format 정리'
+title: c printk format 정리
 category: language
 ---
 | f variable is of Type | use printk format specifier |

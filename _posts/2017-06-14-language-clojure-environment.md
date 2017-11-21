@@ -1,8 +1,8 @@
 ---
-title: clojure-setup
+title: clojure setup
 layout: post
 tags:
-  - clojure
+  - Language
 category: Uncategoried
 ---
 #### Emacs + cider + lein

@@ -1,5 +1,5 @@
 ---
-title: 'CERT C 프로그래밍 정리 (EXP, INT)'
+title: c CERT C 프로그래밍 정리 (EXP, INT)
 layout: post
 tags:
   - Language

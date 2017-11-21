@@ -1,5 +1,5 @@
 ---
-title: 'Python CookBook3판 - O REILLY Study(ch1)'       
+title: python Python CookBook3판 - O REILLY Study(ch1)
 layout: post
 published: true
 category: Programming

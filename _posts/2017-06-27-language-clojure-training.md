@@ -1,8 +1,8 @@
 ---
-title: '4-clojure problem'
+title: clojure '4-clojure problem'
 layout: post
 tags:
-  - clojure
+  - Language
 category: language
 ---
 ### http://www.4clojure.com/ 문제 풀이 요약

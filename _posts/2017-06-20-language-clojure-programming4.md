@@ -2,8 +2,8 @@
 category: language
 layout: post
 tags:
-  - clojure
-title: programming-clojure-ch4
+  - Language
+title: clojure programming-clojure-ch4
 ---
 ## data를 sequence로 다루기
 

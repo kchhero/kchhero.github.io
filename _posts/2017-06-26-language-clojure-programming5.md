@@ -1,8 +1,8 @@
 ---
-title: programming-clojure-ch5
+title: clojure programming-clojure-ch5
 layout: post
 tags:
-  - clojure
+  - Language
 category: language
 ---
 ## 함수형 프로그래밍

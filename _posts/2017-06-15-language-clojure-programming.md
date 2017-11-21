@@ -2,8 +2,8 @@
 category: language
 layout: post
 tags:
-  - clojure
-title: programming-clojure-ch1
+  - Language
+title: clojure programming-clojure-ch1
 ---
 #### BASIC
 user==> (defn hello [name] (str "Hello, " name))
