@@ -2,7 +2,7 @@
 title: 'LAVA develop TroubleShooting'
 layout: post
 tags:
-  - CI
+  - Continuous Integration
 category: CI
 ---
 #### TroubleShooting

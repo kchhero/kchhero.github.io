@@ -2,7 +2,7 @@
 category: language
 layout: post
 tags:
-  - c
+  - Language
 title: 'CERT C 프로그래밍 정리 (PRE, DCL)'
 ---
 #### 에이콘, CERT C 프로그래밍, 로버트 C. 시코드.. 공부하면서 중요부분을 정리함.

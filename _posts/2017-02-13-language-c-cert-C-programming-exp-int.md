@@ -2,7 +2,7 @@
 title: 'CERT C 프로그래밍 정리 (EXP, INT)'
 layout: post
 tags:
-  - c
+  - Language
 category: language
 ---
 ##### EXP01-C. 포인터로 가리키는 타입의 크기를 결정하기 위해 포인터의 크기를 사용하지 마라

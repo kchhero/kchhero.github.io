@@ -2,7 +2,7 @@
 title: Python-shortcut-Script
 layout: post
 tags:
-  - python
+  - Language
 category: programming
 ---
 #### my shortcut script

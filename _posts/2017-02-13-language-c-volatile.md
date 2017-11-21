@@ -2,7 +2,7 @@
 title: 'volatile 정리'
 layout: post
 tags:
-  - c
+  - Language
 category: language
 ---
 ![2006년 9월호 maso ](http://image.moazine.com/Mid/000119/000000005719.jpg "2006년 9월호 maso ")

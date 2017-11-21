@@ -2,7 +2,7 @@
 title: 'Python CookBook3판 - O REILLY Study(ch3)'
 layout: post
 tags:
-  - python
+  - Language
 category: programming
 ---
 #### 3.9 큰 배열 계산

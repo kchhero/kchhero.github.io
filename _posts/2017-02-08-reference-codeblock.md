@@ -1,5 +1,5 @@
 ---
-tags: reference
+tags: Reference
 title: 'code block ref'
 layout: post
 category: Reference

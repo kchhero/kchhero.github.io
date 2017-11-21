@@ -2,7 +2,7 @@
 category: CI
 layout: post
 tags:
-  - CI
+  - Continuous Integration
 title: 'LAVA V2 Architecture'
 ---
 #### Architecture

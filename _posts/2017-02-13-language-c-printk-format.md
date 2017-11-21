@@ -1,7 +1,7 @@
 ---
 layout: post
 tags:
-  - c
+  - Language
 title: 'printk format 정리'
 category: language
 ---

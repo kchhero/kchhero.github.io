@@ -1,7 +1,7 @@
 ---
 title: 'AGL blowfish porter board quick start'
 layout: post
-tags: yocto
+tags: Yocto
 category: Yocto
 ---
 ##### 1. Source Download

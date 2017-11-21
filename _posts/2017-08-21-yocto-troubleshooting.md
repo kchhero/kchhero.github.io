@@ -2,7 +2,7 @@
 title: 'Trouble Shooting'
 layout: post
 tags:
-  - yocto
+  - Yocto
 category: yocto
 ---
 #### Yocto Trouble shooting

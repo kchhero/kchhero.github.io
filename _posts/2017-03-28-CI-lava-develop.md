@@ -2,7 +2,7 @@
 title: 'LAVA develop'
 layout: post
 tags:
-  - CI
+  - Continuous Integration
 category: CI
 ---
 #### Outline

@@ -2,7 +2,7 @@
 title: 'Jenkins plugin 개발'
 layout: post
 tags:
-  - CI
+  - Continuous Integration
 category: CI
 ---
 #### plugin 개발 시작

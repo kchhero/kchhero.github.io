@@ -2,7 +2,7 @@
 category: yocto
 layout: post
 tags:
-  - yocto
+  - Yocto
 title: 'ubuntu rootfs porting'
 ---
 #### Yocto - Ubuntu rootfs porting work diary

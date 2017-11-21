@@ -1,7 +1,7 @@
 ---
 title: 'blogging issue'
 layout: post
-tags: reference
+tags: Reference
 category: Reference
 description: blog를 만들때 발생했던 문제점들 정리
 ---

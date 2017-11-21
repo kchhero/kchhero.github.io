@@ -2,7 +2,7 @@
 title: tensorflow-install-GPU
 layout: post
 tags:
-  - ML
+  - Machine Learning
 category: MachineLearning
 ---
 ##### Docker + tensorflow + GPU version

@@ -3,7 +3,7 @@ title: 'Python CookBook3판 - O REILLY Study(ch1)'
 layout: post
 published: true
 category: Programming
-tags: python
+tags: Language
 ---
 
 #### 1.3  deque 사용

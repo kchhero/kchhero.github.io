@@ -2,7 +2,7 @@
 title: 'OpenEmbedded-Layer-Index registration'
 layout: post
 tags:
-  - yocto
+  - Yocto
 category: yocto
 ---
 #### OpenEmbedded Layer Index 등록 완료

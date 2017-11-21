@@ -1,7 +1,7 @@
 ---
 layout: post
 tags:
-  - ML
+  - Machine Learning
 title: tensorflow-install
 category: MachineLearning
 ---

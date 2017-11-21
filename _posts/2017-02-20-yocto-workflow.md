@@ -2,7 +2,7 @@
 title: 'yocto workflow'
 layout: post
 tags:
-  - yocto
+  - Yocto
 category: yocto
 ---
 #### yocto workflow

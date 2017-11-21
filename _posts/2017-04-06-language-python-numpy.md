@@ -2,7 +2,7 @@
 category: programming
 layout: post
 tags:
-  - python
+  - Language
 title: Python-numpy
 ---
 #### numpy
