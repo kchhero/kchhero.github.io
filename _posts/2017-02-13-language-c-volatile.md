@@ -1,5 +1,5 @@
 ---
-title: c volatile 정리
+title: C> volatile 정리
 layout: post
 tags:
   - Language

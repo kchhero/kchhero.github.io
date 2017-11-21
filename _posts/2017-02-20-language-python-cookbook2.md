@@ -1,5 +1,5 @@
 ---
-title: python Python CookBook3판 - O REILLY Study(ch3)
+title: Python> Python CookBook3판 - O REILLY Study(ch3)
 layout: post
 tags:
   - Language

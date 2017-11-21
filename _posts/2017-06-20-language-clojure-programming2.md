@@ -3,7 +3,7 @@ category: language
 layout: post
 tags:
   - Language
-title: clojure programming-clojure-ch2
+title: Clojure> programming-clojure-ch2
 ---
 ### clojure overview
 

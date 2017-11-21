@@ -3,7 +3,7 @@ category: programming
 layout: post
 tags:
   - Language
-title: python Python-numpy
+title: Python> Python-numpy
 ---
 #### numpy
 Machine Learning 을 공부하는 과정에서 가장 많이 접하는 python library 가 numpy인듯하다.

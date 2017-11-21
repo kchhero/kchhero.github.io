@@ -3,7 +3,7 @@ category: language
 layout: post
 tags:
   - Language
-title: c Kernel code : do-while(0)
+title: C> Kernel code : do-while(0)
 ---
 출처 : [http://kernelnewbies.org/FAQ/DoWhile0](http://kernelnewbies.org/FAQ/DoWhile0)
 
