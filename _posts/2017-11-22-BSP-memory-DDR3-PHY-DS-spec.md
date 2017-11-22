@@ -5,7 +5,7 @@ tags:
   - BSP
 category: BSP
 ---
-#### PHY DS Rev1.22 spec 정리, 분석
+#### PHY DS Rev1.22 spec 요약
 
 ## Overview
 
