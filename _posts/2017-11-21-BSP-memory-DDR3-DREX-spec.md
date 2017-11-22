@@ -170,6 +170,7 @@ PPCCLKCON.perev_clk_en is set to 1.
 DREX has events counters which is called PPC. lists performance events in each domain.
 
 Table 1-1 List of Performance Events
+
 | Event Items | Clock Domain |
 | -------- | -------- |
 | 1. Total read requests counts | aclk |
@@ -236,18 +237,14 @@ This register should not be written to enable after all initialization and train
 ##### Dynamic Power Down Configuration Register (PwrdnConfig, R/W, Address Offset=0x0028)
 ##### AC Timing Register for Periodic ZQ(ZQCS) of Memory (TimingPZQ, R/W, Address Offset=0x002C)
 ##### AC Timing Register for Auto Refresh of Memory (TimingAref, R/W, Address Offset=0x0030)
-##### AC Timing Register n for the Row of Memory (TimingRow n, R/W, Address Offset=0x0034(for n =
-0), 0x00E4(for n = 1))
-##### AC Timing Register n for the Data of Memory (TimingData n, R/W, Address Offset=0x0038(for n =
-0), 0x00E8(for n = 1))
-##### AC Timing Register n for the Power modes of Memory (TimingPower n, R/W, Address
-Offset=0x003C(for n = 0), 0x00EC(for n = 1))
+##### AC Timing Register n for the Row of Memory (TimingRow n, R/W, Address Offset=0x0034(for n = 0), 0x00E4(for n = 1))
+##### AC Timing Register n for the Data of Memory (TimingData n, R/W, Address Offset=0x0038(for n = 0), 0x00E8(for n = 1))
+##### AC Timing Register n for the Power modes of Memory (TimingPower n, R/W, Address Offset=0x003C(for n = 0), 0x00EC(for n = 1))
 ##### PHY Status Register (PhyStatus, Read Only, Address Offset=0x0040)
 ##### ETCTiming Register (ETCTIMING, R/W, Address Offset=0x0044)
 ##### Memory ChipStatus Register (ChipStatus, Read Only, Address Offset=0x0048)
 ##### Memory Mode Registers Status Register (MrStatus, Read Only, Address Offset=0x0054)
-##### Quality of Service Control Register n (QosControl n, R/W, Address Offset=0x0060 + 8n (n=0~15,
-integer))
+##### Quality of Service Control Register n (QosControl n, R/W, Address Offset=0x0060 + 8n (n=0~15, integer))
 ##### Timing Set Switch Configuration Register(TimingSetSw, R/W Address Offset=0x00E0)
 ##### Write Training Configuration Register (WrTraConfig, R/W, Address Offset=0x00F4)
 ##### Read Leveling Configuration Register (RdlvlConfig, R/W, Address Offset=0x00F8)
@@ -268,12 +265,9 @@ integer))
 ##### CA Calibration Status Register (CACAL_STATUS, R, Address Offset=0x0168)
 ##### Emergent Configuration Register 0 (EMERGENT_CONFIG0, R/W, Address Offset=0x0200)
 ##### Emergent Configuration Register 1 (EMERGENT_CONFIG1, R/W, Address Offset=0x0204)
-##### Back Pressure Control Register For Port n (BP_CONTROLn, R/W, Address Offset=0x0210 + 0x10n
-(n=0~3))
-##### Back Pressure Configuration Register For Read/Port n (BP_CONFIGn_R, R/W, Address
-Offset=0x0214 + 0x10n(n=0~3))
-##### Back Pressure Configuration Register For Write/Port n (BP_CONFIGn_W, R/W, Address
-Offset=0x0218 + 0x10n(n=0~3))
+##### Back Pressure Control Register For Port n (BP_CONTROLn, R/W, Address Offset=0x0210 + 0x10n (n=0~3))
+##### Back Pressure Configuration Register For Read/Port n (BP_CONFIGn_R, R/W, Address Offset=0x0214 + 0x10n(n=0~3))
+##### Back Pressure Configuration Register For Write/Port n (BP_CONFIGn_W, R/W, Address Offset=0x0218 + 0x10n(n=0~3))
 ##### Window Configuration for Write ODT Register (WinConfig_W_ODT, R/W, Address Offset=0x0300)
 ##### Window Configuration for CTRLREAD Register (WinConfig_CTRLREAD, R/W, Address
 Offset=0x0308)
@@ -301,28 +295,18 @@ Offset=0x030C)
 ##### TZASC Lockdown Select Register (TZLDSELECT, R/W, Address Offset=0x000C)
 ##### TZASC Interrupt Status Register (TZINTSTATUS, R/O, Address Offset=0x0010)
 ##### TZASC Interrupt Clear Register (TZINTCLEAR, W/O, Address Offset=0x0014)
-##### TZASC Read Fail Address Low Register n (TZFAILADDRLOWRn, R/O, Address Offset=0x0040 +
-0x20n (n=0~3, integer))
-##### TZASC Read Fail Address High Register n (TZFAILADDRHIGHRn, R/O, Address Offset=0x0044 +
-0x20n (n=0~3, integer))
-##### TZASC Read Fail Control Register n (TZFAILCTRLRn, R/O, Address Offset=0x0048 + 0x20n (n=0~3,
-integer))
-##### TZASC Read Fail ID Register n (TZFAILIDRn, R/O, Address Offset=0x004C + 0x20n (n=0~3,
-integer))
-##### TZASC Write Fail Address Low Register n (TZFAILADDRLOWWn, R/O, Address Offset=0x0050 +
-0x20n (n=0~3, integer))
-##### TZASC Write Fail Address High Register n (TZFAILADDRHIGHWn, R/O, Address Offset=0x0054 +
-0x20n (n=0~3, integer))
-##### TZASC Write Fail Control Register n (TZFAILCTRLWn, R/O, Address Offset=0x0058 + 0x20n
-(n=0~3, integer))
-##### TZASC Write Fail ID Register n (TZFAILIDWn, R/O, Address Offset=0x005C + 0x20n (n=0~3,
-integer))
-##### TZASC Region Setup Low Register n (TZRSLOWn, R/W, Address Offset=0x0100 + 0x10n (n=0~8,
-integer))
-##### TZASC Region Setup High Register n (TZRSHIGHn, R/W, Address Offset=0x0104 + 0x10n (n=0~8,
-integer))
-##### TZASC Region Attribute Register n (TZRSATTRn, R/W, Address Offset=0x0108 + 0x10n (n=0~8,
-integer))
+##### TZASC Read Fail Address Low Register n (TZFAILADDRLOWRn, R/O, Address Offset=0x0040 + 0x20n (n=0~3, integer))
+
+##### TZASC Read Fail Address High Register n (TZFAILADDRHIGHRn, R/O, Address Offset=0x0044 + 0x20n (n=0~3, integer))
+##### TZASC Read Fail Control Register n (TZFAILCTRLRn, R/O, Address Offset=0x0048 + 0x20n (n=0~3, integer))
+##### TZASC Read Fail ID Register n (TZFAILIDRn, R/O, Address Offset=0x004C + 0x20n (n=0~3, integer))
+##### TZASC Write Fail Address Low Register n (TZFAILADDRLOWWn, R/O, Address Offset=0x0050 + 0x20n (n=0~3, integer))
+##### TZASC Write Fail Address High Register n (TZFAILADDRHIGHWn, R/O, Address Offset=0x0054 + 0x20n (n=0~3, integer))
+##### TZASC Write Fail Control Register n (TZFAILCTRLWn, R/O, Address Offset=0x0058 + 0x20n (n=0~3, integer))
+##### TZASC Write Fail ID Register n (TZFAILIDWn, R/O, Address Offset=0x005C + 0x20n (n=0~3, integer))
+##### TZASC Region Setup Low Register n (TZRSLOWn, R/W, Address Offset=0x0100 + 0x10n (n=0~8, integer))
+##### TZASC Region Setup High Register n (TZRSHIGHn, R/W, Address Offset=0x0104 + 0x10n (n=0~8, integer))
+##### TZASC Region Attribute Register n (TZRSATTRn, R/W, Address Offset=0x0108 + 0x10n (n=0~8, integer))
 ##### TZASC Integration Test Control Register (TZITCRG, R/W, Address Offset=0x0E00)
 ##### TZASC Integration Test Input Register (TZITIP, R/O, Address Offset=0x0E04)
 ##### TZASC Integration Test Output Register (TZITOP, R/W, Address Offset=0x0E08)
