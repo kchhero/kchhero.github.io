@@ -7,7 +7,7 @@ category: BSP
 ---
 #### DREX-1 V2.0.3 spec 정리, 분석
 
-##Features
+## Features
 
 * PHY : is an abbreviation for the physical layer of the OSI model and refers to the circuitry required to implement physical layer functions.
 
@@ -57,7 +57,7 @@ Support Trust Zone Address Space Control
 
 <br>
 
-##Initialization
+## Initialization
 An initialization procedure consists of three procedures such as *PHY DLL initialization*, *setting controller register* and *memory initialization*.
 
 #### DDR3 with PHY V6
@@ -125,13 +125,13 @@ PHY manual)
 
 <br>
 
-##Address Mapping
+## Address Mapping
 There are two ways to map the AXI offset address as shown below: 1) simple interleaved mapping 2) split column
 interleaved mapping 3) randomized interleaved mapping 4) chip interleaved mapping
 
 <br>
 
-##Low Power Operation
+## Low Power Operation
 The controller executes a low power memory operation in five ways as described below. Each feature is indepen-
 dent of each other and executed at the same time.
 When memory is in the SREF state, then the controller issue SRX command automatically if AXI request is com-
@@ -140,30 +140,30 @@ ming.
 * SRE : self refresh enter
 * SRX : self refresh exit
 
-#### AXI low-power interface
-#### Dynamic power down
-#### Dynamic self refresh
-#### Clock stop
-#### Direct command
+##### AXI low-power interface
+##### Dynamic power down
+##### Dynamic self refresh
+##### Clock stop
+##### Direct command
 
 <br>
 
-##Precharge Policy
+## Precharge Policy
 There are two options for DREX-1 regarding precharge policy – port-selective precharge and timeout precharge
 per port.
 
-#### Port Selective Precharge
-#### Timeout Precharge
+##### Port Selective Precharge
+##### Timeout Precharge
 
 <br>
 
-##Quality of Service
+## Quality of Service
 DREX provides Quality of Service (QoS) feature to ensure low latency for real-time masters. Specifically, DREX
 uses timeout based QoS enforcement scheme.
 
 <br>
 
-##Performance Profiling
+## Performance Profiling
 DREX provides performance monitoring capability based on event counters accessible through APB interface.
 Relevant registers are located on 0xE000 ~ 0xE140. Note that do not access to these addres before
 PPCCLKCON.perev_clk_en is set to 1.
@@ -182,7 +182,7 @@ Table 1-1 List of Performance Events
 
 <br>
 
-##Trust Zone Address Space Control (TZASC)
+## Trust Zone Address Space Control (TZASC)
 TZASC performs security checks on AXI accesses to memory. This supports configurable number of regions.
 Each region is programmable for size, base address, enable, and security parameters. Using the 
 secure_boot_lock input signal, the programmers view can be locked to prevent erroneous writes. It provides 
@@ -216,14 +216,14 @@ access
 
 <br>
 
-##Clock Gating
+## Clock Gating
 DREX has clock gating feature for internal logic and PHY clock.
 * Internal logic clock gating enable: int_cg_en in ConControl register
 * PHY clock gating enable: phy_cg_en in ConControl register
 
 <Br>
 
-##Register Descriptions
+## Register Descriptions
 ##### Controller Control Register (ConControl, R/W, Address Offset=0x0000)
 ##### Memory Control Register (MemControl, R/W, Address Offset=0x0004)
 ##### Clock Gating Control Register (CGControl, R/W, Address Offset=0x0008)
@@ -293,7 +293,7 @@ Offset=0x030C)
 
 <br>
 
-##TZASC Register Description
+## TZASC Register Description
 
 ##### TZASC Configuration Register (TZCONFIG, R/O, Address Offset=0x0000)
 ##### TZASC Action Register (TZACTION, R/W, Address Offset=0x0004)
