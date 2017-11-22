@@ -7,39 +7,47 @@ category: BSP
 ---
 #### memory 관련 자료 모음, 요약 분석
 
-1 clock 2 data  access => double data rate , DDR
+##### 1 clock 2 data  access => double data rate , DDR
 
-[DQ group]
-    DQ        =>  DQ signal --> data bus (write : D, read : Q)  ,    DQ0~DQ7
-    DQS     =>  data bus strobe signal --> data clock signal
-        DQS +, DQS -   =>  difference signal line
+##### [DQ group]
+DQ        =>  DQ signal --> data bus (write : D, read : Q)  ,    DQ0~DQ7
+DQS     =>  data bus strobe signal --> data clock signal
+DQS +, DQS -   =>  difference signal line
+DQM   => data bus mask
 
-    DQM   => data bus mask
+##### DLL : Delay-Locked Loop
 
-DLL : Delay-Locked Loop
+##### RAS : Row access strobe
+##### CAS : Column access strobe
+##### CL : CAS Latency
 
-RAS : Row access strobe
-CAS : Column access strobe
-CL : CAS Latency
+<br>
 
-ODT : DRAM controller가 독립적으로 termination 저항을 ON/OFF  시킴으로써 memory channel의
-             signal integrity를 향상.
+#### ODT 
+DRAM controller가 독립적으로 termination 저항을 ON/OFF  시킴으로써 memory channel의 signal integrity를 향상.
+* signal reflection : 전기적 신호가 전송선로를 따라서 진행하다가 선로의 끝에 부딪히면 신호가 반사되게 되며, 이는 noise가 되어서 선로의 신호품질을 떨어뜨리게 된다. reflection을 방지하기 위해 선로의 끝 부분에 적절한 값의 termination 저항을 사용하여 임피던스를 맞춰줘야 한다.
+* termination resistance : DDR2 SDRAM 이 동작하는 아주 높은 주파수에서는 위와 같은 termination 저항을 사용하는것이 적합하지 않다. high frequency  systemd 에서 reflection signal에 대해 조금 더 정밀하게 제어할 필요가 생겼다. 이것이 ODT.
+* ODT 는 DRAM 내부에 termination 저항을 넣어서 제어한다. 외부에 termination 저항을 붙이는것보다 패턴들의 수를 줄일 수 있어 패턴에 의한 영향이 적고, 부품의 숫자가 줄어들어 면적면에있어서 장점이 있다.
+DQ,DQS,/DQS,RDQS,/RDQS pin에 대하여 ODT를 설정 할 수 있으며, ON/OFF도 제어할 수 있다.
+EMRS register 를 통하여 설정 할 수 있다.
 
-tREF : Refresh Time, 값이 작을수록 성능이 떨어진다
-tRFC : Refresh Cycle Time, refresh 자체에 소요되는 시간을 규정한 것
+<br>
 
-JEDEC : Joint Electron Device Engineering Council
+##### tREF : Refresh Time, 값이 작을수록 성능이 떨어진다
+##### tRFC : Refresh Cycle Time, refresh 자체에 소요되는 시간을 규정한 것
 
-AHB : Advanced High-performance Bus, 단일 채널 버스, 공유 버스.
-AXI : Advanced eXitensible Interface, 다중 채널 버스, 읽기/쓰기 최적화 버스.
-AMBA : Advanced Microcontroller Bus Architecture
+##### JEDEC : Joint Electron Device Engineering Council
+
+##### AHB : Advanced High-performance Bus, 단일 채널 버스, 공유 버스.
+##### AXI : Advanced eXitensible Interface, 다중 채널 버스, 읽기/쓰기 최적화 버스.
+##### AMBA : Advanced Microcontroller Bus Architecture
 AHB 프로토콜의 경우는 address phase와 data phase가 함께 이어져 있어야 하기 때문에 DDR SDRAM 이나 플래쉬 메모리처럼 접근시 초기 latency가 있을 경우 data가 전송되지 않으면서도 버스를 점유할 수 밖에 없는 상황이 발생. 
 반면, AXI 프로토콜의 경우는 address와 data channel을 독립적으로 분리하여 칩상의 네트워크를 쓸데없이 점유하는 상황을 피할 수 있다.
 
 <br><br>
 
 
-출처: http://udteam.tistory.com/808 [IYD - Everything Inside Your Device]
+##### 출처: http://udteam.tistory.com/808 [IYD - Everything Inside Your Device]
 
 SDRAM : Synchronized Dynamic Random Access Memory
 
