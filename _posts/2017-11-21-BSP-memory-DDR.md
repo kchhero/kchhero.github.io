@@ -44,10 +44,22 @@ EMRS register 를 통하여 설정 할 수 있다.
 AHB 프로토콜의 경우는 address phase와 data phase가 함께 이어져 있어야 하기 때문에 DDR SDRAM 이나 플래쉬 메모리처럼 접근시 초기 latency가 있을 경우 data가 전송되지 않으면서도 버스를 점유할 수 밖에 없는 상황이 발생. 
 반면, AXI 프로토콜의 경우는 address와 data channel을 독립적으로 분리하여 칩상의 네트워크를 쓸데없이 점유하는 상황을 피할 수 있다.
 
+<br>
+
+#### H/W write leveling ?
+#### S/W write leveling ?
+* 차이점?
+
+#### Gate Leveling?
+#### Read DQ Calibration?
+#### Write DQ Calibration?
+
 <br><br>
 
 
-##### 출처: http://udteam.tistory.com/808 [IYD - Everything Inside Your Device]
+#### DDR 관련 펌 글
+
+** 출처: http://udteam.tistory.com/808 [IYD - Everything Inside Your Device] **
 
 SDRAM : Synchronized Dynamic Random Access Memory
 
