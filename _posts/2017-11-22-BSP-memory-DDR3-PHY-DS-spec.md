@@ -60,6 +60,8 @@ ZQ_IO calibrates the output and termination impedance and passes through impedan
 | ctrl_wake_up[NS:0] |  Input This field controls toggling the input clock of 90 degree phase shift SDLL to save power. "ctrl_wakeup[NS]" for ctrl_slice should be asserted 3 cycles prior to any command and then can be deasserted after the command is given to memory(The controller should issue NOP command during 3 cycles after ctrl_wake_up[NS] is disabled). But if it doesn't use LPDDR2, "ctrl_wake_up[NS]" can be always deasserted. "ctrl_wakeup[NS-1:0]" for data_slice should be asserted 2 cycles prior to write command and then can be deasserted when ctrl_en falls.<br>For example, if the number of "data_slice" is four,<br>5’b00000: All input clocks of Slave DLL isn’t toggled.<br>5’b11111: All input clocks of Slave DLL is toggled.(Default)<br>5’b10000: The input clock of Slave DLL in ctrl_slice is toggled. But the input clock of SDLL in data_slice isn’t toggled. |
 | ctrl_place_type[NS:0] |  Input This field decides where each slice should be placed on chip. For example, if data_slice0 is placed on the top or bottom of chip, "ctrl_place_type[0]" should be zero and ioh_* type signals in DS0 should be used to connect with I/O. |
 
+<br>
+
 #### APB Interface Signals
 
 | | | |
@@ -120,76 +122,77 @@ skip
 
 #### Initialization
 * After power-up and system PLL locking time, system reset(rst_n) is released.
-* Select Memory Type (=PHY_CON0[12:11]).
--- ctrl_ddr_mode=2'b11 (LPDDR3)
--- ctrl_ddr_mode=2'b10 (LDDR2)
--- ctrl_ddr_mode=2'b00 (DDR2)
--- ctrl_ddr_mode=2'b01 (DDR3)
-** NOTE: If ctrl_ddr_mode[1]=1'b1, cmd_active=14'h000E(=LP_DDR_CON3[13:0]),
-cmd_default=14'h000F(=LP_DDR_CON4[13:0])
-upd_mode=1'b1(=OFFSETD_CON0[28])
+* Select Memory Type (=PHY_CON0[12:11])<br>
+-- ctrl_ddr_mode=2'b11 (LPDDR3)<br>
+-- ctrl_ddr_mode=2'b10 (LDDR2)<br>
+-- ctrl_ddr_mode=2'b00 (DDR2)<br>
+-- ctrl_ddr_mode=2'b01 (DDR3)<br>
 
-* Set Read Latency(RL), Burst Length(BL) and Write Latency(WL)
--- Set RL in PHY_CON4[4:0].
--- Set BL in PHY_CON4[12:8].
--- Set WL in PHY_CON4[20:16].
-* ZQ Calibration(Please refer to "8.5 ZQ I/O CONTROL PROCEDURE" for more details)
--- Enable and Disable "zq_clk_div_en" in ZQ_CON0[18]
--- Enable "zq_manual_str" in ZQ_CON0[1]
--- Wait until "zq_cal_done"(ZQ_CON1[0]) is enabled.
--- Disable "zq_manual_str" in ZQ_CON0[1]
-* Memory Controller should assert "dfi_init_start" from LOW to HIGH.
-* Memory Controller should wait until "dfi_init_complete" is set
--- DLL lock will be processed.
+** NOTE: If ctrl_ddr_mode[1]=1'b1, cmd_active=14'h000E(=LP_DDR_CON3[13:0]), cmd_default=14'h000F(=LP_DDR_CON4[13:0]) upd_mode=1'b1(=OFFSETD_CON0[28])
+
+* Set Read Latency(RL), Burst Length(BL) and Write Latency(WL)<br>
+-- Set RL in PHY_CON4[4:0].<br>
+-- Set BL in PHY_CON4[12:8].<br>
+-- Set WL in PHY_CON4[20:16].<br>
+
+* ZQ Calibration(Please refer to "8.5 ZQ I/O CONTROL PROCEDURE" for more details)<br>
+-- Enable and Disable "zq_clk_div_en" in ZQ_CON0[18]<br>
+-- Enable "zq_manual_str" in ZQ_CON0[1]<br>
+-- Wait until "zq_cal_done"(ZQ_CON1[0]) is enabled.<br>
+-- Disable "zq_manual_str" in ZQ_CON0[1]<br>
+* Memory Controller should assert "dfi_init_start" from LOW to HIGH.<br>
+* Memory Controller should wait until "dfi_init_complete" is set<br>
+-- DLL lock will be processed.<br>
 
 <I>Caution:
 Please don't change the frequency of "clkm" or voltage during operation. Those conditions should be
 changed without memory access. After changing, "ctrl_start" should be clear and set to lock again.</I>
 
-* Enable DQS pull down mode
--- Set "ctrl_pulld_dqs=9'h1FF" (=LP_CON0[8:0]) in case of using 72bit PHY.
--- Please be careful that DQS pull down can be disabled only after Gate Leveling is done.
-* Memory Controller should assert "dfi_ctrlupd_req" after "dfi_init_complete" is set.
--- Please keep "Ctrl-Initiated Update" mode until finishing Leveling and Training.
+* Enable DQS pull down mode<br>
+-- Set "ctrl_pulld_dqs=9'h1FF" (=LP_CON0[8:0]) in case of using 72bit PHY.<br>
+-- Please be careful that DQS pull down can be disabled only after Gate Leveling is done.<br>
+* Memory Controller should assert "dfi_ctrlupd_req" after "dfi_init_complete" is set.<br>
+-- Please keep "Ctrl-Initiated Update" mode until finishing Leveling and Training.<br>
 * Start Memory Initialization by memory controller.
-* Skip the following steps if Leveling and Training are not required. (Optional features)
--- Constraints during Leveling
------- Support BL=4 or 8 during Leveling. (Don't use BL=16)
------- Not support Memory ODT(On-Die-Termination) during Write DQ Calibration.
--- Enable "ctrl_atgate" in PHY_CON0[6].
--- Enable "p0_cmd_en" in PHY_CON0[14].
--- Enable "InitDeskewEn" in PHY_CON2[6].
--- Enable "byte_rdlvl_en" in PHY_CON0[13].
--- Recommended that "rdlvl_pass_adj=4" in PHY_CON1[19:16].
--- When using DDR3,
------- Set "cmd_active=14'h105E" as default value (=LP_DDR_CON3[13:0])
------- Set "cmd_default=14'h107F" as default value (=LP_DDR_CON4[13:0])
--- When using LPDDR2 or LPDDR3,
------- Set "cmd_active=14'h000E" (=LP_DDR_CON3[13:0])
------- Set "cmd_default=14'h000F" (=LP_DDR_CON4[13:0])
--- Recommend that "rdlvl_incr_adj=7'h01" for the best margin.
------- Read "ctrl_lock_value[8:0]" in MDLL_CON1[16:8].
------- Update "ctrl_force[8:0]" in MDLL_CON0[15:7] by the value of "ctrl_lock_value[8:0]".
--- Write Leveling (refer to 8.1.1)
--- CA Calibration(refer to 8.1.2)
--- Gate Leveling (refer to 8.1.3)
------- It should be used only for DDR3 (800MHz).
--- Read DQ Calibration(=Read Leveling) (refer to 8.1.4)
--- Write Leveling Calibration (refer to 8.1.5)
--- After Read DQ Calibration, refer to "T_rddata_en" to know where "dfi_rddata_en_p0/p1" is enabled.
------- Read "T_rddata_en" timing parameters in T_RDDATA_CON0 after Read DQ Calibration.
--- Write DQ Calibration (refer to 8.1.6)
--- Set "ctrl_dll_on=1" (=MDLL_CON0[5]).
--- Set "DLLDeskewEn=1" (=PHY_CON2[12]) to compensate Voltage, Temperature variation during operation.
+* Skip the following steps if Leveling and Training are not required. (Optional features)<br>
+-- Constraints during Leveling<br>
+------ Support BL=4 or 8 during Leveling. (Don't use BL=16)<br>
+------ Not support Memory ODT(On-Die-Termination) during Write DQ Calibration.<br>
+-- Enable "ctrl_atgate" in PHY_CON0[6].<br>
+-- Enable "p0_cmd_en" in PHY_CON0[14].<br>
+-- Enable "InitDeskewEn" in PHY_CON2[6].<br>
+-- Enable "byte_rdlvl_en" in PHY_CON0[13].<br>
+-- Recommended that "rdlvl_pass_adj=4" in PHY_CON1[19:16].<br>
+-- When using DDR3,<br>
+------ Set "cmd_active=14'h105E" as default value (=LP_DDR_CON3[13:0])<br>
+------ Set "cmd_default=14'h107F" as default value (=LP_DDR_CON4[13:0])<br>
+-- When using LPDDR2 or LPDDR3,<br>
+------ Set "cmd_active=14'h000E" (=LP_DDR_CON3[13:0])<br>
+------ Set "cmd_default=14'h000F" (=LP_DDR_CON4[13:0])<br>
+-- Recommend that "rdlvl_incr_adj=7'h01" for the best margin.<br>
+------ Read "ctrl_lock_value[8:0]" in MDLL_CON1[16:8].<br>
+------ Update "ctrl_force[8:0]" in MDLL_CON0[15:7] by the value of "ctrl_lock_value[8:0]".<br>
+-- Write Leveling (refer to 8.1.1)<br>
+-- CA Calibration(refer to 8.1.2)<br>
+-- Gate Leveling (refer to 8.1.3)<br>
+------ It should be used only for DDR3 (800MHz).<br>
+-- Read DQ Calibration(=Read Leveling) (refer to 8.1.4)<br>
+-- Write Leveling Calibration (refer to 8.1.5)<br>
+-- After Read DQ Calibration, refer to "T_rddata_en" to know where "dfi_rddata_en_p0/p1" is enabled.<br>
+------ Read "T_rddata_en" timing parameters in T_RDDATA_CON0 after Read DQ Calibration.<br>
+-- Write DQ Calibration (refer to 8.1.6)<br>
+-- Set "ctrl_dll_on=1" (=MDLL_CON0[5]).<br>
+-- Set "DLLDeskewEn=1" (=PHY_CON2[12]) to compensate Voltage, Temperature variation during operation.<br>
 
 <I>Caution: Don't assert "ctrl_ctrlupd_req" during Leveling or Training.</I>I>
 
-* Set "upd_mode=0" (=OFFSETD_CON0[28]) for PHY-Initiated Update.
+* Set "upd_mode=0" (=OFFSETD_CON0[28]) for PHY-Initiated Update.<br>
 -- If Ctrl-Initiated Update is used, set "upd_mode=1" (refer to 8.7)
 * Enable and Disable "ctrl_resync"(=OFFSETD_CON0[24])" to make sure All SDLL is updated.
 
 ** NOTE: The goal of data eye training (=Read, Write DQ Calibration) is to identify the delay at which the read DQS rising edge aligns with the beginning and end transitions of the associated DQ data eye. By identifying these delays, the system can calculate the midpoint between the delays and accurately center the read DQS within the DQ data eye.
 
+<br>
 
 #### Write Leveling
 Write Leveling compensates for the additional flight time skew delay introduced by the package, board and on-chip with respect to strobe(=DQS) and clock.
