@@ -21,6 +21,7 @@ DQM   => data bus mask
 ##### RAS : Row access strobe
 ##### CAS : Column access strobe
 ##### CL : CAS Latency
+##### EMRS : Extended Mode Register Set)
 
 <br>
 
@@ -47,9 +48,34 @@ AHB 프로토콜의 경우는 address phase와 data phase가 함께 이어져 �
 
 <br>
 
-#### H/W write leveling ?
-#### S/W write leveling ?
-* 차이점?
+#### DDR2 T-Topology
+* DDR2용으로 채택된 T-topology는 capacitive loading 문제로 인하여 higher signaling rates 및 더 많은 memory module을 지원하기 어려웠다.
+
+![](https://m.eet.com/media/1190672/f1xl.jpg)
+<i>Shows T-topology for connecting memory controller and DDR2 memory modules in which the Command/Address/Clock signals are routed to each memory module in a branched fashion.</i>I>
+
+<br>
+
+#### Fly-By Topology
+* T-topology 의 문제를 해결하기 위하여 command 및 address  signals 를 각 메모리 module과 serialize 하게 연결하고 마지막에 적절한 종단을 연결하는 DDR3용 fly-by topology를 채택함으로써 극복하였다.
+각각의 모듈에 signal이 다른 시간 간격으로 도달하게 되는데, 이것에 의해 도입된 개념이 write leveling 이다.
+
+![](https://m.eet.com/media/1190673/f2xl.jpg)
+<I>Depicts Fly-by topology for connecting memory controller and DDR3 memory modules in which the memory modules share common Command/Address/Clock lines connected in series.</I>
+
+* DDR3 Module은 Fly-By Topology 때문에
+Clock/Command/Address에 대한 DQ/DQS의 Timing을 각각의 DRAM마다 보정해주어야 한다
+
+<br>
+
+#### Write leveling
+* memory device의 write 동작시 tDQS margin을 개선하기 위해서 data strobe signal(DQS)와 CLK 간의 왜곡(Skew)을 Calibration 하는 동작을 말한다
+![](https://www.micron.com/datasheets/4gb_ddr4_dram_2e0d_micronxhtml/ddr4_write_leveling.png)
+
+* write leveling은 EMRS(Extended Mode Register Set) 세팅에 의해서 Write Leveling Mode로 들어간 후 이루어지는데, DQS의 Rising Ddge에서 CLK의 상태를 DQ로 내보냄으로써 이루어진다. 즉, DQS의 rising edge에서 CLK의 상태가 high이면 WT_CTRL를 'high'로 내보내고, CLK의 상태가 low이면 WT_CTRL를 'low'로 내보낸다.
+* memory controller 는 DQS를 CK 에 맞춰 조정하기 위해 write leveling 기능 및 feedback 을 사용한다.
+DQS의 rising edge를 DRAM pin의 CLK edge와 맞추기위해 DQS에서 조절 가능한 delay setting을 갖는다.
+DQ가 0 -> 1 로 변할 때 controller에서 DQS delay setting을 locking 한다.
 
 #### Gate Leveling
 The goal of gate training is to locate the delay at which the initial read DQS rising edge aligns with the rising edge of the read DQS gate(=ctrl_gate_p0/p1). Once this point is identified, the read DQS gate can be adjusted prior to the DQS, to the approximate midpoint of the read DQS preamble. You can use "GATE Leveling" when using "DDR3 memory" over 800MHz.
