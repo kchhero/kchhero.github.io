@@ -21,11 +21,14 @@ DQM   => data bus mask
 ##### RAS : Row access strobe
 ##### CAS : Column access strobe
 ##### CL : CAS Latency
-##### EMRS : Extended Mode Register Set)
+##### EMRS : Extended Mode Register Set
+
+##### MRS : 
+##### MPR : 
 
 <br>
 
-#### ODT 
+#### ODT
 DRAM controller가 독립적으로 termination 저항을 ON/OFF  시킴으로써 memory channel의 signal integrity를 향상.
 * signal reflection : 전기적 신호가 전송선로를 따라서 진행하다가 선로의 끝에 부딪히면 신호가 반사되게 되며, 이는 noise가 되어서 선로의 신호품질을 떨어뜨리게 된다. reflection을 방지하기 위해 선로의 끝 부분에 적절한 값의 termination 저항을 사용하여 임피던스를 맞춰줘야 한다.
 * termination resistance : DDR2 SDRAM 이 동작하는 아주 높은 주파수에서는 위와 같은 termination 저항을 사용하는것이 적합하지 않다. high frequency  systemd 에서 reflection signal에 대해 조금 더 정밀하게 제어할 필요가 생겼다. 이것이 ODT.
@@ -95,6 +98,8 @@ cycle.
 * Precharge : refresh가 steady state일때의 전하 방전을 보상하기 위한 주기적인 충전 과정이라고 한다면, precharge는 데이저 read시 감쇄되는 전하(read operation, destructive read)를 보상하기 위하여 read 후 재충전하는 과정.
 * Refresh : DRAM의 memory-cell 에서 capacitor에 전하가 채워져 있는 상황을 유지하고 있을때 이를 주기적으로 재충전 시키는 것.
 
+<br>
+
 #### DRAM cell operation, Read/Write
 ![](https://qph.ec.quoracdn.net/main-qimg-fc6c6b4d817d4fd7d9babcfe9eacc656.webp)
 * For a a 1T DRAM cell, the data is stored as charge on the capacitor.
@@ -102,7 +107,9 @@ To write data, the bit-line (BL) is pulled-up(1) or pulled-down(0) to the value 
 But, the read operation is destructive implying that there is a possibility of data getting corrupted. Hence, the read operation is always followed by a write-back.
 Data =1: The bit-line is pre-charged to 'Vdd/2'. If the data stored is '1', then the voltage of the bit-line rises slightly (due to charge-sharing). The small change in voltage of BL is detected by the sense amplifiers that tell the processor that a '1' was stored. Now, the processor performs write operation to write back a '1'. 
 Data =0: The bit-line is pre-charged to 'Vdd/2'. If the data stored is '0', then the voltage of the bit-line falls slightly. The small change in voltage of BL is detected by the sense amplifiers that tell the processor that a '0' was stored. Now, the processor performs write operation to write back a '0'. 
-The sense amplifiers speed up the read operation; as the BL has a large capacitance, charge/discharge takes longer time. Also, without sense amplifiers if we were to try to determine the logic level of data stored, the final voltage value may not lie in any of the allowed regions for logic '0' or logic '1'. <br>
+The sense amplifiers speed up the read operation; as the BL has a large capacitance, charge/discharge takes longer time. Also, without sense amplifiers if we were to try to determine the logic level of data stored, the final voltage value may not lie in any of the allowed regions for logic '0' or logic '1'. 
+
+<br>
 
 #### PTL : pass transistor logic
 #### pass-transistor
