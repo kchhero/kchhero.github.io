@@ -1,9 +1,10 @@
 ---
-title: 'DDR3 knowledge memo'
+categories: Uncategoried
+category: BSP
 layout: post
 tags:
   - BSP
-category: BSP
+title: 'DDR3 knowledge memo'
 ---
 #### memory 관련 자료 모음, 요약 분석
 
@@ -50,9 +51,39 @@ AHB 프로토콜의 경우는 address phase와 data phase가 함께 이어져 �
 #### S/W write leveling ?
 * 차이점?
 
-#### Gate Leveling?
-#### Read DQ Calibration?
-#### Write DQ Calibration?
+#### Gate Leveling
+The goal of gate training is to locate the delay at which the initial read DQS rising edge aligns with the rising edge of the read DQS gate(=ctrl_gate_p0/p1). Once this point is identified, the read DQS gate can be adjusted prior to the DQS, to the approximate midpoint of the read DQS preamble. You can use "GATE Leveling" when using "DDR3 memory" over 800MHz.
+
+<I>Warning:
+Don’t use Gate Leveling for productions in case of LPDDR2 or LPDDR3.</I>I>
+
+#### Read DQ Calibration(=READ LEVELING, READ DESKEWING)
+Read DQ Calibration adjusts for the delays introduced by the package, board and on-chip that impact the read cycle.
+
+#### Write DQ Calibration(=WRITE DESKEWING)
+Write DQ Calibration adjusts for the delays introduced by the package, board and on-chip that impact the write
+cycle.
+
+
+#### Precharge vs Refresh
+* Precharge : refresh가 steady state일때의 전하 방전을 보상하기 위한 주기적인 충전 과정이라고 한다면, precharge는 데이저 read시 감쇄되는 전하(read operation, destructive read)를 보상하기 위하여 read 후 재충전하는 과정.
+* Refresh : DRAM의 memory-cell 에서 capacitor에 전하가 채워져 있는 상황을 유지하고 있을때 이를 주기적으로 재충전 시키는 것.
+
+#### DRAM cell operation, Read/Write
+![](https://qph.ec.quoracdn.net/main-qimg-fc6c6b4d817d4fd7d9babcfe9eacc656.webp)
+* For a a 1T DRAM cell, the data is stored as charge on the capacitor.
+To write data, the bit-line (BL) is pulled-up(1) or pulled-down(0) to the value to be written. And WL (word-line) decides which cell will be written.
+But, the read operation is destructive implying that there is a possibility of data getting corrupted. Hence, the read operation is always followed by a write-back.
+Data =1: The bit-line is pre-charged to 'Vdd/2'. If the data stored is '1', then the voltage of the bit-line rises slightly (due to charge-sharing). The small change in voltage of BL is detected by the sense amplifiers that tell the processor that a '1' was stored. Now, the processor performs write operation to write back a '1'. 
+Data =0: The bit-line is pre-charged to 'Vdd/2'. If the data stored is '0', then the voltage of the bit-line falls slightly. The small change in voltage of BL is detected by the sense amplifiers that tell the processor that a '0' was stored. Now, the processor performs write operation to write back a '0'. 
+The sense amplifiers speed up the read operation; as the BL has a large capacitance, charge/discharge takes longer time. Also, without sense amplifiers if we were to try to determine the logic level of data stored, the final voltage value may not lie in any of the allowed regions for logic '0' or logic '1'. <br>
+
+#### PTL : pass transistor logic
+#### pass-transistor
+A transistor used as a switch to pass logic levels between nodes of a circuit, instead of as a switch connected directly to a supply voltage.
+
+* NMOS transistor
+![](https://qph.ec.quoracdn.net/main-qimg-1867a0f149a48d23dea5dc526dfb1694.webp)
 
 <br><br>
 
