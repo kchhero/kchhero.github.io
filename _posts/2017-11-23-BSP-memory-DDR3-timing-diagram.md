@@ -17,10 +17,6 @@ category: Uncategoried
 ##### Additive Latency(AL)
 * Additive Latency (AL) operation is supported to make command and data bus efficient for sustainable bandwidths in DDR3 SDRAM. In this operation, the DDR3 SDRAM allows a read or write command (either with or without auto-precharge) to be issued immediately after the active command. The command is held for the time of the Additive Latency (AL) before it is issued inside the device. The Read Latency (RL) is controlled by the sum of the AL and CAS Latency (CL) register settings.
 
-
-
-#### ZQ Calibration :
-
 <br>
 
 #### Read Burst Operation
@@ -75,8 +71,28 @@ tREFI interval 만큼의 시간 간격으로 refresh가 필요하다.
 <br>
 
 #### ZQ Calibration
+* ZQ calibration command는 PVT 보다 DRAM Ron 및 ODT 값을 보정하는데 사용된다.
+DDR3 SDRAM은 초기화시 Ron & ODT를 calibration 하는데 오래 시간이 필요하다.
+-- Ron : DQ driver impedance
+-- PVT : process, voltage, temperature
+* 어떤 경우에는 ODT 저항 Rtt가 PVT에 따라 변하고, DDR3 SDRAM은 이것을 보정할 수 있다. DDR2에서는 불가능하였다.
+![](/assets/ext_images/BSP/DDR3/DDR3_Device_operation_timing_diagram_ZQ_cal.png)
+
 
 <br>
 
 #### ODT
+![](/assets/ext_images/BSP/DDR3/DDR3_Device_operation_timing_diagram_ODT.png)
+![](/assets/ext_images/BSP/DDR3/DDR3_Device_operation_timing_diagram_ODT2.png)
+
+<br>
+
+#### Write Leveling sequence
+1. mode register set(MRS) command로 MR1에 write leveling 을 enable 시킨다.
+2. write leveling mode에서 DDR3 는 DQS rising edge에서 CLK signal을 sampling 하고, DQ pin으로 부터 값을 출력한다.
+3. controller 에 의해 DQS timing을 shift 시킨다. DQ 출력이 1이 되면 lock 상태로 바뀐다.
+
+<br>
+
+##### MPR : Multi Purpose Register
 
