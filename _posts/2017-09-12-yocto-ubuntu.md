@@ -59,6 +59,8 @@ $ adduser nexell
 $ gpasswd -a nexell sudo
 $ usermod -a -G sudo nexell
 ```
+<I>Note : qemu-arm-static이 /usr/bin/ 에 없는 경우, qemu-user-static 을 삭제 후 다시 설치해본다.
+$ sudo apt-get remove qemu-user-static;sudo apt-get install qemu-user-static</I>
 
 <br>
 
