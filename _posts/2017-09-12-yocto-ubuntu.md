@@ -144,3 +144,38 @@ apt-get install xserver-xorg-video-fbdev
 ```
 unity desktop 의 경우 login 화면까지는 잘 나오나 실제로 login 은 되지 않았다. 2일 정도 삽질함.
 LXDE는 별도의 설정없이 바로 login 에 성공하였다.
+
+<br>
+<br>
+
+### try 5
+ubuntu mate desktop version 으로 변경
+try3까지 동일 + mate 설치 + try 4 일부 적용
+```
+apt-get install ubuntu-mate-desktop fbset lshw systemd
+```
+
+<br>
+
+locale 관련 error message 발생시
+```
+export LC_ALL=en_US.UTF-8
+```
+
+<br>
+
+E: Sub-process /usr/bin/dpkg returned an error code (1)
+host 에서 설정 후 chroot 를 실행한다.
+```
+sudo mount -t proc proc ./myrootfs/proc/
+sudo mount -t sysfs sys ./myrootfs/sys/
+sudo mount -o bind /dev ./myrootfs/dev/
+sudo mount -t devpts -o gid=5,mode=620 devpts ./ubuntu-rootfs/dev/pts
+```
+
+<br>
+
+Failed to open connection to "system" message bus: Failed to connect to socket /var/run/dbus/system_bus_socket: No such file or directory
+```
+/etc/init.d/dbus status -> start
+```
