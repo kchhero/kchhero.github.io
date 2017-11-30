@@ -1,9 +1,9 @@
 ---
-title: 'DDR3 Samsung DREX-1 Spec-V2.0.3'
+category: BSP
 layout: post
 tags:
   - BSP
-category: BSP
+title: 'DDR3 Samsung DREX-1 Spec-V2.0.3'
 ---
 #### DREX-1 V2.0.3 spec 정리, 분석
 
@@ -126,8 +126,11 @@ PHY manual)
 <br>
 
 ## Address Mapping
-There are two ways to map the AXI offset address as shown below: 1) simple interleaved mapping 2) split column
-interleaved mapping 3) randomized interleaved mapping 4) chip interleaved mapping
+There are two ways to map the AXI offset address as shown below:<br>
+	1) simple interleaved mapping
+	2) split column interleaved mapping
+	3) randomized interleaved mapping
+	4) chip interleaved mapping
 
 <br>
 
