@@ -13,41 +13,41 @@ $ doxywizard
 
 <br>
 
-$ Step1 select : project위치 설정 ==> /home/suker/docygenPrj
-$ project name & version 설정
-$ source directory select & Scan recursively
-$ Destination dir ==> /home/suker/docygenPrj
+* $ Step1 select : project위치 설정 ==> /home/suker/docygenPrj<br>
+* $ project name & version 설정<br>
+* $ source directory select & Scan recursively<br>
+* $ Destination dir ==> /home/suker/docygenPrj
 
 <br>
 
-Topics > Mode
---> All Entities check
---> Include cross-referenced check
---> Optimize  for C or PHP output check
+Topics > Mode<br>
+* All Entities check<br>
+* Include cross-referenced check<br>
+* Optimize  for C or PHP output check<br>
 
 <br>
 
-Topics > Output
---> HTML > with navigation panel check 
+Topics > Output<br>
+* HTML > with navigation panel check
 
 <br>
 
-Topics > Diagrams
---> Use dot  tool from the GraphViz package
---> Dot graphs to generate All check
+* Topics > Diagrams<br>
+* Use dot  tool from the GraphViz package<br>
+* Dot graphs to generate All check
 
 <br>
 
-Expert tab 이동
---> Build
---> EXTRACT_PRIVATE & EXTRACT_STATIC check
--->  Source Browser
---> INLINE_SOURCES check
---> Dot
---> CLASS_DIAGRAMS & UML_LOOK check
---> DOT_PATH 설정 ==> /usr/bin/dot
+* Expert tab 이동<br>
+* Build<br>
+* EXTRACT_PRIVATE & EXTRACT_STATIC check<br>
+* Source Browser<br>
+* INLINE_SOURCES check<br>
+* Dot<br>
+* CLASS_DIAGRAMS & UML_LOOK check<br>
+* DOT_PATH 설정 ==> /usr/bin/dot
 
 <br>
 
-Run tab 이동
---> Run doxygen 실행
+* Run tab 이동<br>
+* Run doxygen 실행
