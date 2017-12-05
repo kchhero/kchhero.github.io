@@ -10,9 +10,6 @@ category: private
 출처 : http://janghw.tistory.com/entry/doxygen-%EC%82%AC%EC%9A%A9%EB%B2%95
 
 $ doxywizard
-
-<br>
-
 * $ Step1 select : project위치 설정 ==> /home/suker/docygenPrj<br>
 * $ project name & version 설정<br>
 * $ source directory select & Scan recursively<br>
@@ -32,13 +29,13 @@ Topics > Output<br>
 
 <br>
 
-* Topics > Diagrams<br>
+Topics > Diagrams<br>
 * Use dot  tool from the GraphViz package<br>
 * Dot graphs to generate All check
 
 <br>
 
-* Expert tab 이동<br>
+Expert tab 이동<br>
 * Build<br>
 * EXTRACT_PRIVATE & EXTRACT_STATIC check<br>
 * Source Browser<br>
@@ -49,5 +46,5 @@ Topics > Output<br>
 
 <br>
 
-* Run tab 이동<br>
+Run tab 이동<br>
 * Run doxygen 실행
