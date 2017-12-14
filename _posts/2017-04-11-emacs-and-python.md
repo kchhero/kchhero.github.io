@@ -1,9 +1,9 @@
 ---
-title: 'emacs 와 python'
+category: Tools
 layout: post
 tags:
   - emacs
-category: Tools
+title: 'emacs 와 python'
 ---
 #### ipython & Emacs
 현재 나의 ~/.emacs.d/python-init.el 은 아래처럼 설정 되어있다.
@@ -38,3 +38,11 @@ os.getcwd()
 를 추가하였더니 잘 실행된다....
 
 앞으로 이 부분을 조금 더 분석할 생각이다.
+
+<br>
+
+#### error in process sentinel: peculiar error: "exited abnormally with code 1"
+emacs에서 .py 파일 작업시 시스템이 느려지고 위의  메시지가 뜨는 경우가 있다.
+M-x : elpy-config 으로 화인.  (terminal --> $ python -m elpy)
+
+elpy를 최신 버전으로 바꾸니(1.14.1 -> 1.17.1) 해결된다. root cause는 아직 모르겠다.
