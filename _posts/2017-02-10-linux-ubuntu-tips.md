@@ -72,3 +72,10 @@ Exec=/opt/google/chrome/google-chrome --profile-directory=Default --app-id=dfdkg
 64bit machine : sudo apt-get install  gtk2-engines-pixbuf:amd64
 32bit machine : sudo apt-get install  gtk2-engines-pixbuf:i386
 ```
+
+<br>
+
+##### ubuntu 16.04 설치 후 chrome 설정
+
+chrome 사용중 system이 뻗는 경우가 있다. 아래처럼 설정 변경 필요.
+https://askubuntu.com/questions/765974/chrome-freeze-very-frequently-with-ubuntu-16-04
