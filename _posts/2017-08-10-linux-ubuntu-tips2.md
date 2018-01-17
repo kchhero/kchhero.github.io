@@ -1,4 +1,5 @@
 ---
+categories: Uncategoried
 category: Uncategoried
 layout: post
 tags:
@@ -53,3 +54,11 @@ sudo mount -t cifs //NAS/2nd ~/Nexell-NAS2 -o user=nexell,password=nexell,workgr
 sudo mount -t cifs //NAS/3rd ~/Nexell-NAS3 -o user=nexell,password=nexell,workgroup=WORKGROUP,ip=192.168.1.17,iocharset=utf8'
 sudo mount /dev/sdb1 /home/suker/sukerSDB
  ```
+
+<br>
+
+#### /etc/udev/rules.d/ 수정/추가 후 logout 하지 않고 device 등록하는 방법
+```
+$ sudo udevadm control --reload-rules
+```
+
