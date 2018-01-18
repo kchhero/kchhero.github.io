@@ -150,7 +150,7 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 
 <br>
 
-##### 5. customize 
+##### 5. customize
 status bar 에 file name 을 비롯하여 path 까지 표시해줄 때 .emacs 에 아래와 같이 code를 추가해주면 된다.
 ```
 (setq-default mode-line-buffer-identification
