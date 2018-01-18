@@ -158,3 +158,13 @@ status bar 에 file name 을 비롯하여 path 까지 표시해줄 때 .emacs �
                 `(:eval (cons (concat ,orig (abbreviate-file-name default-directory))
                               (cdr mode-line-buffer-identification)))))
 ```
+
+<br>
+
+##### 6. Font 설정, Hack font
+http://sourcefoundry.org/hack/
+여기에서 .zip file download --> Hack-Regular.ttf  double click --> install
+```
+(when (eq system-type 'darwin)
+      (set-default-font "-*-Hack-normal-normal-normal-*-12-*-*-*-m-0-iso10646-1"))
+```
