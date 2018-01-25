@@ -1,8 +1,8 @@
 ---
-title: 'RISC-V ARM openocd + eclipse'
 layout: post
 tags:
   - RISC-V
+title: 'RISC-V ARM openocd + eclipse'
 category: Uncategoried
 ---
 #### RISC-V ARM + openocd + eclipse : my work history in Nexell
@@ -25,12 +25,12 @@ sudo apt-get install libftdi-dev libftdi1
 cd freedom-u-sdk
 make
 ```
-==> 실패, FPGA board 의 jtag port는 FPGA board 자체 debugging 용인듯하다. u-500 user guide 처럼 risc-v debugging을 위해서는 debugging 용 module을 따로 붙여야 하나보다.
+==> 실패, FPGA board 의 jtag port는 FPGA board 자체 debugging용 인듯. u-500 user guide 처럼 risc-v debugging을 위해서는 debugging 용 module을 따로 붙여야 하는듯.
 
 <br>
 
-### 2. olimex-arm-usc-ocd 가 문제인지 검증하기 위해서 회사에서 사용하고 있는 개발 보드, cortex-a9,에 붙여본다.
-openocd 설치, 환경 구성
+### 2. olimex-arm-usc-ocd 사용 검증. cortex-a9 개발 보드 사용.
+openocd 설치, 환경 구성은 아래와 같다.
 ```
 $ sudo apt-get install git libtool automake texinfo
 $ git clone http://git.code.sf.net/p/openocd/code openocd-code
@@ -95,7 +95,7 @@ reset_config trst_and_srst
 ```
 
 ```
-target/nexellyyyy.cfg
+# target/nexellyyyy.cfg
 if { [info exists CHIPNAME] } {
     set _CHIPNAME $CHIPNAME
 } else {
