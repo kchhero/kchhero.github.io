@@ -164,6 +164,12 @@ tcp 1 0 127.0.0.1:48058 127.0.0.1:3333 CLOSE_WAIT
 
 <br>
 
-### 8. To do
+### 8. RISC-V
+risc-v 설정은 약간 다름
+https://gnu-mcu-eclipse.github.io/debug/openocd/riscv/
+
+<br>
+
+### 9. To do
 kernel debugging을 하려면 SMP, MMU 등등의 detail한 부분의 setting을 해주어야 한다.
 risc-v는 bootloader까지만 완성하면되므로 일단 pass 한다.
