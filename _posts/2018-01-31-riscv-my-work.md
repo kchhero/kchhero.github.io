@@ -1,9 +1,9 @@
 ---
-title: 'RISC-V qemu 정리'
+category: Uncategoried
 layout: post
 tags:
   - RISC-V
-category: Uncategoried
+title: 'RISC-V qemu 정리'
 ---
 #### RISC-V QEMU
 
@@ -91,8 +91,10 @@ riscv-pk/Makefile.in 에서 gdb flag를 enable해주어야한다.
 
 아직 eclipse GDB qemu 는 사용할 수 없는듯. arm용 plugin 은 github에 있지만 risc-v 용은 없음.
 
-
+```
 [suker@suker-machine] ~/RISC-V/eclipse/qemu/2.8.0-201612271623-dev
+
 $ ./bin/qemu-system-gnuarmeclipse -S -s -kernel /home/suker/RISC-V/sifive/test-u-500/work/riscv-pk/bbl
 qemu-system-gnuarmeclipse: -kernel /home/suker/RISC-V/sifive/test-u-500/work/riscv-pk/bbl: Neither board nor mcu specified, and there is no default.
 Use -board help or -mcu help to list supported boards or devices!
+```
