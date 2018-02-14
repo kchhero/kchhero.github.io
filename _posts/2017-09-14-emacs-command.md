@@ -62,3 +62,10 @@ quick 진법변환 : C-x * q
 
 ### All select
 	M-x : dired-toggle-marks
+
+<br>
+
+### terminal
+	M-x : multi-term
+	M-x : multi-term-dedicated-open
+	refs ==> https://www.emacswiki.org/emacs/MultiTerm
