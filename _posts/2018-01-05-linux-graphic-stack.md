@@ -1,5 +1,5 @@
 ---
-title: 'linux command - tree / abc'
+title: 'Graphic stack 정리'
 layout: post
 tags:
   - linux
