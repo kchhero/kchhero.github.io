@@ -7,6 +7,8 @@ title: 'C> printk format 정리'
 ---
 ### printk 정리
 
+<br>
+
 #### format
 
 | f variable is of Type | use printk format specifier |
