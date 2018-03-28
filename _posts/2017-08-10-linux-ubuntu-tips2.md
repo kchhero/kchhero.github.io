@@ -62,3 +62,9 @@ sudo mount /dev/sdb1 /home/suker/sukerSDB
 $ sudo udevadm control --reload-rules
 ```
 
+<br>
+
+#### 나의 외부 IP 확인 방법
+```
+$ curl ifconfig.me
+```
