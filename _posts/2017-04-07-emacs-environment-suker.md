@@ -39,8 +39,23 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 
 * 설치 list : cider, clojure-cheatsheet, clojure-mode-ex... ,clojure-quick-r... ,clojure-snippets, color-theme-sanityinc-tomorrow, elpy, gmail-message-mode, python, python-environment, python-mode, Flycheck, web-mode, function-args
 * 설치 list2 : multi-term (terminal), swiper (search & buffer간 이동),
+* 설치 list3 : epc, jedi, el-get, auto-complete
+	* jedi dependancy
+		pip install jedi
+		pip install epc
+		apt-get install virtualenv
+		M-x  jedi:install-server
+		```
+		==> .emacs setting
+		;; python assist
+		(load-file "~/.emacs.d/elpa/jedi-0.2.7/jedi.el")
+		(add-hook 'python-mode-hook 'jedi:setup)
+		(setq jedi:complete-on-dot t)                 ; optional
+		```
+
 
 <br>
+
 ##### 3. theme 설정
 ( 참고 : https://github.com/purcell/color-theme-sanityinc-tomorrow )
 
