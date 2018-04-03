@@ -1,4 +1,5 @@
 ---
+categories: Uncategoried
 category: Tools
 layout: post
 tags:
@@ -41,9 +42,11 @@ emacs 를 사용한지 3년이 조금 넘는 시간동안 .emacs와 .emacs.d 는
 * 설치 list2 : multi-term (terminal), swiper (search & buffer간 이동),
 * 설치 list3 : epc, jedi, el-get, auto-complete
 	* jedi dependancy
+		```
 		pip install jedi
 		pip install epc
 		apt-get install virtualenv
+		```
 		M-x  jedi:install-server
 		```
 		==> .emacs setting
