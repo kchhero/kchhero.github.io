@@ -74,3 +74,12 @@ quick 진법변환 : C-x * q
 
 ### rectangle select editing
 	M-x : rectangle-mark-mode
+
+<br>
+
+### recursively find and replace
+	Press t  --> toggle mark
+	Presss Q --> Query-Replace in Files ...
+
+<br>
+
