@@ -1,101 +1,53 @@
 ---
-title: 'Python> Python CookBook3판 - O REILLY Study(ch10) module, packaging'
+title: 'Python> Python CookBook3판 - O REILLY Study(ch7) function'
 layout: post
 tags:
   - Language
 category: programming
 ---
-#### 10.1 Module
+#### 7.1 매개변수의 개수 제한, 7.4 여러개의 값을 반환
+```python?line_number=false
+def arg_test(first, *rest) :
+    return (first+sum(rest)), (first + sum(rest)) / (1+len(rest))
+
+# rest는 튜플이다.
+# 키워드 매개변수의 제한이 없다.
+test_sum, test_average = arg_test(1,2,3,4,5,6,7,8,9,10)
+print(test_sum, test_average)
+
+#실제로 튜플을 생성하는 것은 쉼표지 괄호가 아니다.
+
+
+def anyargs(*args, **kwargs) :
+    print(args)     #튜플
+    print(kwargs) #딕셔너리
+
+anyargs(1,2,3,{1:'a',2:'b',3:'c'})
+```
+
+<br>
+
+#### 7.6 lambda
 
 ```python?line_number=false
-Graphics/
-	__init__.py      # 계층적으로 구성하는 패캐지로 정리하기 위함.
-	primitive/
-		__init__.py
-		line.py
-		fill.py
-	formats/
-		__init__.py
-		png.py
-		jpg.py
+add = lambda x,y:x+y
+print add(2,3)
+print add('hello','world')
 ```
 
 <br>
 
+#### 7.10 callback function
 ```python?line_number=false
-# graphics/__init__.py가 import 되고, graphics namespace를 형성한다.
-import graphics
-# __init__.py 에 다음처럼 정의하면 import graphics.formats만 실행해도 된다.
-from . import jpg
-from . import png
-```
+def apply_async(func, args, *, callback) :
+    result = func(*args)
+    callback(result)
 
-<br>
-<br>
+def print_result(result) :
+    print('Got :', result)
 
-#### 10.15 배포
-```python?line_number=false
-#setup.py
-from distutils.core import setup
+def add(x,y) :
+    return x+y
 
-setup (name = 'distTT',
-       version = '1.0',
-       author = 'suker',
-       packages = ['distTTIN', 'distTTIN.utils'],
-       )
-
-#MANIFEST.in
-include *.txt
-recursive_include examples *
-recursive_include Doc *
-
-```
-```
-$ tree
-.
-├── distTTIN
-│   ├── bar.py
-│   ├── foo.py
-│   ├── __init__.py
-│   └── utils
-│       ├── grok.py
-│       ├── __init__.py
-│       └── spam.py
-├── Doc
-│   └── docu.txt
-├── examples
-│   └── hello.py
-├── MANIFEST
-├── MANIFEST.in
-├── README.txt
-└── setup.py
-
-4 directories, 12 file
-```
-```
-python3 setup.py sdist
-```
-
-<br>
-
-##### 결과
-
-```
-$ tree
-.
-├── distTT-1.0
-│   ├── distTTIN
-│   │   ├── bar.py
-│   │   ├── foo.py
-│   │   ├── __init__.py
-│   │   └── utils
-│   │       ├── grok.py
-│   │       ├── __init__.py
-│   │       └── spam.py
-│   ├── PKG-INFO
-│   ├── README.txt
-│   └── setup.py
-└── distTT-1.0.tar.gz
-
-3 directories, 10 files
+apply_async(add, (2,3), callback=print_result
 ```
