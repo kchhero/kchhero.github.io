@@ -96,7 +96,7 @@ def find_robots(filename) :
                 if fields[5] == 'idVendor:' :
                     robots.add(fields[5])
                     robots.add(fields[6])
-                    
+
     return robots
 
 def find_all_robots(logdir) :
@@ -116,3 +116,150 @@ if __name__ == '__main__' :
 
 ==> 위 코드를 여러개의 CPU를 사용하도록 변경하면 다음과 같다.
 
+```python?line_number=false
+...
+from concurrent import futures
+...
+
+def find_all_robots(logdir) :
+    files = glob.glob(logdir+'/*.gz')
+    all_robots = set()
+    with futures.ProcessPoolExecutor() as pool :
+        for robots in pool.map(find_robots, files) :
+            all_robots.update(robots)
+
+    return all_robots
+```
+
+* 쿼드코어 기준 3.5배 빠르다.
+
+* ProcessPoolExecutor의 일반적인 사용 방법
+
+```
+from concurrent.futures import ProcessPoolExecutor
+
+with ProcessPoolExecutor() as pool :
+	...
+	do work in rarallel using pool
+	...
+
+# 많은 작업을 하는 함수
+def work(x) ;
+	...
+	return result
+	
+
+# 병렬화하지 않은 코드
+results = map(work, data)
+
+# 병렬화 코드
+with ProcessPoolExecutor() as pool :
+	results = pool.map(work, data)
+
+```
+
+<br>
+
+#### 12.14 Unix에서 데몬 프로세스 실행
+
+```python?line_number=false
+#!/usr/bin/env python3
+#  daemon.py
+
+import os
+import sys
+import atexit
+import signal
+
+def daemonize(pidfile, *, stdin='/dev/null',
+                          stdout='/dev/null',
+                          stderr='/dev/null'):
+    if os.path.exists(pidfile) :
+        raise RuntimeError('Already running')
+
+    # first fork
+	# 부모에 의한 즉각적인 종료, 자식 프로세스를 잃고 나서 os.setsid() 호출을 통해 완전히 새로운 프로세스를 생성하고 자식을 리더로 설정한다.
+	# 데몬을 터미널에서 올바르게 때어내고(부모 프로세스로부터 분리), 신호와 같은 것이 이런 작업을 방해하지 않도록 보장한다.
+
+    try :
+        if os.fork() > 0 :
+            raise SystemExit(0)  #parent exit
+    except OSError as e :
+        raise RuntimeError('fork #1 failed')
+
+    # 현재 작업 디렉터리와 파일 모드 마스크를 재설정한다.
+	# 디렉토리를 변경하면 데몬을 실행한 디렉토리에서 더 이상 동작하지 못하도록 하므로...
+    os.chdir('/')
+    os.umask(0)
+    os.setsid()
+
+    # second fork
+	# 데몬 프로세스가 새로운 제어 터미널을 취득하지 못하도록 하고 더 높은 고립을 제공한다.
+    try :
+        if os.fork() > 0 :
+            raise SystemExit(0)
+    except OSError as e :
+        raise RuntimeError('fork #2 failed')
+
+    # input,output buffer flush
+    sys.stdout.flush()
+    sys.stderr.flush()
+
+    # stdin, stdout, stderr file descriptor replace
+    with open(stdin, 'rb', 0) as f :
+        os.dup2(f.fileno(), sys.stdin.fileno())
+    with open(stdout, 'ab', 0) as f :
+        os.dup2(f.fileno(), sys.stdout.fileno())
+    with open(stderr, 'ab', 0) as f :
+        os.dup2(f.fileno(), sys.stderr.fileno())
+
+    #PID file write
+    with open(pidfile, 'w') as f:
+        print(os.getpid(), file=f)
+
+    # when exit, PID file remove
+	# 파이썬 인터프리터가 종료될 때 실행하기 위한 함수를 등록한다.
+    atexit.register(lambda: os.remove(pidfile))
+
+    # handler about exit
+    def sigterm_handler(signo, frame) :
+        raise SystemExit(1)
+
+    signal.signal(signal.SIGTERM, sigterm_handler)
+
+def main() :
+    import time
+    sys.stdout.write('Daemon started with pid {}\n'.format(time.ctime()))
+    time.sleep(10)
+
+if __name__ == '__main__' :
+    PIDFILE = '/tmp/daemon.pid'
+
+    if len(sys.argv) != 2:
+        print('Usage: {} [start|stop]'.format(sys.argv[0]), file=sys.stderr)
+        raise SystemExit(1)
+
+    if sys.argv[1] == 'start' :
+        try :
+            daemonize(PIDFILE,
+                      stdout='/tmp/daemon.log',
+                      stderr='/tmp/daemon.log')
+        except RuntimeError as e :
+            print(e, file=sys.stderr)
+            raise SystemExit(1)
+
+        main()
+
+    elif sys.argv[1] == 'stop' :
+        if os.path.exists(PIDFILE) :
+            with open(PIDFILE) as f :
+                os.kill(int(f.read()), signal.SIGTERM)
+        else:
+            print('Not running', file=sys.stderr)
+            raise SystemExit(1)
+
+    else :
+        print('Unknown command {!r}'.format(sys.argv[1]), file=sys.stderr)
+        raise SystemExit(1)
+
+```
