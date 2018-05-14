@@ -68,3 +68,15 @@ $ sudo udevadm control --reload-rules
 ```
 $ curl ifconfig.me
 ```
+
+<br>
+
+#### smb server 연결 문제
+Windows samba server 연결시 (ubuntu 18.04에서) Unable access to server 발생시 아래와 같이 수정하면 된다.
+```
+$ sudo vim /etc/samba/smb.conf
+
+ 추가 ==> client max protocol = NT1
+
+$ sudo service smbd restart
+```
