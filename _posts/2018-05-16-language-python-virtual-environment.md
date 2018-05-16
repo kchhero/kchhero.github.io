@@ -63,7 +63,11 @@ $ pyenv deactivate
 
 
 <br>
-----
+
+---
+
+---
+
 <br>
 
 #### virtualenv 설치
