@@ -80,3 +80,10 @@ $ sudo vim /etc/samba/smb.conf
 
 $ sudo service smbd restart
 ```
+
+<br>
+
+#### bcompare "Trial Mode error" 발생시 registry.dat 를 삭제한다.
+```
+$ rm ~/.config/bcompare/registry.dat
+```
