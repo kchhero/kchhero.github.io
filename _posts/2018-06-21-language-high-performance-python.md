@@ -64,12 +64,15 @@ $ python -m cProfile -s cumulative test2_1.py
 
 * line_proofiler
 Robert Kern의 line_profiler, 개별 함수를 한 줄씩 프로파일링할 수 있는 강력한 도구.
+
+* https://github.com/rkern/line_profiler
+```
 $ pip install line_profiler
-https://github.com/rkern/line_profiler
+```
 
 ```
-$ kernprof -l -v test2_1.py                                                                                                                                 
-\Length of x: 1000
+$ kernprof -l -v test2_1.py
+Length of x: 1000
 Total elements: 1000000
 calculate_z_serial_purepythontook 70.00200009346008 seconds
 Wrote profile results to test2_1.py.lprof
@@ -80,7 +83,7 @@ File: test2_1.py
 Function: calculate_z_serial_purepython at line 40
 
 Line #      Hits         Time  Per Hit   % Time  Line Contents
-==============================================================
+=============================================================
     40                                           @profile
     41                                           def calculate_z_serial_purepython(maxiter, zs, cs):
     42         1       1788.0   1788.0      0.0      output = [0] * len(zs)
@@ -92,7 +95,7 @@ Line #      Hits         Time  Per Hit   % Time  Line Contents
     48  33219980   12199147.0      0.4     30.8              z = z * z + c
     49  33219980   10407960.0      0.3     26.3              n += 1
     50   1000000     335111.0      0.3      0.8          output[i] = n
-    51                                           
+    51
     52         1          1.0      1.0      0.0      return output
 ```
 
@@ -200,4 +203,4 @@ fn_terse
              15 RETURN_VALUE
 ```
 
-	 내장 함수를 사용하는 경우가 더 간결하다. 그렇지 않은 경우는 루프가 반복될 때마다 변수 타입을 검사한다.
+ 내장 함수를 사용하는 경우가 더 간결하다. 그렇지 않은 경우는 루프가 반복될 때마다 변수 타입을 검사한다.
