@@ -1,10 +1,12 @@
 ---
-title: 'Python> High Performance Python(2)'
 layout: post
 tags:
   - Language
+title: 'Python> High Performance Python(2)'
 category: programming
 ---
+summary : chapter3,4 내용 정리/요약, list / tuple, dict / set
+
 ### ch3 list, tuple
 
 #### list
@@ -44,7 +46,46 @@ def linear_search(needle, array):
 
 
 <br>
+<br>
 
 ### ch4 dictionary, set
 
-#### 
+#### dict와 set 비교
+dict와 set은 거의 동일하지만 set은 값을 가지지 않는다, set은 유일한 key를 저장하는 자료구조다.
+내재적 순서가 없는 list와 tuple은 최적의 경우 O(log n) 시간 복잡도로 값을 찾는다. 반면 dict와 set은 O(1) 이다.
+
+#### 동작 원리
+hash table을 사용해서 O(1)의 시간 복잡도를 가진다. 임의의 key를 list의 index로 변환하는 hash 함수를 사용한 결과다. data의 key를 list의 index처럼 사용할 수 있도록 변환하는 작업을 통해 list와 동일한 성능을 얻을 수 있다.
+
+custom hash 함수
+```
+class City(str):
+    def __hash__(self):
+        print(ord(self[0]))
+        return ord(self[0])
+
+
+data = {
+    City("Rome"): 4,
+    City("San Francisco"): 3,
+    City("New York"): 5,
+    City("Barcelona"): 2,
+}
+```
+
+<br>
+
+#### 크기 변경
+크기를 변경할 때에는 충분히 큰 해시 테이블을 할당하고 그 크기에 맞게 마스크를 조정한다.그리고 모든 항목을 새로운 해시 테이블로 옮긴다. 이 과정에서 바뀐 마스크 때문에 색인을 새로 계산해야 한다.
+dict / set의 최소 크기는 8이다. 해시 테이블은 줄어들기도 한다. 크기 변경은 삽입 연산중에만 발생한다.
+- 8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144 ...  --> 4배씩 증가한다.50,000 이후로는 2배씩
+
+ㅁ
+
+
+
+
+
+
+
+
