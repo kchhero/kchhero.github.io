@@ -1,8 +1,8 @@
 ---
+title: 'Python> High Performance Python(2)'
 layout: post
 tags:
   - Language
-title: 'Python> High Performance Python(2)'
 category: programming
 ---
 summary : chapter3,4 내용 정리/요약, list / tuple, dict / set
@@ -80,12 +80,81 @@ data = {
 dict / set의 최소 크기는 8이다. 해시 테이블은 줄어들기도 한다. 크기 변경은 삽입 연산중에만 발생한다.
 - 8, 32, 128, 512, 2048, 8192, 32768, 131072, 262144 ...  --> 4배씩 증가한다.50,000 이후로는 2배씩
 
-ㅁ
+#### namespace
+파이썬에서 변수, 함수, 모듈이 사용될 때 그 객체를 어디서 찾을지 결정하는 계층이 있다.
+모든 지역 변수를 담고 있는 locals() 배열을 찾는다 다음으로 globals() dictionary에서 찾고 마지막으로
+ __builtin__ 객체에서 찾는다.
+
+```
+import math
+from math import sin
+
+def test1(x):
+    return math.sin(x)
+
+def test2(x):
+    return sin(x)
+
+def test3(x, sim=math.sin):
+    return sin(x)
+
+```
+dis assem 하면 아래와 같다.
+https://github.com/kchhero/suker_python_project/blob/master/highperfbook/test4_2_namespace_dis.py
+```
+test1
+  6           0 LOAD_GLOBAL              0 (math)   #사전 탐색
+              3 LOAD_ATTR                     1 (sin)     #사전 탐색
+              6 LOAD_FAST                     0 (x)        #지역 변수 탐색
+              9 CALL_FUNCTION            1
+             12 RETURN_VALUE        
+test2
+ 10         0 LOAD_GLOBAL                0 (sin)     #사전 탐색
+              3 LOAD_FAST                     0 (x)        #지역 변수 탐색
+              6 CALL_FUNCTION            1
+              9 RETURN_VALUE        
+test3
+ 14           0 LOAD_GLOBAL              0 (sin)    #지역 변수 탐색
+              3 LOAD_FAST                     0 (x)        #지역 변수 탐색
+              6 CALL_FUNCTION            1
+              9 RETURN_VALUE        
+```
+test2의 sin 함수는 전역 namespace에서 직접 접근할 수 있다. math 모듈을 찾은 다음 모듈의 속성을 탐색하는
+과정을 피할 수 있다. 
+
+```
+from math import sin
+import time
 
 
+def testloop1(iterations):
+    result = 0
+    for i in range(iterations):
+        result += sin(i)
+    print(result)
 
 
+def testloop2(iterations):
+    result = 0
+    local_sin = sin
+    for i in range(iterations):
+        result += local_sin(i)
+    print(result)
 
 
+t1 = time.time()
+testloop1(100000)
+print("testloop1 : %s" % str(time.time()-t1))
 
-
+t1 = time.time()
+testloop2(100000)
+print("testloop2 : %s" % str(time.time()-t1))
+```
+결과
+```
+$ python test4_2_namespace2.py 
+1.81202830566
+testloop1 : 0.0120189189911
+1.81202830566
+testloop2 : 0.0086190700531
+```
