@@ -74,6 +74,7 @@ quick 진법변환 : C-x * q
 
 ### rectangle select editing
 https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html
+
 	M-x : rectangle-mark-mode
 	C-x r t string <RET>
     Replace rectangle contents with string on each line (string-rectangle). 
