@@ -132,3 +132,7 @@ def fibonacci():
 <br>
 
 ### ch6 Matrix, Vector
+
+memory를 처음 할당하면 커널은 메모리에 대한 참조를 프로그램에 돌려주는 것 외에는 그다지 많은 일을 하지 않는다. 하지만 나중에 프로그램이 그 메모리를 처음 사용하면, OS는 minor page fault 인터럽트를 발생시켜 실행 중인 프로그램을 잠시 멈추고 실제 필요한 메모리를 할당한다. - lazy allocation
+
+프로그램이 어떤 장치 (disk, network)에서 읽지 못한 데이터를 요청하면 major page fault가 발생한다.
