@@ -1,11 +1,11 @@
 ---
-title: Kernel(1)
 layout: post
 tags:
   - linux
+title: Kernel(1)
 category: Uncategoried
 ---
-summery : kernel 관련 기억/요약/link
+summary : kernel 관련 기억/요약/link
 ### Kernel(1)
 
 참고 : http://studyfoss.egloos.com/category/Kernel
@@ -22,5 +22,23 @@ Listing 1. Using typeof to build a generic macro
     (void) (&_min1 == &_min2);      \
     _min1 < _min2 ? _min1 : _min2; })
 ```
+
+---
+
+#### Clock Domain
+| Clock Domain  | Description  |
+| ------------ | ------------ |
+| DCLK | Debugger clock synchronous to core  |
+| FCLK  | WIC clock  |
+| SCLK  | System Tick and NVIC clock  |
+| HCLK  | AHB peripheral clock without keep awake feature  |
+| GCLK  | AHB peripheral clock with keep awake feature  |
+| PCLK  | APB peripheral clock with keep awake feature  |
+| CLK  | Primary clock input to hardened subsystem  |
+| PLLCLK  | Primary clock input to digital section of the via configurable ASIC  |
+
+- FCLK : cpu에서 사용되는 클럭
+- HCLK : AHB 버스에 사용되는 클럭(메모리 컨트롤러, 인터럽트 컨트롤러,  LCD 컨트롤러, DMA, USB 호스트 등에서 사용)
+- PCLK : APB 버스에 사용되는 클럭(WDT, 타이머, ADC, UART, GPIO, RTC, SPI 등에서 사용)
 
 ---
