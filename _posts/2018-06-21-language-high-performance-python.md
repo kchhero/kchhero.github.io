@@ -1,9 +1,9 @@
 ---
+category: programming
 layout: post
 tags:
   - Language
 title: 'Python> High Performance Python(1)'
-category: programming
 ---
 ### ch1 preview
 
@@ -68,20 +68,18 @@ Robert Kern의 line_profiler, 개별 함수를 한 줄씩 프로파일링할 수
 * https://github.com/rkern/line_profiler
 ```
 $ pip install line_profiler
-```
-
-```
+...
 $ kernprof -l -v test2_1.py
 Length of x: 1000
 Total elements: 1000000
 calculate_z_serial_purepythontook 70.00200009346008 seconds
 Wrote profile results to test2_1.py.lprof
 Timer unit: 1e-06 s
-
+...
 Total time: 39.5841 s
 File: test2_1.py
 Function: calculate_z_serial_purepython at line 40
-
+...
 Line #      Hits         Time  Per Hit   % Time  Line Contents
 =============================================================
     40                                           @profile
@@ -119,14 +117,12 @@ Total elements: 100000
 #### CPython 내부 동작, bytecode의 이해
 
 * dis 모듈
-
 ```
 #test2_dis_byte.py
 import dis
 import test2_1
-
+...
 dis.dis(test2_1.calculate_z_serial_purepython)
-
 ```
 ```
 $ python test2_dis_byte.py
@@ -145,27 +141,26 @@ $ python test2_dis_byte.py
 <br>
 
 * 방식에 따른 복잡도
-
 ```
 def fn_expressive(upper=100000):
     total = 0
     for n in range(upper):
         total += n
     return total
-
+<br>
 def fn_terse(upper=100000):
     return sum(range(upper))
-
+<br>
 print(fn_expressive())
 print(fn_terse())
 ```
-```
+```python?line_number=false
 import dis
 import test2_11
-
+...
 print("fn_expressive")
 dis.dis(test2_11.fn_expressive)
-
+...
 print("fn_terse")
 dis.dis(test2_11.fn_terse)
 ```
