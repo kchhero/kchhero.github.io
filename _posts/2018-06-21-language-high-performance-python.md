@@ -133,7 +133,7 @@ $ python test2_dis_byte.py
              12 CALL_FUNCTION            1
              15 BINARY_MULTIPLY     
              16 STORE_FAST               3 (output)
-
+...
  42          19 SETUP_LOOP             123 (to 145)
              22 LOAD_GLOBAL              1 (range)
 ```
@@ -147,14 +147,14 @@ def fn_expressive(upper=100000):
     for n in range(upper):
         total += n
     return total
-<br>
+...
 def fn_terse(upper=100000):
     return sum(range(upper))
-<br>
+...
 print(fn_expressive())
 print(fn_terse())
 ```
-```python?line_number=false
+```
 import dis
 import test2_11
 ...
@@ -171,7 +171,7 @@ $ python test2_11_dis_byte.py
 fn_expressive
   2           0 LOAD_CONST               1 (0)
               3 STORE_FAST               1 (total)
-
+...
   3           6 SETUP_LOOP              30 (to 39)
               9 LOAD_GLOBAL              0 (range)
              12 LOAD_FAST                0 (upper)
@@ -179,14 +179,14 @@ fn_expressive
              18 GET_ITER            
         >>   19 FOR_ITER                16 (to 38)
              22 STORE_FAST               2 (n)
-
+...
   4          25 LOAD_FAST                1 (total)
              28 LOAD_FAST                2 (n)
              31 INPLACE_ADD         
              32 STORE_FAST               1 (total)
              35 JUMP_ABSOLUTE           19
         >>   38 POP_BLOCK           
-
+...
   5     >>   39 LOAD_FAST                1 (total)
              42 RETURN_VALUE        
 fn_terse
