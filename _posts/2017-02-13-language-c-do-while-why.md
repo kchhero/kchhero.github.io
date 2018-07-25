@@ -3,7 +3,7 @@ category: language
 layout: post
 tags:
   - Language
-title: C> Kernel code : do-while(0)
+title: C> Kernel code :do-while(0)
 ---
 출처 : [http://kernelnewbies.org/FAQ/DoWhile0](http://kernelnewbies.org/FAQ/DoWhile0)
 
@@ -18,6 +18,7 @@ There are a couple of reasons:
 - (from Dave Miller) Empty statements give a warning from the compiler so this is why you see #define FOO do { } while(0).
 - (from Dave Miller) It gives you a basic block in which to declare local variables.
 - (from Ben Collins) It allows you to use more complex macros in conditional code. Imagine a macro of several lines of code like:
+
 
 ```
 #define FOO(x) \
