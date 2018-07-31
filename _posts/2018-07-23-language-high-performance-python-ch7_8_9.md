@@ -1,9 +1,9 @@
 ---
-title: 'Python> High Performance Python(4)'
+category: programming
 layout: post
 tags:
   - Language
-category: programming
+title: 'Python> High Performance Python(4)'
 ---
 summary : chapter7,8,9 내용 정리/요약, cython / concurrency / multiprocessing
 
@@ -11,6 +11,8 @@ summary : chapter7,8,9 내용 정리/요약, cython / concurrency / multiprocess
 #### ctypes
 
 ### ch8 동시성
+https://github.com/kchhero/high_performance_python/tree/master/08_concurrency
+
 #### 비동기 프로그래밍
 - 간단한 이벤트 루프
 ```
@@ -90,3 +92,13 @@ Result: 500, Time: 52.93217206001282
 
 #### gevent
 가장 단순한 비동기 라이브러리 중 하나.
+
+<br>
+
+#### tornado
+페이스북에서 개발한 비동기 I/O 패키지.
+
+<br>
+
+#### AsyncIO
+파이썬 3.4 부터 이전의 asyncio 표준 라이브러리 모듈을 개선했다. gevent와 tornado 방식의 동시성에서 영향을 받았다. 코루틴을 더 간단하게 다룰 수 있도록 yield from 이라는 키워드를 추가했다.
