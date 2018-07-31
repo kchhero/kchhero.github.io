@@ -10,6 +10,8 @@ summary : chapter7,8,9 내용 정리/요약, cython / concurrency / multiprocess
 ### ch7 cython
 #### ctypes
 
+---
+
 ### ch8 동시성
 https://github.com/kchhero/high_performance_python/tree/master/08_concurrency
 
@@ -102,3 +104,59 @@ Result: 500, Time: 52.93217206001282
 
 #### AsyncIO
 파이썬 3.4 부터 이전의 asyncio 표준 라이브러리 모듈을 개선했다. gevent와 tornado 방식의 동시성에서 영향을 받았다. 코루틴을 더 간단하게 다룰 수 있도록 yield from 이라는 키워드를 추가했다.
+
+---
+
+### ch9 multiprocessing
+- 문제를 여러 CPU로 병렬화한다면, n 코어 시스템에서 n배의 속도 향상을 기대 할 수 있다?
+프로세스를 추가하면 통신에 따른 부가 비용이 늘어나며 한 프로세스가 사용할 수 있는 RAM이 줄어들게되므로 실제 n배의 속도 향상을 온전히 얻을 수는 없다.
+- multiprocessing 모듈로 처리할 수 있는 작업의 예
+		CPU 위주의 작업을 process나 pool 객체를 사용해 병렬화
+		dummy 모듈을 사용해서 I/O 위주의 작업을 스레드를 사용하는 Pool로 병렬화
+		Queue를 통해  pickling한 결과를 공유
+		병렬화한 작업자 사이에서 바이트,원시 데이터 타입, 사전, 리스트 등의 상태를 공유
+
+<br>
+
+#### multiprocessing 모듈
+주 구성요소
+- process : 현재 프로세스를 fork한 복사본.
+- pool : process나 threading API를 wrapping 하여 작업을 공유하고, 합쳐진 결과를 반환해주는 사용하기 편리한 worker pool로 만든다.
+- queue  : 여러 producer와 conosumer가 사용할 수 있게 해주는 FIFO 대기열이다.
+- pipe : 두 프로세스 사이의 통신 채널
+- manager : process간에 파이썬 객체를 공유하기 위한 고수준의 managed interface.
+- ctypes : process를 fork한 다음 여러 process가 원시 데이터 타입을 공유 할 수 있게 해준다.
+
+<br>
+
+*몬테카를로 원주율 구하기 알고리즘*
+```
+import random
+
+TESTCNT = 100000000
+
+def monte_carlo():
+    circleIn = 0
+
+    for i in range(TESTCNT):
+        tempX = random.random()
+        tempY = random.random()
+        if (tempX*tempX + tempY*tempY) <= 1:
+            circleIn += 1
+
+    print("shot cnt = %f" % (circleIn/TESTCNT))
+    print("pi = %f" % (4.0*circleIn/TESTCNT))
+
+monte_carlo()
+```
+결과
+```
+$ python3 test9_2.py
+shot cnt = 0.785400
+pi = 3.141602
+```
+
+<br>
+
+#### process와 thread를 사용해 원주율 추정하기
+##### 파이썬 객체 사용
