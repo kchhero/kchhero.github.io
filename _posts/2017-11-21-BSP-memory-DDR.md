@@ -16,6 +16,14 @@ DQS     =>  data bus strobe signal --> data clock signal
 DQS +, DQS -   =>  difference signal line
 DQM   => data bus mask
 
+* DQS : DDR 메모리를 이루는 신호선.
+* DQ 는 데이타버스를, DQS 는 데이타버스 Strobe 신호선을 의미. (데이타의 클럭신호선)
+* DQS, DQM 신호선은 데이타버스 8비트당 하나씩.
+* DQS 는 보통 DQS+, DQS- 두개의 신호선으로 이루어져 있으며  Difference 신호선이다. 이 두선은 각 선의 두께 만큼 떨어저 평행하게, 반드시 같이 움직여야 함. 두선의 길이는 거의 오차가 없이 일치해야 함.  (DQS 신호선은 때에 따라 DQS+ 신호선만 쓰일수도 있다.)
+* DQS+ 와 DQS - 는 위상차가 180도 나며 이 두선을 스코프로 찍어보면 **EYE**  형상이 나오는데 이 형상이 뚜렸해야 한다. 
+
+<br>
+
 ##### DLL : Delay-Locked Loop
 
 ##### RAS : Row access strobe
