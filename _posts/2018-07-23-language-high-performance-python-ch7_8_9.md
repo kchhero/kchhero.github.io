@@ -351,14 +351,82 @@ Took: 199.00096464157104
 #### 프로세스간 통신을 사용
 
 ** 순차적 해법 **
+https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes.py
+```
+def check_prime(n):
+    if n % 2 == 0:
+        return False
+    from_i = 3
+    to_i = math.sqrt(n) + 1
+    for i in xrange(from_i, int(to_i), 2):
+        if n % i == 0:
+            return False
+return True
+```
+
+<br>
+
 ** 단순한 풀 해법 **
+https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number1.py
+```
+def check_prime(n, pool, nbr_processes):
+    from_i = 3
+    to_i = int(math.sqrt(n)) + 1
+    ranges_to_check = create_range.create(from_i, to_i, nbr_processes)
+    ranges_to_check = zip(len(ranges_to_check) * [n], ranges_to_check)
+    assert len(ranges_to_check) == nbr_processes
+    results = pool.map(check_prime_in_range, ranges_to_check)
+    if False in results:
+        return False
+return True
+```
+
+<br>
+
 ** 조금 덜 단순한 풀 해법 **
+https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number2.py
 가능성이 높은 인수는 순차적으로 검사하여 빠르게 처리하고, 큰 값은 인수들은 병렬로 처리한다.
+```
+def check_prime(n, pool, nbr_processes):
+    # cheaply check high probability set of possible factors
+    from_i = 3
+    to_i = 21
+    if not check_prime_in_range((n, (from_i, to_i))):
+        return False
+
+    from_i = to_i
+    to_i = int(math.sqrt(n)) + 1
+    ranges_to_check = create_range.create(from_i, to_i, nbr_processes)
+    ranges_to_check = zip(len(ranges_to_check) * [n], ranges_to_check)
+    assert len(ranges_to_check) == nbr_processes
+    results = pool.map(check_prime_in_range, ranges_to_check)
+    if False in results:
+        return False
+return True
+```
+
+<br>
 
 ** Manager.Value 플래그 사용하기 **
+고수준 파이썬 객체를 프로세스 간에 managed 공유 객체로 활용할 수 있다. 저수준 객체들은 proxy 객체로 감싼다.
+안정성을 보장하게되고 속도는 느려지지만 유연성을 얻을 수 있다. 
+https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_manager.py
+
+<br>
+
 ** 레디스를 플래그로 사용하기 **
+https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_redis.py
+* redis : 인메모리 키/값 저장소 엔진이다. 자체 락을 제공하며, 각 연산은 원자적이다. 언어와 무관한 데이터 저장소를 만들 수 있다. 
+* 저장 : 문자열 리스트, 문자열의 집합, 문자열을 정렬한 집합, 문자열의 해시
+==> https://www.joinc.co.kr/w/man/12/REDIS/IntroDataType
+
+<br>
+
 ** RawValue를 플래그로 사용하기 **
+
 ** mmap를 플래그로 사용하기 **
+바이트들을 공유하는 가장 빠른 방식이다.
+https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_mmap.py
 
 <br>
 <br>
