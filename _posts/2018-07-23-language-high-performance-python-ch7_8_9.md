@@ -14,7 +14,7 @@ summary : chapter7,8,9 내용 정리/요약, cython / concurrency / multiprocess
 ---
 
 ### ch8 동시성
-https://github.com/kchhero/high_performance_python/tree/master/08_concurrency
+[https://github.com/kchhero/high_performance_python/tree/master/08_concurrency](https://github.com/kchhero/high_performance_python/tree/master/08_concurrency)
 
 #### 비동기 프로그래밍
 - 간단한 이벤트 루프
@@ -228,11 +228,11 @@ if __name__ == "__main__":
 #### Understanding the Python GIL
 - GIL (Global Interpreter Lock)
 
-참고 : http://highthroughput.org/wp/cb-1136/
+참고 : [http://highthroughput.org/wp/cb-1136/](http://highthroughput.org/wp/cb-1136/)
 
 파이썬의 스레드는 I/O 위주의 작업에는 훌륭히 작동하지만, CPU 위주의 문제에는 좋은 선택이 못된다.
 데이비드 비즐리, The Python GIL Visualized 참고.
-refs : http://dabeaz.blogspot.com/2010/01/python-gil-visualized.html
+refs : [http://dabeaz.blogspot.com/2010/01/python-gil-visualized.html](http://dabeaz.blogspot.com/2010/01/python-gil-visualized.html)
 ![](http://www.dabeaz.com/images/GILLegend.png)
 ![](http://www.dabeaz.com/images/GIL_2cpu.png)
 멀티코어 시스템에서 다중 스레드를 사용하는 경우에만 문제가 된다.
@@ -352,7 +352,7 @@ Took: 199.00096464157104
 
 ** 순차적 해법 **
 
-https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes.py
+[https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes.py](https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes.py)
 ```
 def check_prime(n):
     if n % 2 == 0:
@@ -369,7 +369,7 @@ return True
 
 ** 단순한 풀 해법 **
 
-https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number1.py
+[https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number1.py](https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number1.py)
 ```
 def check_prime(n, pool, nbr_processes):
     from_i = 3
@@ -387,7 +387,7 @@ return True
 
 ** 조금 덜 단순한 풀 해법 **
 
-https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number2.py
+[https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number2.py](https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number2.py)
 가능성이 높은 인수는 순차적으로 검사하여 빠르게 처리하고, 큰 값은 인수들은 병렬로 처리한다.
 ```
 def check_prime(n, pool, nbr_processes):
@@ -414,16 +414,16 @@ return True
 
 고수준 파이썬 객체를 프로세스 간에 managed 공유 객체로 활용할 수 있다. 저수준 객체들은 proxy 객체로 감싼다.
 안정성을 보장하게되고 속도는 느려지지만 유연성을 얻을 수 있다. 
-https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_manager.py
+[https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_manager.py](https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_manager.py)
 
 <br>
 
 ** 레디스를 플래그로 사용하기 **
 
-https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_redis.py
+[https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_redis.py](https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_redis.py)
 * redis : 인메모리 키/값 저장소 엔진이다. 자체 락을 제공하며, 각 연산은 원자적이다. 언어와 무관한 데이터 저장소를 만들 수 있다. 
 * 저장 : 문자열 리스트, 문자열의 집합, 문자열을 정렬한 집합, 문자열의 해시
-==> https://www.joinc.co.kr/w/man/12/REDIS/IntroDataType
+==> [https://www.joinc.co.kr/w/man/12/REDIS/IntroDataType](https://www.joinc.co.kr/w/man/12/REDIS/IntroDataType)
 
 <br>
 
@@ -432,7 +432,7 @@ https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessin
 ** mmap를 플래그로 사용하기 **
 
 바이트들을 공유하는 가장 빠른 방식이다.
-https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_mmap.py
+[https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_mmap.py](https://github.com/kchhero/high_performance_python/blob/master/09_multiprocessing/prime_validation/primes_pool_per_number_mmap.py)
 
 <br>
 <br>
