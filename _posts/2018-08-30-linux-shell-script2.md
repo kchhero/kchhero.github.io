@@ -1,9 +1,9 @@
 ---
-title: 'Shell Script 2'
+category: Uncategoried
 layout: post
 tags:
   - linux
-category: Uncategoried
+title: 'Shell Script 2'
 ---
 자주 사용하지만 잘 잊어버리는 shell script 모음 2
 #### LOOP
@@ -27,3 +27,18 @@ while true; do
 done
 ```
 
+<br>
+
+#### file list read and save
+```
+function update_support_target_list()
+{
+    configs=$(ls -trh ${META_NEXELL_DISTRO_PATH}/tools/configs/board/)
+    for entry in ${configs}
+    do
+         filename="${entry%.*}"
+         targets+=($filename)
+    done
+}
+
+```
