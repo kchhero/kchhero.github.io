@@ -30,7 +30,7 @@ done
 <br>
 
 #### file list read and save
-```
+```shell?line_number=false
 function update_support_target_list()
 {
     configs=$(ls -trh ${META_NEXELL_DISTRO_PATH}/tools/configs/board/)
