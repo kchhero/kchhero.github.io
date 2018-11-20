@@ -87,3 +87,10 @@ $ sudo service smbd restart
 ```
 $ rm ~/.config/bcompare/registry.dat
 ```
+
+<br>
+
+#### application switch 시 overlap 되는 문제 해결 방법
+[https://askubuntu.com/questions/1011825/unity-alt-tab-application-switcher-in-ubuntu-16-04](https://askubuntu.com/questions/1011825/unity-alt-tab-application-switcher-in-ubuntu-16-04)
+
+<br>
