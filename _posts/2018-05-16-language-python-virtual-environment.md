@@ -1,12 +1,16 @@
 ---
-title: 'Python> Python virtutal environment'
+category: programming
 layout: post
 tags:
   - Language
-category: programming
+title: 'Python> Python virtutal environment'
 ---
 #### pyenv (https://github.com/pyenv) 설치 / 환경변수 설정
+참고 : https://github.com/pyenv/pyenv/wiki/common-build-problems
 ```
+$ sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
+libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+xz-utils tk-dev libffi-dev liblzma-dev
 $ curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
 $ echo 'export PATH="/home/suker/.pyenv/bin:$PATH"' > ~/.bash_profile
 $ echo 'eval "$(pyenv init -)"' >> ~/.bash_profile 
