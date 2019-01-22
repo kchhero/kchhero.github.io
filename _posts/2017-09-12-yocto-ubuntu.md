@@ -44,20 +44,22 @@ $ sudo echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-updates main restr
 $ sudo echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-security main restricted universe multiverse" >> ubuntu-rootfs/etc/apt/sources.list
 
 $ sudo chroot ubuntu-rootfs
-$ sudo locale-gen "en_US.UTF-8"
-$ sudo dpkg-reconfigure locales
+# locale-gen "en_US.UTF-8"
+# dpkg-reconfigure locales
 
-$ apt-get update
-$ apt-get install gstreamer1.0*
-$ apt-get install libgles2-mesa-dev
-$ apt-get install android-tools-adb android-tools-adbd
+# apt-get update
+# apt-get install gstreamer1.0*
+# apt-get install libgles2-mesa-dev
+# apt-get install android-tools-adb android-tools-adbd
 
-$ echo "inet:x:3003:root" >> etc/group
-$ echo "net_raw:x:3004:root" >> etc/group
+# echo "inet:x:3003:root" >> etc/group
+# echo "net_raw:x:3004:root" >> etc/group
  
-$ adduser nexell
-$ gpasswd -a nexell sudo
-$ usermod -a -G sudo nexell
+# adduser nexell
+# gpasswd -a nexell sudo
+# usermod -a -G sudo nexell
+/etc/hostname 에서 name 변경
+/etc/hosts 에 추가
 ```
 <I>Note : qemu-arm-static이 /usr/bin/ 에 없는 경우, qemu-user-static 을 삭제 후 다시 설치해본다.
 $ sudo apt-get remove qemu-user-static;sudo apt-get install qemu-user-static</I>
