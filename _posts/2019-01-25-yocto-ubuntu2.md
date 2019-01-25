@@ -71,3 +71,9 @@ sudo mount -t devpts -o gid=5,mode=620 devpts ./ubuntu-rootfs/dev/pts
 # cd home/nexell# git clone --recursive git://github.com/autotest/autotest.git
 ```
 
+**
+android-tools-adbd 관련 sub process failed message가 보인다면
+```
+rm -rf /var/lib/dpkg/info/android-tools-adbd.*
+```
+실행 후 다시 설치
