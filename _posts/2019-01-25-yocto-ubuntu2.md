@@ -68,7 +68,7 @@ sudo mount -t devpts -o gid=5,mode=620 devpts ./ubuntu-rootfs/dev/pts
 
 # apt-get install -y openssh-client openssh-server
 
-# apt-get install -y libpopt-dev locate binutils-dev libiberty-dev
+# apt-get install -y libpopt-dev locate binutils-dev libiberty-dev libcap-ng-utils
 
 # cd home/nexell# git clone --recursive git://github.com/autotest/autotest.git
 ```
