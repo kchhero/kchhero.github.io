@@ -27,50 +27,77 @@ $ sudo echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-updates main restr
 $ sudo echo "deb http://ports.ubuntu.com/ubuntu-ports/ trusty-security main restricted universe multiverse" >> ubuntu-rootfs/etc/apt/sources.list
 
 $ sudo chroot ubuntu-rootfs
-$ adduser 'username'
-$ gpasswd -a 'username' sudo
-$ usermod -a -G sudo 'username'
-$ sudo locale-gen "en_US.UTF-8"
-$ sudo dpkg-reconfigure locales
+/# adduser 'username'
+/# gpasswd -a 'username' sudo
+/# usermod -a -G sudo 'username'
+/# sudo locale-gen "en_US.UTF-8"
+/# sudo dpkg-reconfigure locales
 
-home/nexell/.bashrc 에  추가  export LC_ALL="en_US.UTF-8"
+/# export LC_ALL="en_US.UTF-8"
 
-$ echo "inet:x:3003:root" >> etc/group
-$ echo "net_raw:x:3004:root" >> etc/group
 
-# /etc/hosts 에 nexell-ubuntu 추가
-# /etc/hostname 에 nexell-ubuntu 추가
-# /etc/sudoers 에 nexell sudo권한 추가
+/# echo "inet:x:3003:root" >> etc/group
+/# echo "net_raw:x:3004:root" >> etc/group
 
-etc/network/interfaces 에 추가
+/etc/hosts 에 nexell-ubuntu 추가
+/etc/hostname 에 nexell-ubuntu 추가
+/etc/sudoers 에 nexell sudo권한 추가
 
+/etc/network/interfaces 에 추가
+---------------------------------------------------
 auto lo
 iface lo inet loopback
 
 auto eth0
 iface eth0 inet dhcp
+---------------------------------------------------
 
-$ apt-get update
+
+/# apt-get update
 
 apt-get install 실행시 E: Sub-process /usr/bin/dpkg returned an error code 발생한다면
 아래의 설정후 chroot를 재실행해본다.
 
-sudo mount -t proc proc ./myrootfs/proc/ sudo mount -t sysfs sys ./myrootfs/sys/
-sudo mount -o bind /dev ./myrootfs/dev/
-sudo mount -t devpts -o gid=5,mode=620 devpts ./ubuntu-rootfs/dev/pts
+sudo mount -t proc proc ./ubuntu-rootfs-14/proc/
+sudo mount -t sysfs sys ./ubuntu-rootfs-14/sys/
+sudo mount -o bind /dev ./ubuntu-rootfs-14/dev/
+sudo mount -t devpts -o gid=5,mode=620 devpts ./ubuntu-rootfs-14/dev/pts
 
 
-# apt-get install -y input-utils usbutils vim git wget
-# apt-get install -y python-pip
-# python -m pip install --upgrade pip setuptools wheel
-# apt-get install -y libncurses5-dev
-# apt-get install -y build-essential bin86 kernel-package 
+/# apt-get install -y input-utils usbutils vim git wget
+/# apt-get install -y python-pip
+/# python -m pip install --upgrade pip setuptools wheel
+/# apt-get install -y libncurses5-dev
+/# apt-get install -y build-essential bin86 kernel-package 
 
-# apt-get install -y openssh-client openssh-server
+/# apt-get install -y openssh-client openssh-server curl gdb
 
-# apt-get install -y libpopt-dev locate binutils-dev libiberty-dev libcap-ng-utils
+/# apt-get install -y libpopt-dev locate binutils-dev libiberty-dev libcap-ng-utils
 
-# cd home/nexell# git clone --recursive git://github.com/autotest/autotest.git
+
+home/nexell/.bashrc 에 추가  export LC_ALL="en_US.UTF-8"
+
+$ apt-get install gstreamer1.0*
+$ apt-get install libgles2-mesa-dev
+$ apt-get install android-tools-adb android-tools-adbd
+
+
+/# cd home/nexell
+/# git clone --recursive git://github.com/autotest/autotest.git
+
+
+umount 해준다.
+
+$ sudo umount ubuntu-rootfs-14-armhf/proc
+$ sudo umount ubuntu-rootfs-14-armhf/sys
+$ sudo umount ubuntu-rootfs-14-armhf/dev/pts
+$ sudo umount ubuntu-rootfs-14-armhf/dev
+
+$ cd ubuntu-rootfs-14-armhf
+$ sudo tar cvzf ubuntu-rootfs-console-trusty.tar.gz *
+
+
+snapshot server에 upload
 ```
 
 **
