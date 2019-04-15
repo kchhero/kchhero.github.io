@@ -1,0 +1,1046 @@
+From 49ae45477945bdc1eabcfefd9a61f41eabc9fb03 Mon Sep 17 00:00:00 2001
+From: suker <suker@nexell.co.kr>
+Date: Thu, 11 Apr 2019 10:56:30 +0900
+Subject: [PATCH] common: OTA A/B update
+
+This patch is about OTA A/B update implementation
+ 1. Add the ab select android open source files.
+ 2. Active part command and add a part number command.
+
+Signed-off-by: suker <suker@nexell.co.kr>
+Change-Id: I3098a0ab555c31a34e6c15ec323c6cec0eb271a8
+---
+
+diff --git a/common/Kconfig b/common/Kconfig
+index 6b9e3c8..b45e501 100644
+--- a/common/Kconfig
++++ b/common/Kconfig
+@@ -1,3 +1,28 @@
++menu "Android support commands"
++
++config ANDROID_AB
++        bool "Android A/B updates"
++        default n
++        help
++          If enabled, adds support for the new Android A/B update model. This
++          allows the bootloader to select which slot to boot from based on the
++          information provided by userspace via the Android boot_ctrl HAL. This
++          allows a bootloader to try a new version of the system but roll back
++          to previous version if the new one didn't boot all the way.
++
++config CMD_AB_SELECT
++       bool "ab_select"
++       default n
++       depends on ANDROID_AB
++       help
++         On Android devices with more than one boot slot (multiple copies of
++         the kernel and system images) this provides a command to select which
++         slot should be used to boot from and register the boot attempt. This
++         is used by the new A/B update model where one slot is updated in the
++         background while running from the other slot.
++
++endmenu
++
+ menu "Command line interface"
+ 
+ config HUSH_PARSER
+@@ -374,6 +399,13 @@
+ 	help
+ 	  GPIO support.
+ 
++config CMD_PART
++        bool "part"
++        select PARTITION_UUIDS
++        help
++          Read and display information about the partition table on
++          various media.
++
+ endmenu
+ 
+ 
+diff --git a/common/Makefile b/common/Makefile
+index 6460582..d737e43 100644
+--- a/common/Makefile
++++ b/common/Makefile
+@@ -60,6 +60,8 @@
+ 
+ # command
+ obj-$(CONFIG_CMD_AES) += cmd_aes.o
++obj-$(CONFIG_CMD_AB_SELECT) += ab_select.o
++obj-$(CONFIG_ANDROID_AB) += android_ab.o
+ obj-$(CONFIG_CMD_AMBAPP) += cmd_ambapp.o
+ obj-$(CONFIG_CMD_ARMFLASH) += cmd_armflash.o
+ obj-$(CONFIG_SOURCE) += cmd_source.o
+diff --git a/common/ab_select.c b/common/ab_select.c
+new file mode 100644
+index 0000000..23c3cc1
+--- /dev/null
++++ b/common/ab_select.c
+@@ -0,0 +1,52 @@
++// SPDX-License-Identifier: BSD-2-Clause
++/*
++ * Copyright (C) 2017 The Android Open Source Project
++ */
++
++#include <android_ab.h>
++#include <command.h>
++
++static int do_ab_select(cmd_tbl_t *cmdtp, int flag, int argc,
++			char * const argv[])
++{
++	int ret;
++	struct block_dev_desc *dev_desc;
++	disk_partition_t part_info;
++	char slot[2];
++
++	if (argc != 4)
++		return CMD_RET_USAGE;
++
++	/* Lookup the "misc" partition from argv[2] and argv[3] */
++	if (part_get_info_by_dev_and_name_or_num(argv[2], argv[3],
++						 &dev_desc, &part_info) < 0) {
++		return CMD_RET_FAILURE;
++	}
++
++	ret = ab_select_slot(dev_desc, &part_info);
++	if (ret < 0) {
++		printf("Android boot failed, error %d.\n", ret);
++		return CMD_RET_FAILURE;
++	}
++
++	/* Android standard slot names are 'a', 'b', ... */
++	slot[0] = ANDROID_BOOT_SLOT_NAME(ret);
++	slot[1] = '\0';
++	setenv(argv[1], slot);
++	printf("ANDROID: Booting slot: %s\n", slot);
++	return CMD_RET_SUCCESS;
++}
++
++U_BOOT_CMD(ab_select, 4, 0, do_ab_select,
++	   "Select the slot used to boot from and register the boot attempt.",
++	   "<slot_var_name> <interface> <dev[:part|#part_name]>\n"
++	   "    - Load the slot metadata from the partition 'part' on\n"
++	   "      device type 'interface' instance 'dev' and store the active\n"
++	   "      slot in the 'slot_var_name' variable. This also updates the\n"
++	   "      Android slot metadata with a boot attempt, which can cause\n"
++	   "      successive calls to this function to return a different result\n"
++	   "      if the returned slot runs out of boot attempts.\n"
++	   "    - If 'part_name' is passed, preceded with a # instead of :, the\n"
++	   "      partition name whose label is 'part_name' will be looked up in\n"
++	   "      the partition table. This is commonly the \"misc\" partition.\n"
++);
+diff --git a/common/android_ab.c b/common/android_ab.c
+new file mode 100644
+index 0000000..cd2b4bc
+--- /dev/null
++++ b/common/android_ab.c
+@@ -0,0 +1,301 @@
++// SPDX-License-Identifier: BSD-2-Clause
++/*
++ * Copyright (C) 2017 The Android Open Source Project
++ */
++
++#include <common.h>
++#include <android_ab.h>
++#include <android_bl_msg.h>
++#include <memalign.h>
++#include <u-boot/crc.h>
++#include <errno.h>
++
++/**
++ * Compute the CRC-32 of the bootloader control struct.
++ *
++ * Only the bytes up to the crc32_le field are considered for the CRC-32
++ * calculation.
++ */
++static uint32_t ab_control_compute_crc(struct andr_bl_control *abc)
++{
++	return crc32(0, (void *)abc, offsetof(typeof(*abc), crc32_le));
++}
++
++/**
++ * Initialize andr_bl_control to the default value.
++ *
++ * It allows us to boot all slots in order from the first one. This value
++ * should be used when the bootloader message is corrupted, but not when
++ * a valid message indicates that all slots are unbootable.
++ */
++static void ab_control_default(struct andr_bl_control *abc)
++{
++	int i;
++	const struct andr_slot_metadata metadata = {
++		.priority = 15,
++		.tries_remaining = 7,
++		.successful_boot = 0,
++		.verity_corrupted = 0,
++		.reserved = 0
++	};
++
++        printf("[debug][suker][%s]\n", __func__);
++
++	memcpy(abc->slot_suffix, "a\0\0\0", 4);
++	abc->magic = ANDROID_BOOT_CTRL_MAGIC;
++	abc->version = ANDROID_BOOT_CTRL_VERSION;
++	abc->nb_slot = ANDROID_NUM_SLOTS;
++	memset(abc->reserved0, 0, sizeof(abc->reserved0));
++	for (i = 0; i < abc->nb_slot; ++i)
++		abc->slot_info[i] = metadata;
++
++	memset(abc->reserved1, 0, sizeof(abc->reserved1));
++	abc->crc32_le = ab_control_compute_crc(abc);
++}
++
++/**
++ * Load the boot_control struct from disk into newly allocated memory.
++ *
++ * This function allocates and returns an integer number of disk blocks,
++ * based on the block size of the passed device to help performing a
++ * read-modify-write operation on the boot_control struct.
++ * The boot_control struct offset (2 KiB) must be a multiple of the device
++ * block size, for simplicity.
++ *
++ * @param[in] dev_desc Device where to read the boot_control struct from
++ * @param[in] part_info Partition in 'dev_desc' where to read from, normally
++ *			the "misc" partition should be used
++ * @param[out] pointer to pointer to andr_bl_control data
++ * @return 0 on success and a negative on error
++ */
++static int ab_control_create_from_disk(struct block_dev_desc *dev_desc,
++				       const disk_partition_t *part_info,
++				       struct andr_bl_control **abc)
++{
++	ulong abc_offset, abc_blocks;
++
++        unsigned int i;
++
++	abc_offset = offsetof(struct andr_bl_msg_ab, slot_suffix);
++
++	if (abc_offset % part_info->blksz) {
++		printf("ANDROID: Boot control block not block aligned.\n");
++		return -EINVAL;
++	}
++
++	abc_offset /= part_info->blksz;
++	abc_blocks = DIV_ROUND_UP(sizeof(struct andr_bl_control),
++				  part_info->blksz);
++
++        printf("[debug][suker][%s] part_info->size = 0x%lx\n", __func__, part_info->size);
++	if (abc_offset + abc_blocks > part_info->size) {
++		printf("ANDROID: boot control partition too small. Need at");
++		printf(" least %lu blocks but have %lu blocks.\n",
++		       abc_offset + abc_blocks, part_info->size);
++		return -EINVAL;
++	}
++
++	*abc = malloc_cache_aligned(abc_blocks * part_info->blksz);
++	if (!*abc)
++		return -ENOMEM;
++
++	if (dev_desc->block_read(dev_desc->dev,
++                      part_info->start + abc_offset, abc_blocks,
++                      *abc) != abc_blocks) {
++		printf("ANDROID: Could not read from boot control partition\n");
++		free(*abc);
++		return -EIO;
++	}
++	printf("ANDROID: Loaded ABC, %lu blocks\n", abc_blocks);
++	return 0;
++}
++
++/**
++ * Store the loaded boot_control block.
++ *
++ * Store back to the same location it was read from with
++ * ab_control_create_from_misc().
++ *
++ * @param[in] dev_desc Device where we should write the boot_control struct
++ * @param[in] part_info Partition on the 'dev_desc' where to write
++ * @param[in] abc Pointer to the boot control struct and the extra bytes after
++ *                it up to the nearest block boundary
++ * @return 0 on success and a negative on error
++ */
++static int ab_control_store(struct block_dev_desc *dev_desc,
++			    const disk_partition_t *part_info,
++			    struct andr_bl_control *abc)
++{
++	ulong abc_offset, abc_blocks;
++
++        printf("[debug][suker][%s]\n", __func__);
++	abc_offset = offsetof(struct andr_bl_msg_ab, slot_suffix) /
++		     part_info->blksz;
++	abc_blocks = DIV_ROUND_UP(sizeof(struct andr_bl_control),
++				  part_info->blksz);
++	if (dev_desc->block_write(dev_desc->dev,
++                       part_info->start + abc_offset, abc_blocks,
++		       abc) != abc_blocks) {
++		printf("ANDROID: Could not write back the misc partition\n");
++		return -EIO;
++	}
++	return 0;
++}
++
++/**
++ * Compare two slots.
++ *
++ * The function determines slot which is should we boot from among the two.
++ *
++ * @param[in] a The first bootable slot metadata
++ * @param[in] b The second bootable slot metadata
++ * @return Negative if the slot "a" is better, positive of the slot "b" is
++ *         better or 0 if they are equally good.
++ */
++static int ab_compare_slots(const struct andr_slot_metadata *a,
++			    const struct andr_slot_metadata *b)
++{
++        printf("[debug][suker][%s]\n", __func__);
++
++	/* Higher priority is better */
++	if (a->priority != b->priority)
++		return b->priority - a->priority;
++
++	/* Higher successful_boot value is better, in case of same priority */
++	if (a->successful_boot != b->successful_boot)
++		return b->successful_boot - a->successful_boot;
++
++	/* Higher tries_remaining is better to ensure round-robin */
++	if (a->tries_remaining != b->tries_remaining)
++		return b->tries_remaining - a->tries_remaining;
++
++	return 0;
++}
++
++int ab_select_slot(struct block_dev_desc *dev_desc, disk_partition_t *part_info)
++{
++	struct andr_bl_control *abc = NULL;
++	u32 crc32_le;
++	int slot, i, ret;
++	bool store_needed = false;
++	char slot_suffix[4];
++
++        printf("[debug][suker][%s]\n", __func__);
++	ret = ab_control_create_from_disk(dev_desc, part_info, &abc);
++        printf("[debug][suker][%s] ret = %d\n", __func__, ret);
++        printf("[debug][suker][%s] ----abc info---\n", __func__);
++        printf("[debug][suker][%s] abc->slot_suffix  = %s\n",   __func__, abc->slot_suffix );
++        printf("[debug][suker][%s] abc->magic        = 0x%x\n", __func__, abc->magic       );
++        printf("[debug][suker][%s] abc->nb_slot      = %d\n",   __func__, abc->nb_slot     );
++        printf("[debug][suker][%s] abc->crc32_le     = %d\n",   __func__, abc->crc32_le    );
++        printf("[debug][suker][%s] ---------------\n", __func__, ret);
++
++	if (!abc || ret < 0) {
++		/*
++		 * This condition represents an actual problem with the code or
++		 * the board setup, like an invalid partition information.
++		 * Signal a repair mode and do not try to boot from either slot.
++		 */
++		return ret;
++	}
++
++	crc32_le = ab_control_compute_crc(abc);
++	if (abc->crc32_le != crc32_le) {
++		printf("ANDROID: Invalid CRC-32 (expected %.8x, found %.8x), ",
++		       crc32_le, abc->crc32_le);
++		printf("re-initializing A/B metadata.\n");
++		ab_control_default(abc);
++		store_needed = true;
++	}
++
++	if (abc->magic != ANDROID_BOOT_CTRL_MAGIC) {
++		printf("ANDROID: Unknown A/B metadata: %.8x\n", abc->magic);
++		free(abc);
++		return -ENODATA;
++	}
++
++	if (abc->version > ANDROID_BOOT_CTRL_VERSION) {
++		printf("ANDROID: Unsupported A/B metadata version: %.8x\n",
++		       abc->version);
++		free(abc);
++		return -ENODATA;
++	}
++
++	/*
++	 * At this point a valid boot control metadata is stored in abc,
++	 * followed by other reserved data in the same block. We select a with
++	 * the higher priority slot that
++	 *  - is not marked as corrupted and
++	 *  - either has tries_remaining > 0 or successful_boot is true.
++	 * If the selected slot has a false successful_boot, we also decrement
++	 * the tries_remaining until it eventually becomes unbootable because
++	 * tries_remaining reaches 0. This mechanism produces a bootloader
++	 * induced rollback, typically right after a failed update.
++	 */
++
++	/* Safety check: limit the number of slots. */
++	if (abc->nb_slot > ARRAY_SIZE(abc->slot_info)) {
++		abc->nb_slot = ARRAY_SIZE(abc->slot_info);
++		store_needed = true;
++	}
++
++	slot = -1;
++	for (i = 0; i < abc->nb_slot; ++i) {
++		if (abc->slot_info[i].verity_corrupted ||
++		    !abc->slot_info[i].tries_remaining) {
++			printf("ANDROID: unbootable slot %d tries: %d, ",
++				  i, abc->slot_info[i].tries_remaining);
++			printf("corrupt: %d\n",
++				  abc->slot_info[i].verity_corrupted);
++			continue;
++		}
++		printf("ANDROID: bootable slot %d pri: %d, tries: %d, ",
++			  i, abc->slot_info[i].priority,
++			  abc->slot_info[i].tries_remaining);
++		printf("corrupt: %d, successful: %d\n",
++			  abc->slot_info[i].verity_corrupted,
++			  abc->slot_info[i].successful_boot);
++
++		if (slot < 0 ||
++		    ab_compare_slots(&abc->slot_info[i],
++				     &abc->slot_info[slot]) < 0) {
++			slot = i;
++		}
++	}
++
++	if (slot >= 0 && !abc->slot_info[slot].successful_boot) {
++		printf("ANDROID: Attempting slot %c, tries remaining %d\n",
++		       ANDROID_BOOT_SLOT_NAME(slot),
++		       abc->slot_info[slot].tries_remaining);
++		abc->slot_info[slot].tries_remaining--;
++		store_needed = true;
++	}
++
++	if (slot >= 0) {
++		/*
++		 * Legacy user-space requires this field to be set in the BCB.
++		 * Newer releases load this slot suffix from the command line
++		 * or the device tree.
++		 */
++		memset(slot_suffix, 0, sizeof(slot_suffix));
++		slot_suffix[0] = ANDROID_BOOT_SLOT_NAME(slot);
++		if (memcmp(abc->slot_suffix, slot_suffix,
++			   sizeof(slot_suffix))) {
++			memcpy(abc->slot_suffix, slot_suffix,
++			       sizeof(slot_suffix));
++			store_needed = true;
++		}
++	}
++
++	if (store_needed) {
++		abc->crc32_le = ab_control_compute_crc(abc);
++		ab_control_store(dev_desc, part_info, abc);
++	}
++	free(abc);
++
++        printf("[debug][suker][%s] end slot = %d\n", __func__,slot);
++	if (slot < 0)
++		return -EINVAL;
++
++	return slot;
++}
+diff --git a/common/cmd_part.c b/common/cmd_part.c
+index 5599509..e39c43b 100644
+--- a/common/cmd_part.c
++++ b/common/cmd_part.c
+@@ -180,6 +180,47 @@
+ 	return 0;
+ }
+ 
++static int do_part_number(int argc, char * const argv[])
++{
++	block_dev_desc_t *desc;
++	disk_partition_t info;
++	char buf[512] = { 0 };
++	char *endp;
++	int part;
++	int err;
++	int ret;
++
++	if (argc < 3)
++		return CMD_RET_USAGE;
++	if (argc > 4)
++		return CMD_RET_USAGE;
++
++	ret = get_device(argv[0], argv[1], &desc);
++	if (ret < 0)
++		return 1;
++
++	part = simple_strtoul(argv[2], &endp, 0);
++	if (*endp == '\0') {
++                //err = part_get_info(desc, part, &info);
++                err = get_partition_info(desc, part, &info);
++		if (err)
++			return 1;
++	} else {
++		part = part_get_info_by_name(desc, argv[2], &info);
++		if (part == -1)
++			return 1;
++	}
++
++	snprintf(buf, sizeof(buf), "%d", part);
++
++	if (argc > 3)
++		setenv(argv[3], buf);
++	else
++		printf("%s\n", buf);
++
++	return 0;
++}
++
+ static int do_part(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ {
+ 	if (argc < 2)
+@@ -193,6 +234,8 @@
+ 		return do_part_start(argc - 2, argv + 2);
+ 	else if (!strcmp(argv[1], "size"))
+ 		return do_part_size(argc - 2, argv + 2);
++	else if (!strcmp(argv[1], "number"))
++		return do_part_number(argc - 2, argv + 2);
+ 
+ 	return CMD_RET_USAGE;
+ }
+@@ -212,5 +255,8 @@
+ 	"part start <interface> <dev> <part> <varname>\n"
+ 	"    - set environment variable to the start of the partition (in blocks)\n"
+ 	"part size <interface> <dev> <part> <varname>\n"
+-	"    - set environment variable to the size of the partition (in blocks)"
++	"    - set environment variable to the size of the partition (in blocks)\n"
++	"part number <interface> <dev> <part> <varname>\n"
++	"    - set environment variable to the partition number using the partition name\n"
++	"      part must be specified as partition name"
+ );
+diff --git a/configs/s5p4418_con_svma_defconfig b/configs/s5p4418_con_svma_defconfig
+index 874534d..8bfbde5 100644
+--- a/configs/s5p4418_con_svma_defconfig
++++ b/configs/s5p4418_con_svma_defconfig
+@@ -8,6 +8,8 @@
+ CONFIG_DM_GPIO=y
+ CONFIG_DEFAULT_DEVICE_TREE="s5p4418-con-svma"
+ CONFIG_FIT=y
++CONFIG_ANDROID_AB=y
++CONFIG_CMD_AB_SELECT=y
+ # CONFIG_CMD_IMI is not set
+ # CONFIG_CMD_IMLS is not set
+ # CONFIG_CMD_FLASH is not set
+@@ -16,6 +18,7 @@
+ CONFIG_CMD_USB=y
+ # CONFIG_CMD_FPGA is not set
+ CONFIG_CMD_GPIO=y
++CONFIG_CMD_PART=y
+ # CONFIG_CMD_NET is not set
+ # CONFIG_CMD_NFS is not set
+ CONFIG_CMD_FDISK=y
+@@ -29,6 +32,7 @@
+ CONFIG_NX_GPIO=y
+ CONFIG_DM_I2C_GPIO=y
+ CONFIG_SYS_I2C_NEXELL=y
++CONFIG_MTD=y
+ CONFIG_DM_PMIC=y
+ CONFIG_DM_PMIC_NXE2000=y
+ CONFIG_DM_REGULATOR=y
+diff --git a/disk/part.c b/disk/part.c
+index 909712e..205245e 100644
+--- a/disk/part.c
++++ b/disk/part.c
+@@ -11,6 +11,7 @@
+ #include <malloc.h>
+ #include <part.h>
+ #include <ubifs_uboot.h>
++#include <errno.h>
+ 
+ #undef	PART_DEBUG
+ 
+@@ -20,6 +21,8 @@
+ #define PRINTF(fmt,args...)
+ #endif
+ 
++#define PART_TYPE_ALL		-1
++
+ struct block_drvr {
+ 	char *name;
+ 	block_dev_desc_t* (*get_dev)(int dev);
+@@ -337,8 +340,7 @@
+ 
+ void print_part(block_dev_desc_t * dev_desc)
+ {
+-
+-		switch (dev_desc->part_type) {
++	switch (dev_desc->part_type) {
+ #ifdef CONFIG_MAC_PARTITION
+ 	case PART_TYPE_MAC:
+ 		PRINTF ("## Testing for valid MAC partition ##\n");
+@@ -458,6 +460,7 @@
+ 	int dev, hwpart;
+ 
+ 	hwpart_str = strchr(dev_hwpart_str, '.');
++
+ 	if (hwpart_str) {
+ 		dup_str = strdup(dev_hwpart_str);
+ 		dup_str[hwpart_str - dev_hwpart_str] = 0;
+@@ -500,7 +503,7 @@
+ 
+ #define PART_UNSPECIFIED -2
+ #define PART_AUTO -1
+-#define MAX_SEARCH_PARTITIONS 16
++#define MAX_SEARCH_PARTITIONS 64
+ int get_device_and_partition(const char *ifname, const char *dev_part_str,
+ 			     block_dev_desc_t **dev_desc,
+ 			     disk_partition_t *info, int allow_whole_dev)
+@@ -731,3 +734,117 @@
+ 	free(dup_str);
+ 	return ret;
+ }
++
++static struct part_driver *part_driver_lookup_type(struct block_dev_desc *dev_desc)
++{
++	struct part_driver *drv =
++		ll_entry_start(struct part_driver, part_driver);
++	const int n_ents = ll_entry_count(struct part_driver, part_driver);
++	struct part_driver *entry;
++
++	if (dev_desc->part_type == PART_TYPE_UNKNOWN) {
++		for (entry = drv; entry != drv + n_ents; entry++) {
++			int ret;
++
++			ret = entry->test(dev_desc);
++			if (!ret) {
++				dev_desc->part_type = entry->part_type;
++				return entry;
++			}
++		}
++	} else {
++		for (entry = drv; entry != drv + n_ents; entry++) {
++			if (dev_desc->part_type == entry->part_type)
++				return entry;
++		}
++	}
++
++	/* Not found */
++	return NULL;
++}
++
++int part_get_info_by_name_type(struct block_dev_desc *dev_desc, const char *name,
++			       disk_partition_t *info, int part_type)
++{
++	struct part_driver *part_drv;
++	int ret;
++	int i;
++
++	part_drv = part_driver_lookup_type(dev_desc);
++	if (!part_drv)
++		return -1;
++	for (i = 1; i < part_drv->max_entries; i++) {
++		ret = part_drv->get_info(dev_desc, i, info);
++		if (ret != 0) {
++			/* no more entries in table */
++			break;
++		}
++		if (strcmp(name, (const char *)info->name) == 0) {
++			/* matched */
++			return i;
++		}
++	}
++
++	return -1;
++}
++
++int part_get_info_by_name(struct block_dev_desc *dev_desc, const char *name,
++			  disk_partition_t *info)
++{
++	return part_get_info_by_name_type(dev_desc, name, info, PART_TYPE_ALL);
++}
++
++static int part_get_info_by_dev_and_name(const char *dev_iface,
++					 const char *dev_part_str,
++					 struct block_dev_desc **dev_desc,
++					 disk_partition_t *part_info)
++{
++	char *ep;
++	const char *part_str;
++	int dev_num;
++
++	part_str = strchr(dev_part_str, '#');
++
++	if (!part_str || part_str == dev_part_str)
++		return -EINVAL;
++
++	dev_num = simple_strtoul(dev_part_str, &ep, 16);
++	if (ep != part_str) {
++		/* Not all the first part before the # was parsed. */
++		return -EINVAL;
++	}
++	part_str++;
++
++	*dev_desc = get_dev(dev_iface, dev_num);
++	if (!*dev_desc) {
++		printf("Could not find %s %d\n", dev_iface, dev_num);
++		return -EINVAL;
++	}
++	if (part_get_info_by_name(*dev_desc, part_str, part_info) < 0) {
++		printf("Could not find \"%s\" partition\n", part_str);
++		return -EINVAL;
++	}
++	return 0;
++}
++
++int part_get_info_by_dev_and_name_or_num(const char *dev_iface,
++					 const char *dev_part_str,
++					 struct block_dev_desc **dev_desc,
++					 disk_partition_t *part_info)
++{
++	/* Split the part_name if passed as "$dev_num#part_name". */
++	if (!part_get_info_by_dev_and_name(dev_iface, dev_part_str,
++					   dev_desc, part_info))
++		return 0;
++	/*
++	 * Couldn't lookup by name, try looking up the partition description
++	 * directly.
++	 */
++	if (get_device_and_partition(dev_iface, dev_part_str,
++				    dev_desc, part_info, 1) < 0) {
++		printf("Couldn't find partition %s %s\n",
++		       dev_iface, dev_part_str);
++		return -EINVAL;
++	}
++	return 0;
++}
+diff --git a/include/android_ab.h b/include/android_ab.h
+new file mode 100644
+index 0000000..df8d624
+--- /dev/null
++++ b/include/android_ab.h
+@@ -0,0 +1,34 @@
++/* SPDX-License-Identifier: BSD-2-Clause */
++/*
++ * Copyright (C) 2017 The Android Open Source Project
++ */
++
++#ifndef __ANDROID_AB_H
++#define __ANDROID_AB_H
++
++#include <common.h>
++
++/* Android standard boot slot names are 'a', 'b', 'c', ... */
++#define ANDROID_BOOT_SLOT_NAME(slot_num) ('a' + (slot_num))
++
++/* Number of slots */
++#define ANDROID_NUM_SLOTS 2
++
++/**
++ * Select the slot where to boot from.
++ *
++ * On Android devices with more than one boot slot (multiple copies of the
++ * kernel and system images) selects which slot should be used to boot from and
++ * registers the boot attempt. This is used in by the new A/B update model where
++ * one slot is updated in the background while running from the other slot. If
++ * the selected slot did not successfully boot in the past, a boot attempt is
++ * registered before returning from this function so it isn't selected
++ * indefinitely.
++ *
++ * @param[in] dev_desc Place to store the device description pointer
++ * @param[in] part_info Place to store the partition information
++ * @return The slot number (>= 0) on success, or a negative on error
++ */
++int ab_select_slot(struct block_dev_desc *dev_desc, disk_partition_t *part_info);
++
++#endif /* __ANDROID_AB_H */
+diff --git a/include/android_bl_msg.h b/include/android_bl_msg.h
+new file mode 100644
+index 0000000..f37e01a
+--- /dev/null
++++ b/include/android_bl_msg.h
+@@ -0,0 +1,169 @@
++/* SPDX-License-Identifier: BSD-2-Clause */
++/*
++ * This file was taken from the AOSP Project.
++ * Repository: https://android.googlesource.com/platform/bootable/recovery/
++ * File: bootloader_message/include/bootloader_message/bootloader_message.h
++ * Commit: 8b309f6970ab3b7c53cc529c51a2cb44e1c7a7e1
++ *
++ * Copyright (C) 2008 The Android Open Source Project
++ */
++
++#ifndef __ANDROID_BL_MSG_H
++#define __ANDROID_BL_MSG_H
++
++/*
++ * compiler.h defines the types that otherwise are included from stdint.h and
++ * stddef.h
++ */
++#include <compiler.h>
++#include <linux/sizes.h>
++
++/*
++ * Spaces used by misc partition are as below:
++ * 0   - 2K     Bootloader Message
++ * 2K  - 16K    Used by Vendor's bootloader (the 2K - 4K range may be optionally
++ *              used as bootloader_message_ab struct)
++ * 16K - 64K    Used by uncrypt and recovery to store wipe_package for A/B
++ *              devices
++ * Note that these offsets are admitted by bootloader, recovery and uncrypt, so
++ * they are not configurable without changing all of them.
++ */
++#define ANDROID_MISC_BM_OFFSET		0
++#define ANDROID_MISC_WIPE_OFFSET	SZ_16K
++
++/**
++ * Bootloader Message (2-KiB).
++ *
++ * This structure describes the content of a block in flash
++ * that is used for recovery and the bootloader to talk to
++ * each other.
++ *
++ * The command field is updated by linux when it wants to
++ * reboot into recovery or to update radio or bootloader firmware.
++ * It is also updated by the bootloader when firmware update
++ * is complete (to boot into recovery for any final cleanup)
++ *
++ * The status field is written by the bootloader after the
++ * completion of an "update-radio" or "update-hboot" command.
++ *
++ * The recovery field is only written by linux and used
++ * for the system to send a message to recovery or the
++ * other way around.
++ *
++ * The stage field is written by packages which restart themselves
++ * multiple times, so that the UI can reflect which invocation of the
++ * package it is.  If the value is of the format "#/#" (eg, "1/3"),
++ * the UI will add a simple indicator of that status.
++ *
++ * We used to have slot_suffix field for A/B boot control metadata in
++ * this struct, which gets unintentionally cleared by recovery or
++ * uncrypt. Move it into struct bootloader_message_ab to avoid the
++ * issue.
++ */
++struct andr_bl_msg {
++	char command[32];
++	char status[32];
++	char recovery[768];
++
++	/*
++	 * The 'recovery' field used to be 1024 bytes.  It has only ever
++	 * been used to store the recovery command line, so 768 bytes
++	 * should be plenty.  We carve off the last 256 bytes to store the
++	 * stage string (for multistage packages) and possible future
++	 * expansion.
++	 */
++	char stage[32];
++
++	/*
++	 * The 'reserved' field used to be 224 bytes when it was initially
++	 * carved off from the 1024-byte recovery field. Bump it up to
++	 * 1184-byte so that the entire bootloader_message struct rounds up
++	 * to 2048-byte.
++	 */
++	char reserved[1184];
++};
++
++/**
++ * The A/B-specific bootloader message structure (4-KiB).
++ *
++ * We separate A/B boot control metadata from the regular bootloader
++ * message struct and keep it here. Everything that's A/B-specific
++ * stays after struct bootloader_message, which should be managed by
++ * the A/B-bootloader or boot control HAL.
++ *
++ * The slot_suffix field is used for A/B implementations where the
++ * bootloader does not set the androidboot.ro.boot.slot_suffix kernel
++ * commandline parameter. This is used by fs_mgr to mount /system and
++ * other partitions with the slotselect flag set in fstab. A/B
++ * implementations are free to use all 32 bytes and may store private
++ * data past the first NUL-byte in this field. It is encouraged, but
++ * not mandatory, to use 'struct bootloader_control' described below.
++ *
++ * The update_channel field is used to store the Omaha update channel
++ * if update_engine is compiled with Omaha support.
++ */
++struct andr_bl_msg_ab {
++	struct andr_bl_msg message;
++	char slot_suffix[32];
++	char update_channel[128];
++
++	/* Round up the entire struct to 4096-byte */
++	char reserved[1888];
++};
++
++#define ANDROID_BOOT_CTRL_MAGIC   0x42414342 /* Bootloader Control AB */
++#define ANDROID_BOOT_CTRL_VERSION 1
++
++struct andr_slot_metadata {
++	/*
++	 * Slot priority with 15 meaning highest priority, 1 lowest
++	 * priority and 0 the slot is unbootable
++	 */
++	u8 priority : 4;
++	/* Number of times left attempting to boot this slot */
++	u8 tries_remaining : 3;
++	/* 1 if this slot has booted successfully, 0 otherwise */
++	u8 successful_boot : 1;
++	/*
++	 * 1 if this slot is corrupted from a dm-verity corruption,
++	 * 0 otherwise
++	 */
++	u8 verity_corrupted : 1;
++	/* Reserved for further use */
++	u8 reserved : 7;
++} __packed;
++
++/**
++ * Bootloader Control AB.
++ *
++ * This struct can be used to manage A/B metadata. It is designed to
++ * be put in the 'slot_suffix' field of the 'bootloader_message'
++ * structure described above. It is encouraged to use the
++ * 'bootloader_control' structure to store the A/B metadata, but not
++ * mandatory.
++ */
++struct andr_bl_control {
++	/* NULL terminated active slot suffix */
++	char slot_suffix[4];
++	/* Bootloader Control AB magic number (see BOOT_CTRL_MAGIC) */
++	u32 magic;
++	/* Version of struct being used (see BOOT_CTRL_VERSION) */
++	u8 version;
++	/* Number of slots being managed */
++	u8 nb_slot : 3;
++	/* Number of times left attempting to boot recovery */
++	u8 recovery_tries_remaining : 3;
++	/* Ensure 4-bytes alignment for slot_info field */
++	u8 reserved0[2];
++	/* Per-slot information. Up to 4 slots */
++	struct andr_slot_metadata slot_info[4];
++	/* Reserved for further use */
++	u8 reserved1[8];
++	/*
++	 * CRC32 of all 28 bytes preceding this field (little endian
++	 * format)
++	 */
++	u32 crc32_le;
++} __packed;
++
++#endif  /* __ANDROID_BL_MSG_H */
+diff --git a/include/configs/s5p4418_con_svma.h b/include/configs/s5p4418_con_svma.h
+index 482f037..381a70f 100644
+--- a/include/configs/s5p4418_con_svma.h
++++ b/include/configs/s5p4418_con_svma.h
+@@ -342,13 +342,55 @@
+ #define CONFIG_RECOVERY_BOOT_CMD	\
+ 	"recoveryboot=not supported\0"
+ 
++/* partition number infomation */
++/* 1,2 - boot_a, boot_b */
++/* 3,5 - system_a, system_b */
++/* 6,7 - vendor_a, vendor_b */
++/* 8   - misc */
++#define CONTROL_PARTITION 8 //"misc"
++
++#if defined(CONFIG_CMD_AB_SELECT)
++#define SET_AB_SELECT \
++       "if ab_select slot_name mmc 0:${misc_partition_num}; " \
++       "then " \
++               "echo ab_select get slot_name success;" \
++       "else " \
++               "echo ab_select get slot_name failed, set slot \"a\";" \
++               "setenv slot_name a;" \
++       "fi;" \
++       "setenv slot_suffix _${slot_name};" \
++       "setenv android_boot_option androidboot.slot_suffix=${slot_suffix};" \
++       "setenv android_boot_ab run bootcmd_${slot_name};" \
++       "if test ${slot_name} = a ; " \
++       "then " \
++               "setenv root_dev_blk_system_ab /dev/mmcblk0p3 ;" \
++       "else " \
++               "setenv root_dev_blk_system_ab /dev/mmcblk0p5 ;" \
++       "fi;" \
++       "setenv bootargs_ab1 root=${root_dev_blk_system_ab};" \
++       "setenv bootargs_ab2 ${android_boot_option};"
++#else
++#define SET_AB_SELECT ""
++#endif //CONFIG_CMD_AB_SELECT
++
+ #define CONFIG_EXTRA_ENV_SETTINGS	\
+ 	"fdt_high=0xffffffff\0"		\
+ 	"initrd_high=0xffffffff\0"	\
+ 	"kerneladdr=0x40008000\0"	\
+ 	"kernel_file=zImage\0"		\
+ 	"fdtaddr=0x49000000\0"		\
+-	"load_fdt="			\
++        "misc_partition_num=" __stringify(CONTROL_PARTITION) "\0"       \
++        "set_ab_select=" \
++                SET_AB_SELECT \
++                "\0" \
++        "set_bootargs_ab1=setenv bootargs \"${bootargs} ${bootargs_ab1}\" \0" \
++        "set_bootargs_ab2=setenv bootargs \"${bootargs} ${bootargs_ab2}\" \0" \
++        "bootcmd_set_ab=run set_ab_select;" \
++                       "run set_bootargs_ab1;" \
++                       "run set_bootargs_ab2;" \
++                       "\0"                    \
++        "bootcmd=run bootcmd_set_ab;run android_boot_ab\0" \
++        "load_fdt="			\
+ 		"if test -z \"$fdtfile\"; then "                        \
+ 		"loop=$board_rev; "					\
+ 		"number=$board_rev: "					\
+@@ -382,7 +424,6 @@
+         "ramfsboot=setenv bootargs console=ttyAMA3,115200n8 " \
+                   "root=/dev/ram0 loglevel=4 printk.time=1 consoleblank=0 nx_drm.fb_buffers=3; " \
+                   "run boot_cmd_ramfsboot \0" \
+-	"bootcmd=run mmcboot\0" \
+ 	CONFIG_RECOVERY_BOOT_CMD \
+ 	CONFIG_EXTRA_ENV_BOOT_LOGO
+ 
+diff --git a/include/part.h b/include/part.h
+index 3497a62..3f7b319 100644
+--- a/include/part.h
++++ b/include/part.h
+@@ -122,6 +122,14 @@
+ int get_device_and_partition(const char *ifname, const char *dev_part_str,
+ 			     block_dev_desc_t **dev_desc,
+ 			     disk_partition_t *info, int allow_whole_dev);
++int part_get_info_by_name_type(struct block_dev_desc *dev_desc, const char *name,
++			       disk_partition_t *info, int part_type);
++int part_get_info_by_name(struct block_dev_desc *dev_desc,
++			      const char *name, disk_partition_t *info);
++int part_get_info_by_dev_and_name_or_num(const char *dev_iface,
++					 const char *dev_part_str,
++					 struct block_dev_desc **dev_desc,
++					 disk_partition_t *part_info);
+ #else
+ static inline block_dev_desc_t *get_dev(const char *ifname, int dev)
+ { return NULL; }
+@@ -151,6 +159,38 @@
+ { *dev_desc = NULL; return -1; }
+ #endif
+ 
++struct part_driver {
++	const char *name;
++	int part_type;
++	const int max_entries;	/* maximum number of entries to search */
++
++	/**
++	 * get_info() - Get information about a partition
++	 *
++	 * @dev_desc:	Block device descriptor
++	 * @part:	Partition number (1 = first)
++	 * @info:	Returns partition information
++	 */
++	int (*get_info)(struct block_dev_desc *dev_desc, int part,
++			disk_partition_t *info);
++
++	/**
++	 * print() - Print partition information
++	 *
++	 * @dev_desc:	Block device descriptor
++	 */
++	void (*print)(struct block_dev_desc *dev_desc);
++
++	/**
++	 * test() - Test if a device contains this partition type
++	 *
++	 * @dev_desc:	Block device descriptor
++	 * @return 0 if the block device appears to contain this partition
++	 *	   type, -ve if not
++	 */
++	int (*test)(struct block_dev_desc *dev_desc);
++};
++
+ #ifdef CONFIG_MAC_PARTITION
+ /* disk/part_mac.c */
+ int get_partition_info_mac (block_dev_desc_t * dev_desc, int part, disk_partition_t *info);

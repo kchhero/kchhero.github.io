@@ -1,0 +1,570 @@
+From ee1c9e3303de85d09fa8a87b55b7f0e00c03a211 Mon Sep 17 00:00:00 2001
+From: suker <suker@nexell.co.kr>
+Date: Mon, 25 Mar 2019 14:57:53 +0900
+Subject: [PATCH] ota AB update: OTA A/B update scheme apply
+
+This patch is about OTA A/B update.
+
+Signed-off-by: suker <suker@nexell.co.kr>
+Change-Id: Ib10b4b7586902298744e9d1668cbf5cb099f197e
+---
+
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..613baee
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,4 @@
++signing_keys
++nsih-usbdownload.bin
++nsih-usbdownload.txt
++bootloader
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index 1192f88..7f0505f 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -56,7 +56,8 @@
+ BOARD_SYSTEMIMAGE_EXTFS_INODE_COUNT := 4096
+ BOARD_VENDORIMAGE_PARTITION_SIZE := 268435456
+ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
+-BOARD_USERDATAIMAGE_PARTITION_SIZE := 6101663744
++BOARD_USERDATAIMAGE_PARTITION_SIZE := 4718592000
++# BOARD_USERDATAIMAGE_PARTITION_SIZE := 6101663744
+ BOARD_FLASH_BLOCK_SIZE := 131072
+ 
+ # graphics
+diff --git a/build.sh b/build.sh
+index 9e7f76d..73141b9 100755
+--- a/build.sh
++++ b/build.sh
+@@ -39,154 +39,205 @@
+ 
+ CROSS_COMPILE="arm-eabi-"
+ 
+-if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_BL1}" == "true" ]; then
+-    build_bl1_s5p4418 ${BL1_DIR}/bl1-${TARGET_SOC} nxp4330 con_svma 0
+-fi
+-
+-if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_UBOOT}" == "true" ]; then
+-    build_uboot ${UBOOT_DIR} ${TARGET_SOC} ${BOARD_NAME} ${CROSS_COMPILE}
+-    gen_third ${TARGET_SOC} ${UBOOT_DIR}/u-boot.bin \
+-        ${UBOOT_IMG_LOAD_ADDR} ${UBOOT_IMG_JUMP_ADDR} \
+-        ${TOP}/device/nexell/secure/bootloader.img
+-fi
+-
+-if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_SECURE}" == "true" ]; then
+-    pos=0
+-    file_size=0
+-
+-    build_bl2_s5p4418 ${TOP}/device/nexell/secure/bl2-s5p4418
+-    build_armv7_dispatcher ${TOP}/device/nexell/secure/armv7-dispatcher
+-
+-    gen_third ${TARGET_SOC} ${TOP}/device/nexell/secure/bl2-s5p4418/out/pyrope-bl2.bin \
+-        0xb0fe0000 0xb0fe0400 ${TOP}/device/nexell/secure/loader-emmc.img \
+-        "-m 0x40200 -b 3 -p ${DEV_PORTNUM} -m 0x1E0200 -b 3 -p ${DEV_PORTNUM} -m 0x60200 -b 3 -p ${DEV_PORTNUM}"
+-    gen_third ${TARGET_SOC} ${TOP}/device/nexell/secure/armv7-dispatcher/out/armv7_dispatcher.bin \
+-        0xffff0200 0xffff0200 ${TOP}/device/nexell/secure/bl_mon.img \
+-        "-m 0x40200 -b 3 -p ${DEV_PORTNUM} -m 0x1E0200 -b 3 -p ${DEV_PORTNUM} -m 0x60200 -b 3 -p ${DEV_PORTNUM}"
+-
+-    file_size=35840
+-    dd if=${TOP}/device/nexell/secure/loader-emmc.img of=${TOP}/device/nexell/secure/fip-loader-usb.bin seek=0 bs=1
+-    let pos=pos+file_size
+-    file_size=28672
+-    dd if=${TOP}/device/nexell/secure/bl_mon.img of=${TOP}/device/nexell/secure/fip-loader-usb.bin seek=${pos} bs=1
+-    let pos=pos+file_size
+-    dd if=${TOP}/device/nexell/secure/bootloader.img of=${TOP}/device/nexell/secure/fip-loader-usb.bin seek=${pos} bs=1
+-
+-    if [ "${MEMSIZE}" == "2GB" ]; then
+-        load_addr="63c00000"
+-        start_addr="63c00000"
+-    elif [ "${MEMSIZE}" == "1GB" ]; then
+-        load_addr="83c00000"
+-        start_addr="83c00000"
++function run_bl1_build()
++{
++    if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_BL1}" == "true" ]; then
++        build_bl1_s5p4418 ${BL1_DIR}/bl1-${TARGET_SOC} nxp4330 con_svma 0
+     fi
++}
+ 
+-    python ${TOP}/device/nexell/tools/nsihtxtmod.py ${DEVICE_DIR} ${TOP}/device/nexell/secure/fip-loader-usb.bin $load_addr $start_addr
+-    python ${TOP}/device/nexell/tools/nsihbingen.py ${DEVICE_DIR}/nsih-usbdownload.txt ${DEVICE_DIR}/nsih-usbdownload.bin
+-
+-    cp ${DEVICE_DIR}/nsih-usbdownload.bin ${TOP}/device/nexell/secure/fip-loader-usb.img
+-    dd if=${TOP}/device/nexell/secure/fip-loader-usb.bin >> ${TOP}/device/nexell/secure/fip-loader-usb.img
+-fi
+-
+-CROSS_COMPILE_KERNEL=arm-linux-androideabi-
+-if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_KERNEL}" == "true" ]; then
+-    build_kernel ${KERNEL_DIR} ${TARGET_SOC} ${BOARD_NAME} s5p4418_con_svma_pie_defconfig ${CROSS_COMPILE_KERNEL}
+-    if [ ! -d ${OUT_DIR} ]; then
+-        mkdir -p ${OUT_DIR}
++function run_uboot_build()
++{
++    if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_UBOOT}" == "true" ]; then
++        build_uboot ${UBOOT_DIR} ${TARGET_SOC} ${BOARD_NAME} ${CROSS_COMPILE}
++        gen_third ${TARGET_SOC} ${UBOOT_DIR}/u-boot.bin \
++            ${UBOOT_IMG_LOAD_ADDR} ${UBOOT_IMG_JUMP_ADDR} \
++            ${TOP}/device/nexell/secure/bootloader.img
+     fi
+-    cp ${KERNEL_IMG} ${OUT_DIR}/kernel && \
+-        cp ${DTB_IMG} ${OUT_DIR}/2ndbootloader
+-fi
++}
+ 
+-# if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_MODULE}" == "true" ]; then
+-#     build_module ${KERNEL_DIR} ${TARGET_SOC} ${CROSS_COMPILE}
+-# fi
++function run_secure_build()
++{
++    if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_SECURE}" == "true" ]; then
++        pos=0
++        file_size=0
+ 
++        build_bl2_s5p4418 ${TOP}/device/nexell/secure/bl2-s5p4418
++        build_armv7_dispatcher ${TOP}/device/nexell/secure/armv7-dispatcher
++
++        gen_third ${TARGET_SOC} ${TOP}/device/nexell/secure/bl2-s5p4418/out/pyrope-bl2.bin \
++            0xb0fe0000 0xb0fe0400 ${TOP}/device/nexell/secure/loader-emmc.img \
++            "-m 0x40200 -b 3 -p ${DEV_PORTNUM} -m 0x1E0200 -b 3 -p ${DEV_PORTNUM} -m 0x60200 -b 3 -p ${DEV_PORTNUM}"
++        gen_third ${TARGET_SOC} ${TOP}/device/nexell/secure/armv7-dispatcher/out/armv7_dispatcher.bin \
++            0xffff0200 0xffff0200 ${TOP}/device/nexell/secure/bl_mon.img \
++            "-m 0x40200 -b 3 -p ${DEV_PORTNUM} -m 0x1E0200 -b 3 -p ${DEV_PORTNUM} -m 0x60200 -b 3 -p ${DEV_PORTNUM}"
++
++        file_size=35840
++        dd if=${TOP}/device/nexell/secure/loader-emmc.img of=${TOP}/device/nexell/secure/fip-loader-usb.bin seek=0 bs=1
++        let pos=pos+file_size
++        file_size=28672
++        dd if=${TOP}/device/nexell/secure/bl_mon.img of=${TOP}/device/nexell/secure/fip-loader-usb.bin seek=${pos} bs=1
++        let pos=pos+file_size
++        dd if=${TOP}/device/nexell/secure/bootloader.img of=${TOP}/device/nexell/secure/fip-loader-usb.bin seek=${pos} bs=1
++
++        if [ "${MEMSIZE}" == "2GB" ]; then
++            load_addr="63c00000"
++            start_addr="63c00000"
++        elif [ "${MEMSIZE}" == "1GB" ]; then
++            load_addr="83c00000"
++            start_addr="83c00000"
++        fi
++
++        python ${TOP}/device/nexell/tools/nsihtxtmod.py ${DEVICE_DIR} ${TOP}/device/nexell/secure/fip-loader-usb.bin $load_addr $start_addr
++        python ${TOP}/device/nexell/tools/nsihbingen.py ${DEVICE_DIR}/nsih-usbdownload.txt ${DEVICE_DIR}/nsih-usbdownload.bin
++
++        cp ${DEVICE_DIR}/nsih-usbdownload.bin ${TOP}/device/nexell/secure/fip-loader-usb.img
++        dd if=${TOP}/device/nexell/secure/fip-loader-usb.bin >> ${TOP}/device/nexell/secure/fip-loader-usb.img
++    fi
++}
++
++function run_kernel_build()
++{
++    CROSS_COMPILE_KERNEL=arm-linux-androideabi-
++    if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_KERNEL}" == "true" ]; then
++        build_kernel ${KERNEL_DIR} ${TARGET_SOC} ${BOARD_NAME} s5p4418_con_svma_pie_defconfig ${CROSS_COMPILE_KERNEL}
++        if [ ! -d ${OUT_DIR} ]; then
++            mkdir -p ${OUT_DIR}
++        fi
++        cp ${KERNEL_IMG} ${OUT_DIR}/kernel && \
++            cp ${DTB_IMG} ${OUT_DIR}/2ndbootloader
++    fi
++}
+ test -d ${OUT_DIR} && test -f ${DEVICE_DIR}/bootloader && cp ${DEVICE_DIR}/bootloader ${OUT_DIR}
+ 
+-if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_ANDROID}" == "true" ]; then
+-    rm -rf ${OUT_DIR}/system
+-    rm -rf ${OUT_DIR}/root
+-    rm -rf ${OUT_DIR}/data
+-    cp -R ${DEVICE_DIR}/source_overlay/* ${TOP}
+-    build_android ${TARGET_SOC} "${BOARD_NAME}_auto" ${BUILD_TAG}
+-fi
++function run_android_build()
++{
++    if [ "${BUILD_ALL}" == "true" ] || [ "${BUILD_ANDROID}" == "true" ]; then
++        rm -rf ${OUT_DIR}/system
++        rm -rf ${OUT_DIR}/root
++        rm -rf ${OUT_DIR}/data
++        generate_key ${BOARD_NAME}
++        cp -R ${DEVICE_DIR}/source_overlay/* ${TOP}
++        build_android ${TARGET_SOC} "${BOARD_NAME}_auto" ${BUILD_TAG}
++    fi
++}
+ 
+-# u-boot envs
+-echo "make u-boot env"
+-if [ -f ${UBOOT_DIR}/u-boot.bin ]; then
+-    test -f ${UBOOT_DIR}/u-boot.bin && \
+-        UBOOT_BOOTCMD=$(make_uboot_bootcmd \
+-        ${DEVICE_DIR}/partmap.txt \
+-        ${UBOOT_LOAD_ADDR} \
+-        2048 \
++function run_dist_build()
++{
++    if [ "${BUILD_DIST}" == "true" ]; then
++        build_dist ${TARGET_SOC} ${BOARD_NAME} ${BUILD_TAG}
++    fi
++}
++
++function run_make_uboot_env()
++{
++    # u-boot envs
++    echo "make u-boot env"
++    local UBOOT_BOOTCMD
++    local VENDOR_BLK_SELECT
++    if [ -f ${UBOOT_DIR}/u-boot.bin ]; then
++        test -f ${UBOOT_DIR}/u-boot.bin && \
++        make_uboot_bootcmd ${DEVICE_DIR}/partmap.txt \
++                           ${UBOOT_LOAD_ADDR} \
++                           2048 \
++                           ${KERNEL_IMG} \
++                           ${DTB_IMG} \
++                           ${DEVICE_DIR}/dummy_ramdisk.img \
++                           "boot_a:emmc" \
++                           "boot_b:emmc" \
++                           UBOOT_BOOTCMD \
++                           VENDOR_BLK_SELECT
++
++        UBOOT_RECOVERYCMD="ext4load mmc 0:6 0x49000000 recovery.dtb; ext4load mmc 0:6 0x40008000 recovery.kernel; ext4load mmc 0:6 0x48000000 ramdisk-recovery.img; bootz 40008000 0x48000000:2d0f8f 0x49000000"
++
++        UBOOT_BOOTARGS='console=ttyAMA3,115200n8 loglevel=7 printk.time=1 androidboot.hardware=con_svma androidboot.console=ttyAMA3 androidboot.serialno=0123456789abcdef rootwait rootfstype=ext4 init=\/init skip_initramfs androidboot.selinux=permissive blkdevparts=mmcblk0:64M@5242880(boot),1G(system),256M(vendor),4987027456(userdata)'
++
++        SPLASH_SOURCE="mmc"
++        SPLASH_OFFSET="0x2e4200"
++
++        echo -e "----------------------------------------------------"
++        echo -e "UBOOT_BOOTCMD_A = ${UBOOT_BOOTCMD[0]}"
++        echo -e "UBOOT_BOOTCMD_B = ${UBOOT_BOOTCMD[1]}"
++        echo -e "VENDOR_BLK_SELECT_A = ${VENDOR_BLK_SELECT[0]}"
++        echo -e "VENDOR_BLK_SELECT_B = ${VENDOR_BLK_SELECT[1]}"
++        echo -e "----------------------------------------------------"
++        echo -e "UBOOT_RECOVERYCMD ==> ${UBOOT_RECOVERYCMD}\n"
++
++        pushd `pwd`
++        cd ${UBOOT_DIR}
++        build_uboot_env_param ${CROSS_COMPILE} "UBOOT_BOOTCMD[@]" "${UBOOT_BOOTARGS}" "${SPLASH_SOURCE}" "${SPLASH_OFFSET}" "${UBOOT_RECOVERYCMD}" "VENDOR_BLK_SELECT[@]"
++        popd
++    fi
++}
++
++function run_make_bootloader()
++{
++    # make bootloader
++    echo "make bootloader"
++    bl1=${BL1_DIR}/bl1-${TARGET_SOC}/out/bl1-emmcboot.bin
++    loader=${TOP}/device/nexell/secure/loader-emmc.img
++    secure=${TOP}/device/nexell/secure/bl_mon.img
++    nonsecure=${TOP}/device/nexell/secure/bootloader.img
++    param=${UBOOT_DIR}/params.bin
++    boot_logo=${DEVICE_DIR}/logo.bmp
++    out_file=${DEVICE_DIR}/bootloader
++
++    if [ -f ${bl1} ] && [ -f ${loader} ] && [ -f ${secure} ] && [ -f ${nonsecure} ] && [ -f ${param} ] && [ -f ${boot_logo} ]; then
++        BOOTLOADER_PARTITION_SIZE=$(get_partition_size ${DEVICE_DIR}/partmap.txt bootloader)
++        make_bootloader \
++            ${BOOTLOADER_PARTITION_SIZE} \
++            ${bl1} \
++            65536 \
++            ${loader} \
++            262144 \
++            ${secure} \
++            1966080 \
++            ${nonsecure} \
++            3014656 \
++            ${param} \
++            3031040 \
++            ${boot_logo} \
++            ${out_file}
++
++        test -d ${OUT_DIR} && cp ${DEVICE_DIR}/bootloader ${OUT_DIR}
++    fi
++}
++
++function run_make_android_bootimg()
++{
++    make_android_bootimg \
+         ${KERNEL_IMG} \
+         ${DTB_IMG} \
+-        ${OUT_DIR}/ramdisk.img \
+-        "boot:emmc")
++        ${OUT_DIR}/ramdisk-recovery.img \
++        ${OUT_DIR}/boot.img \
++        2048 \
++        "buildvariant=${BUILD_TAG}"
++}
+ 
+-    UBOOT_RECOVERYCMD="ext4load mmc 0:6 0x49000000 recovery.dtb; ext4load mmc 0:6 0x40008000 recovery.kernel; ext4load mmc 0:6 0x48000000 ramdisk-recovery.img; bootz 40008000 0x48000000:2d0f8f 0x49000000"
++function run_post_process()
++{
++    post_process ${TARGET_SOC} \
++        ${DEVICE_DIR}/partmap.txt \
++        ${RESULT_DIR} \
++        ${BL1_DIR}/bl1-${TARGET_SOC}/out \
++        ${TOP}/device/nexell/secure \
++        ${UBOOT_DIR} \
++        ${KERNEL_DIR}/arch/arm/boot \
++        ${KERNEL_DIR}/arch/arm/boot/dts \
++        67108864 \
++        ${OUT_DIR} \
++        con_svma \
++        ${DEVICE_DIR}/logo.bmp
++}
+ 
+-    UBOOT_BOOTARGS='console=ttyAMA3,115200n8 loglevel=7 printk.time=1 androidboot.hardware=con_svma androidboot.console=ttyAMA3 androidboot.serialno=0123456789abcdef root=\/dev\/mmcblk0p2 rootwait rootfstype=ext4 init=\/init skip_initramfs androidboot.selinux=permissive blkdevparts=mmcblk0:64M@5242880(boot),1G(system),256M(vendor),6101663744(userdata)'
++run_bl1_build
++run_uboot_build
++run_secure_build
++run_kernel_build
++run_android_build
++run_dist_build
++run_make_uboot_env
++run_make_bootloader
++run_make_android_bootimg
++run_post_process
+ 
+-    SPLASH_SOURCE="mmc"
+-    SPLASH_OFFSET="0x2e4200"
+-
+-    echo "UBOOT_BOOTCMD ==> ${UBOOT_BOOTCMD}"
+-    echo "UBOOT_RECOVERYCMD ==> ${UBOOT_RECOVERYCMD}"
+-
+-    pushd `pwd`
+-    cd ${UBOOT_DIR}
+-    build_uboot_env_param ${CROSS_COMPILE} "${UBOOT_BOOTCMD}" "${UBOOT_BOOTARGS}" "${SPLASH_SOURCE}" "${SPLASH_OFFSET}" "${UBOOT_RECOVERYCMD}"
+-    popd
+-fi
+-
+-# make bootloader
+-echo "make bootloader"
+-bl1=${BL1_DIR}/bl1-${TARGET_SOC}/out/bl1-emmcboot.bin
+-loader=${TOP}/device/nexell/secure/loader-emmc.img
+-secure=${TOP}/device/nexell/secure/bl_mon.img
+-nonsecure=${TOP}/device/nexell/secure/bootloader.img
+-param=${UBOOT_DIR}/params.bin
+-boot_logo=${DEVICE_DIR}/logo.bmp
+-out_file=${DEVICE_DIR}/bootloader
+-
+-if [ -f ${bl1} ] && [ -f ${loader} ] && [ -f ${secure} ] && [ -f ${nonsecure} ] && [ -f ${param} ] && [ -f ${boot_logo} ]; then
+-    BOOTLOADER_PARTITION_SIZE=$(get_partition_size ${DEVICE_DIR}/partmap.txt bootloader)
+-    make_bootloader \
+-        ${BOOTLOADER_PARTITION_SIZE} \
+-        ${bl1} \
+-        65536 \
+-        ${loader} \
+-        262144 \
+-        ${secure} \
+-        1966080 \
+-        ${nonsecure} \
+-        3014656 \
+-        ${param} \
+-        3031040 \
+-        ${boot_logo} \
+-        ${out_file}
+-
+-    test -d ${OUT_DIR} && cp ${DEVICE_DIR}/bootloader ${OUT_DIR}
+-fi
+-
+-make_android_bootimg \
+-    ${KERNEL_IMG} \
+-    ${DTB_IMG} \
+-    ${OUT_DIR}/ramdisk.img \
+-    ${OUT_DIR}/boot.img \
+-    2048 \
+-    "buildvariant=${BUILD_TAG}"
+-
+-post_process ${TARGET_SOC} \
+-    ${DEVICE_DIR}/partmap.txt \
+-    ${RESULT_DIR} \
+-    ${BL1_DIR}/bl1-${TARGET_SOC}/out \
+-    ${TOP}/device/nexell/secure \
+-    ${UBOOT_DIR} \
+-    ${KERNEL_DIR}/arch/arm/boot \
+-    ${KERNEL_DIR}/arch/arm/boot/dts \
+-    67108864 \
+-    ${OUT_DIR} \
+-    con_svma \
+-    ${DEVICE_DIR}/logo.bmp
+diff --git a/device.mk b/device.mk
+index 5b5e30f..025f638 100644
+--- a/device.mk
++++ b/device.mk
+@@ -67,7 +67,8 @@
+     lights.s5pxx18 \
+     audio.primary.s5pxx18 \
+     gatekeeper.s5pxx18 \
+-    camera.s5pxx18
++    camera.s5pxx18 \
++    bootctrl.s5pxx18
+ 
+ # audio
+ PRODUCT_PACKAGES += \
+@@ -219,3 +220,59 @@
+     dalvik.vm.heaptargetutilization=0.75 \
+     dalvik.vm.heapminfree=512k \
+     dalvik.vm.heapmaxfree=2m
++
++########################################################################
++# A/B OTA UPDATE
++########################################################################
++# target definitions
++AB_OTA_UPDATER := true
++AB_OTA_PARTITIONS := \
++  boot \
++  system \
++  vendor
++
++BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
++TARGET_NO_RECOVERY := true
++BOARD_USES_RECOVERY_AS_BOOT := false
++PRODUCT_PACKAGES += \
++  update_engine \
++  update_verifier
++
++
++PRODUCT_PACKAGES_DEBUG += update_engine_client
++
++# Boot control HAL
++PRODUCT_PACKAGES += \
++    android.hardware.boot@1.0-impl \
++    android.hardware.boot@1.0-service \
++
++# bootctrl HAL
++PRODUCT_PACKAGES += \
++    bootctrl.default \
++    bootctrl.$(TARGET_BOARD_PLATFORM) \
++    bootctl
++
++PRODUCT_STATIC_BOOT_CONTROL_HAL := \
++    libz \
++    libcutils
++
++# A/B OTA post actions
++PRODUCT_PACKAGES += cfigPostInstall
++AB_OTA_POSTINSTALL_CONFIG += \
++    RUN_POSTINSTALL_system=true \
++    POSTINSTALL_PATH_system=bin/cfigPostInstall \
++    FILESYSTEM_TYPE_system=ext4 \
++    POSTINSTALL_OPTIONAL_system=true
++
++# App compilation in background
++PRODUCT_PACKAGES += otapreopt_script
++AB_OTA_POSTINSTALL_CONFIG += \
++  RUN_POSTINSTALL_system=true \
++  POSTINSTALL_PATH_system=system/bin/otapreopt_script \
++  FILESYSTEM_TYPE_system=ext4 \
++  POSTINSTALL_OPTIONAL_system=true
++
++
++# For A/B update test
++PRODUCT_PACKAGES += \
++  updater
+diff --git a/dummy_ramdisk.img b/dummy_ramdisk.img
+new file mode 100644
+index 0000000..e69de29
+--- /dev/null
++++ b/dummy_ramdisk.img
+diff --git a/fstab.con_svma b/fstab.con_svma
+index 562e184..ae90282 100644
+--- a/fstab.con_svma
++++ b/fstab.con_svma
+@@ -2,9 +2,10 @@
+ #<src>               <mnt_point>   <type>   <mnt_flags and options>                            <fs_mgr_flags>
+ # The filesystem that contains the filesystem checker binary (typically /system) cannot
+ # specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
+-/dev/block/mmcblk0p2 /             ext4     rw                                                 wait
+-/dev/block/mmcblk0p3 /vendor       ext4     rw                                                 wait,check
+-/dev/block/mmcblk0p4 /data         ext4     noatime,nosuid,nodev,nomblk_io_submit,errors=panic wait,check
++/dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/system  /             ext4     rw                                                 wait,slotselect
++/dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/vendor  /vendor       ext4     rw                                                 wait,check,slotselect
++/dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/misc    /misc         emmc     defaults                                           defaults
++/dev/block/mmcblk0p9  /data         ext4     noatime,nosuid,nodev,nomblk_io_submit,errors=panic wait,check
+ /devices/platform/c0000000.soc/c0062000.dw_mmc/mmc_host* auto auto defaults voldmanaged=sdcard1:auto,encryptable=userdata
+ /devices/platform/c0000000.soc/c0030000.ehci/usb2* auto auto defaults voldmanaged=usb:auto,encryptable=userdata
+ /devices/platform/c0000000.soc/c0040000.dwc2otg/usb1* auto auto defaults voldmanaged=usb:auto,encryptable=userdata
+diff --git a/init.con_svma.rc b/init.con_svma.rc
+index 717bac3..f12ab7a 100644
+--- a/init.con_svma.rc
++++ b/init.con_svma.rc
+@@ -4,6 +4,28 @@
+     mount debugfs debugfs /sys/kernel/debug
+     chmod 0755 /sys/kernel/debug
+ 
++    mkdir /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name 0770 system system
++    wait /dev/block/mmcblk0p8
++    symlink /dev/block/mmcblk0p8 /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/misc
++
++    wait /dev/block/mmcblk0p1
++    symlink /dev/block/mmcblk0p1 /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/boot_a
++
++    wait /dev/block/mmcblk0p2
++    symlink /dev/block/mmcblk0p2 /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/boot_b
++
++    wait /dev/block/mmcblk0p3
++    symlink /dev/block/mmcblk0p3 /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/system_a
++
++    wait /dev/block/mmcblk0p5
++    symlink /dev/block/mmcblk0p5 /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/system_b
++
++    wait /dev/block/mmcblk0p6
++    symlink /dev/block/mmcblk0p6 /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/vendor_a
++
++    wait /dev/block/mmcblk0p7
++    symlink /dev/block/mmcblk0p7 /dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/vendor_b
++
+ on fs
+     # Start HW service manager early
+     start hwservicemanager
+diff --git a/manifest.xml b/manifest.xml
+index cfce6ad..733c456 100644
+--- a/manifest.xml
++++ b/manifest.xml
+@@ -143,6 +143,15 @@
+         </interface>
+     </hal>
+     <hal format="hidl">
++        <name>android.hardware.boot</name>
++        <transport>hwbinder</transport>
++        <version>1.0</version>
++        <interface>
++            <name>IBootControl</name>
++            <instance>default</instance>
++        </interface>
++    </hal>
++    <hal format="hidl">
+         <name>android.hardware.automotive.audiocontrol</name>
+         <transport>hwbinder</transport>
+         <version>1.0</version>
+diff --git a/partmap.txt b/partmap.txt
+index 29f5cef..10b476c 100644
+--- a/partmap.txt
++++ b/partmap.txt
+@@ -2,7 +2,11 @@
+ # Before fusing, partmap must be flashed to target device
+ # Target device uses this partmap information to fuse flash images by fastboot
+ flash=mmc,0:bl1:2nd:0x200,0x4AFE00:bootloader;
+-flash=mmc,0:boot:emmc:0x500000,0x4000000:boot.img;
+-flash=mmc,0:system:ext4:0x4500000,0x40000000:system.img;
+-flash=mmc,0:vendor:ext4:0x44500000,0x10000000:vendor.img;
+-flash=mmc,0:userdata:ext4:0x54500000,0:userdata.img;
++flash=mmc,0:boot_a:emmc:0x500000,0x4000000:boot.img;
++flash=mmc,0:boot_b:emmc:0x4600000,0x4000000:dummy.img;
++flash=mmc,0:system_a:ext4:0x8700000,0x40000000:system.img;
++flash=mmc,0:system_b:ext4:0x48800000,0x40000000:dummy.img;
++flash=mmc,0:vendor_a:ext4:0x88900000,0x10000000:vendor.img;
++flash=mmc,0:vendor_b:ext4:0x98A00000,0x10000000:dummy.img;
++flash=mmc,0:misc:emmc:0xA8B00000,0x100000:misc.img;
++flash=mmc,0:userdata:ext4:0xA8D00000,0:userdata.img;
+diff --git a/recovery.fstab b/recovery.fstab
+new file mode 100644
+index 0000000..b2777dd
+--- /dev/null
++++ b/recovery.fstab
+@@ -0,0 +1,11 @@
++# Android fstab file.
++#<src>               <mnt_point>   <type>   <mnt_flags and options>                            <fs_mgr_flags>
++# The filesystem that contains the filesystem checker binary (typically /system) cannot
++# specify MF_CHECK, and must come before any filesystems that do specify MF_CHECK
++/dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/system  /             ext4     rw                                                 wait,slotselect
++/dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/vendor  /vendor       ext4     rw                                                 wait,check,slotselect
++/dev/block/platform/c0000000.soc/c0062000.dwmmc/by-name/misc    /misc         emmc     defaults                                           defaults
++/dev/block/mmcblk0p8  /data         ext4     noatime,nosuid,nodev,nomblk_io_submit,errors=panic wait,check
++/devices/platform/c0000000.soc/c0062000.dw_mmc/mmc_host* auto auto defaults voldmanaged=sdcard1:auto,encryptable=userdata
++/devices/platform/c0000000.soc/c0030000.ehci/usb2* auto auto defaults voldmanaged=usb:auto,encryptable=userdata
++/devices/platform/c0000000.soc/c0040000.dwc2otg/usb1* auto auto defaults voldmanaged=usb:auto,encryptable=userdata
