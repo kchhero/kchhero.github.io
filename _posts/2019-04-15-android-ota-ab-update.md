@@ -382,3 +382,9 @@ Complete or error.
 [1231/150256.268237:INFO:metrics_reporter_android.cc(29)] uploading 20 to histogram for metric ota_update_engine_attempt_error_code
 [1231/150256.268568:INFO:metrics_reporter_android.cc(29)] uploading 60309 to histogram for metric ota_update_engine_attempt_current_bytes_downloaded_mib
 ```
+
+---
+
+### my document
+
+https://drive.google.com/open?id=1e1e9KLpb_ZwdDcxGgHyeOmz9hohAarIB
