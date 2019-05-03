@@ -142,4 +142,12 @@ boot.img의 0x30000 ~ 0x301f0 와 동일하다.
 004affe0: 4c54 c464 903c 033b 5bbe a7a1 80e4 71c7  LT.d.<.;[.....q.
 004afff0: 0adf 1da3 e701 5f56 fa29 3dcc 78b4 cb62  ......_V.)=.x..b
 ```
-debugging 필요한 상태이다.
+debugging 필요한 상태
+
+---
+
+2019.05.03
+
+slot_A는 문제없음.
+slot_B의 bootloader partition의 마지막 512 byte가 문제로 보인다.
+A <-> B  순서 및 횟수 상관없이 slot_B의 512 byte만 문제가 된다.
