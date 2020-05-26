@@ -1,9 +1,10 @@
 ---
-title: 'windows environment setup'
+categories: Uncategoried
+category: Uncategoried
 layout: post
 tags:
   - windows
-category: Uncategoried
+title: 'windows environment setup'
 ---
 ## windows environment setup (for suker)
 
@@ -36,3 +37,16 @@ category: Uncategoried
 		designer 실행 : C:\Users\suker\AppData\Local\Continuum\anaconda3\Library\bin\ Designer.exe 실행
 	5. .ui -> .py convert
 		pyuic5 -x test.ui -o test.py
+
+<br>
+
+### pyinstaller
+	1. pip install pyinstaller
+	2. pyinstaller -w -F main.py
+	*. RecursionError: maximum recursion depth exceeded 발생시
+	   --> xxxxx.spec 에서 아래 코드 추가
+	   --> import sys
+	   --> sys.setrecursionlimit(5000)
+	*. utf-f 관련 error 발생시
+	   --> .../pyinstaller/compat.py 에서 
+	   -->  out = out.decode(encoding, errors='ignore') 로 수정
